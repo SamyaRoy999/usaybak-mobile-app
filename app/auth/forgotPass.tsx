@@ -50,7 +50,7 @@ const forgotPass = () => {
                   Forgot Password ?
                 </Text>
                 <Text
-                  style={tw`text-primaryText font-poppins text-center text-base py-2 px-6`}
+                  style={tw`text-primaryText font-poppins text-center text-sm py-2 px-6`}
                 >
                   Enter your email address that you provided during sign up. We
                   will send you a 6 digit code through that email.

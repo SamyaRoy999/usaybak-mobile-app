@@ -17,6 +17,7 @@ import { ImgLogo } from "@/assets/images/images";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { OtpInput } from "react-native-otp-entry";
+import { router } from "expo-router";
 const verify = () => {
   return (
     <KeyboardAvoidingView style={tw`flex-1 bg-secondary`}>
@@ -28,13 +29,12 @@ const verify = () => {
           style={tw`flex-col justify-center w-full pt-44 items-center my-11`}
         >
           <Text style={tw`font-poppinsBold text-3xl  text-primaryText`}>
-            Forgot Password ?
+            Verify Code
           </Text>
           <Text
-            style={tw`text-primaryText font-poppins text-center text-base py-2 px-6`}
+            style={tw`text-primaryText font-poppins text-center text-sm py-2 px-6`}
           >
-            Enter your email address that you provided during sign up. We will
-            send you a 6 digit code through that email.
+            Enter the 6 digit code that we sent you to your provided email.
           </Text>
         </View>
         <View style={tw`bg-primary w-full h-full rounded-t-[40px] `}>
@@ -75,7 +75,7 @@ const verify = () => {
           <TouchableOpacity
             style={tw`bg-secondary rounded-full mx-6`}
             onPress={() => {
-              // router.replace("/home/(tabs)/landingPage");
+              router.replace("/auth/newPass");
             }}
           >
             <Text

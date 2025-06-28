@@ -8,7 +8,7 @@ const index = () => {
   useEffect(() => {
     setTimeout(() => {
       // router.replace("/home/(tabs)/landingPage");
-      router.replace("/auth/verify");
+      router.replace("/auth/login");
     }, 1000);
   }, []);
 

@@ -1,12 +1,186 @@
-import { View, Text } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  TextInput,
+  KeyboardAvoidingView,
+  ScrollView,
+  TouchableOpacity,
+  Modal,
+  StyleSheet,
+} from "react-native";
 import React from "react";
+import tw from "@/lib/tailwind";
+import { SvgXml } from "react-native-svg";
+import { IconNewPass } from "@/icons/Icon";
+import { ImgLogo } from "@/assets/images/images";
+import success from "@/assets/images/success.gif";
+import Entypo from "@expo/vector-icons/Entypo";
 
+// import { Image } from "expo-image";
+import { Formik } from "formik";
+import * as Yup from "yup";
+import { router } from "expo-router";
 const newPass = () => {
+  const [showNewPassword, setShowNewPassword] = React.useState(false);
+  const [confirmPassword, SetConfirmPassword] = React.useState(false);
+  const [isVisible, setIsVisible] = React.useState(false);
   return (
-    <View>
-      <Text>newPass</Text>
-    </View>
+    <KeyboardAvoidingView style={tw`flex-1 bg-secondary`}>
+      <Formik
+        initialValues={{ password: "", confirm_password: "" }}
+        onSubmit={(values) => console.log(values)}
+        validationSchema={Yup.object({
+          password: Yup.string()
+            .min(6, "Password is too sort ")
+            .required("email is required")
+            .uppercase("1 lowercase letter added"),
+          confirm_password: Yup.string()
+            .min(6, "Password is too sort ")
+            .required("email is required")
+            .uppercase("1 lowercase letter added"),
+        })}
+      >
+        {({ values, setFieldValue, handleSubmit, errors }) => {
+          return (
+            <ScrollView style={tw``}>
+              <View style={tw`flex-row justify-end`}>
+                <SvgXml xml={IconNewPass} />
+              </View>
+              <View
+                style={tw`flex-col justify-center w-full items-center my-16`}
+              >
+                <Text style={tw`font-poppinsBold text-3xl  text-primaryText`}>
+                  Enter new password
+                </Text>
+                <Text
+                  style={tw`text-primaryText font-poppins text-sm text-center py-1 px-6`}
+                >
+                  Enter the 6 digit code that we sent you to your provided
+                  email.
+                </Text>
+              </View>
+              <View style={tw`bg-primary w-full h-full rounded-t-[40px] `}>
+                <View style={tw`flex-row justify-center `}>
+                  <Image
+                    source={ImgLogo}
+                    style={{ height: 100, width: 162, objectFit: "contain" }}
+                  />
+                </View>
+                {/* login from */}
+                <View>
+                  <View style={tw`py-3 px-6 relative`}>
+                    <TextInput
+                      style={tw`border border-primaryGray rounded-full font-poppins text-base px-5 h-14`}
+                      placeholder="Enter new password"
+                      secureTextEntry={!showNewPassword}
+                      value={values.password}
+                      onChangeText={(txt) => setFieldValue("password", txt)}
+                    />
+                    <Entypo
+                      name={showNewPassword ? "eye" : "eye-with-line"}
+                      style={tw`absolute right-12 top-7 `}
+                      size={20}
+                      color="#777"
+                      onPress={() => setShowNewPassword(!showNewPassword)}
+                    />
+                  </View>
+                  {errors.password && (
+                    <Text style={tw`text-center text-red-700 font-poppins`}>
+                      {errors.password}
+                    </Text>
+                  )}
+                  <View style={tw`py-3 px-6 relative`}>
+                    <TextInput
+                      style={tw`border border-primaryGray rounded-full font-poppins text-base px-5 h-14`}
+                      placeholder="Confirm new password"
+                      secureTextEntry={!confirmPassword}
+                      value={values.confirm_password}
+                      onChangeText={(txt) =>
+                        setFieldValue("confirm_password", txt)
+                      }
+                    />
+                    <Entypo
+                      name={confirmPassword ? "eye" : "eye-with-line"}
+                      style={tw`absolute right-12 top-7 `}
+                      size={20}
+                      color="#777"
+                      onPress={() => SetConfirmPassword(!confirmPassword)}
+                    />
+                  </View>
+                </View>
+                {errors.password && (
+                  <Text style={tw`text-center text-red-700 font-poppins`}>
+                    {errors.password}
+                  </Text>
+                )}
+
+                <TouchableOpacity
+                  style={tw`bg-secondary rounded-full mt-3 mx-6`}
+                  onPress={() => {
+                    handleSubmit();
+                    // router.replace("/auth/newPass");
+                    setIsVisible(true);
+                  }}
+                >
+                  <Text
+                    style={tw`text-primary  text-center  text-lg py-4 font-poppinsBold`}
+                  >
+                    Set new password
+                  </Text>
+                </TouchableOpacity>
+              </View>
+              {/* <TouchableOpacity onPress={() => setIsVisible(false)}> */}
+              <Modal
+                visible={isVisible}
+                transparent={true}
+                animationType="fade"
+                onRequestClose={() => setIsVisible(false)}
+              >
+                <View style={styles.modalContainer}>
+                  <View
+                    style={tw`bg-white flex-col p-11 justify-center items-center w-96 dark:bg-darkSecoundary rounded-xl `}
+                  >
+                    <Image source={success} />
+                    <Text
+                      style={tw`font-poppins text-xl py-8 text-secondaryGren`}
+                    >
+                      Password change successful
+                    </Text>
+                    <TouchableOpacity
+                      style={tw`bg-secondary rounded-full w-full  `}
+                      onPress={() => {
+                        handleSubmit();
+                        router.replace("/auth/login");
+                        setIsVisible(true);
+                      }}
+                    >
+                      <Text
+                        style={tw`text-primary  text-center  text-lg py-4 font-poppinsBold`}
+                      >
+                        Back to login
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </Modal>
+              {/* </TouchableOpacity> */}
+            </ScrollView>
+          );
+        }}
+      </Formik>
+    </KeyboardAvoidingView>
   );
 };
 
 export default newPass;
+
+const styles = StyleSheet.create({
+  modalContainer: {
+    flex: 1,
+    height: 500,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0,0,0,0.5)",
+  },
+});

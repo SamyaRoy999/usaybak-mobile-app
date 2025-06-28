@@ -69,7 +69,7 @@ const login = () => {
                   <Text style={tw`font-poppinsBold text-3xl  text-primaryText`}>
                     Welcome back
                   </Text>
-                  <Text style={tw`text-primaryText font-poppins text-lg py-1`}>
+                  <Text style={tw`text-primaryText font-poppins text-sm py-1`}>
                     Use your credentials to login
                   </Text>
                 </View>

@@ -7,6 +7,7 @@ import {
   ScrollView,
   Touchable,
   TouchableOpacity,
+  StyleSheet,
 } from "react-native";
 import React from "react";
 import tw from "@/lib/tailwind";
@@ -16,7 +17,6 @@ import { ImgLogo } from "@/assets/images/images";
 import Entypo from "@expo/vector-icons/Entypo";
 import Checkbox from "expo-checkbox";
 import { router } from "expo-router";
-// import { Image } from "expo-image";
 import { Formik } from "formik";
 import * as Yup from "yup";
 const login = () => {
@@ -37,7 +37,7 @@ const login = () => {
       >
         {({ values, setFieldValue, handleSubmit, errors }) => {
           return (
-            <ScrollView style={tw``}>
+            <ScrollView>
               <SvgXml xml={IconLogin} />
               <View
                 style={tw`flex-col justify-center w-full items-center my-11`}
@@ -45,7 +45,7 @@ const login = () => {
                 <Text style={tw`font-poppinsBold text-3xl  text-primaryText`}>
                   Welcome back
                 </Text>
-                <Text style={tw`text-primaryText font-poppins text-lg py-1`}>
+                <Text style={tw`text-primaryText font-poppins text-sm py-1`}>
                   Use your credentials to login
                 </Text>
               </View>
@@ -96,11 +96,11 @@ const login = () => {
                 <View
                   style={tw`py-7  px-7 flex-row justify-between items-center`}
                 >
-                  <View style={tw`flex-row gap-3`}>
+                  <View style={tw`flex-row items-center gap-2`}>
                     <Checkbox
                       value={isChecked}
                       onValueChange={setChecked}
-                      color={isChecked ? "Black" : undefined}
+                      color={isChecked ? "#EF4444" : undefined}
                     />
                     <Text style={tw`text-base font-poppins font-normal `}>
                       Remember me
@@ -109,7 +109,9 @@ const login = () => {
                   <TouchableOpacity
                     onPress={() => router.push("/auth/forgotPass")}
                   >
-                    <Text style={tw`text-base font-poppins font-normal `}>
+                    <Text
+                      style={tw`text-base font-poppins font-normal text-secondary`}
+                    >
                       Forgot password
                     </Text>
                   </TouchableOpacity>
@@ -118,7 +120,7 @@ const login = () => {
                   style={tw`bg-secondary rounded-full mx-6`}
                   onPress={() => {
                     handleSubmit();
-                    // router.replace("/home/(tabs)/landingPage");
+                    router.replace("/home/(tabs)/landingPage");
                   }}
                 >
                   <Text
