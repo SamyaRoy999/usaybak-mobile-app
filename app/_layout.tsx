@@ -3,7 +3,7 @@ import { Stack } from "expo-router";
 import "react-native-reanimated";
 import React from "react";
 
-import ThemeProvider from "./context/ThemeProvider";
+import ThemeProvider from "../context/ThemeProvider";
 import { useDeviceContext } from "twrnc";
 import tw from "@/lib/tailwind";
 // import ThemeProvider from "./context/ThemeProvider";

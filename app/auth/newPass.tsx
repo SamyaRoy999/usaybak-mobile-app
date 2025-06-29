@@ -13,8 +13,8 @@ import React from "react";
 import tw from "@/lib/tailwind";
 import { SvgXml } from "react-native-svg";
 import { IconNewPass } from "@/icons/Icon";
-import { ImgLogo } from "@/assets/images/images";
-import success from "@/assets/images/success.gif";
+import { ImgLogo, Imgsuccess } from "@/assets/images/images";
+// import success from "@/assets/images/success.gif";
 import Entypo from "@expo/vector-icons/Entypo";
 
 // import { Image } from "expo-image";
@@ -141,7 +141,7 @@ const newPass = () => {
                   <View
                     style={tw`bg-white flex-col p-11 justify-center items-center w-96 dark:bg-darkSecoundary rounded-xl `}
                   >
-                    <Image source={success} />
+                    <Image source={Imgsuccess} />
                     <Text
                       style={tw`font-poppins text-xl py-8 text-secondaryGren`}
                     >
