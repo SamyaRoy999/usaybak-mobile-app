@@ -1,10 +1,55 @@
-import { View, Text } from "react-native";
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  FlatList,
+} from "react-native";
 import React from "react";
+import tw from "@/lib/tailwind";
+import { SvgXml } from "react-native-svg";
+import { IconErowred } from "@/icons/Icon";
+import HeaderBar from "@/components/shear/HeaderBar";
+import Card from "@/components/landing_page/Card";
+import data from "../../../lib/data.json";
 
 const Promotions = () => {
   return (
-    <View>
-      <Text>Promotions</Text>
+    <View style={tw`bg-primary flex-1`}>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <HeaderBar />
+        <Text style={tw`text-3xl font-bold text-center mb-4`}>Promotions</Text>
+        {/* Beauty esthetics btn */}
+        <View
+          style={tw`flex-row w-full justify-between items-center px-5 py-6`}
+        >
+          <TouchableOpacity style={tw`bg-secondaryRed100 py-3 px-4 rounded-lg`}>
+            <Text style={tw`font-poppinsMedium text-base text-secondaryBlack`}>
+              Beauty esthetics
+            </Text>
+          </TouchableOpacity>
+          <View style={tw``}>
+            <TouchableOpacity
+              style={tw`py-3 flex-row gap-4 items-center  px-5 rounded-full border border-secondary`}
+            >
+              <Text style={tw`font-poppinsMedium text-base text-secondary`}>
+                See all
+              </Text>
+              <SvgXml xml={IconErowred} />
+            </TouchableOpacity>
+          </View>
+        </View>
+        {/* Beauty esthetics end */}
+        <FlatList
+          data={data.filter((item) => item.promoted === true)}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => (
+            <Card data={item} Promotions={"promoted"} />
+          )}
+          showsVerticalScrollIndicator={false}
+          scrollEnabled={false}
+        />
+      </ScrollView>
     </View>
   );
 };

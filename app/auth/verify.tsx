@@ -21,7 +21,7 @@ import { router } from "expo-router";
 const verify = () => {
   return (
     <KeyboardAvoidingView style={tw`flex-1 bg-secondary`}>
-      <ScrollView style={tw``}>
+      <ScrollView showsVerticalScrollIndicator={false} style={tw``}>
         <View style={tw`flex-row justify-end`}>
           <SvgXml xml={IconForgetNest} />
         </View>

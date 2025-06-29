@@ -34,7 +34,7 @@ const login = () => {
       style={tw`flex-1 bg-secondary`}
       // keyboardVerticalOffset={false}
     >
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
         <Formik
           initialValues={{
             channel_name: "",

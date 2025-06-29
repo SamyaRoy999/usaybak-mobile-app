@@ -39,7 +39,7 @@ const forgotPass = () => {
       >
         {({ values, setFieldValue, handleSubmit, errors }) => {
           return (
-            <ScrollView style={tw``}>
+            <ScrollView showsVerticalScrollIndicator={false} style={tw``}>
               <View style={tw`flex-row justify-end`}>
                 <SvgXml xml={IconForgetNest} />
               </View>

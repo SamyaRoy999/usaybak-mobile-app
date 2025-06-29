@@ -18,7 +18,7 @@ import { IconErow, IconErowred } from "@/icons/Icon";
 const landingPage = () => {
   return (
     <View>
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
         <HeaderBar />
         <SliderLanding />
         <CarouselCard />

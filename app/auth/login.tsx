@@ -37,7 +37,7 @@ const login = () => {
       >
         {({ values, setFieldValue, handleSubmit, errors }) => {
           return (
-            <ScrollView>
+            <ScrollView showsVerticalScrollIndicator={false}>
               <SvgXml xml={IconLogin} />
               <View
                 style={tw`flex-col justify-center w-full items-center my-11`}

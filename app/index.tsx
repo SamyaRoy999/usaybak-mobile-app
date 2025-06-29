@@ -7,7 +7,7 @@ import { router } from "expo-router";
 const index = () => {
   useEffect(() => {
     setTimeout(() => {
-      router.replace("/home/(tabs)/landingPage");
+      router.replace("/home/(tabs)/Blogs");
       // router.replace("/auth/login");
     }, 1000);
   }, []);
