@@ -10,6 +10,7 @@ const AllPagelayout = () => {
       }}
     >
       <Stack.Screen name="search" />
+      <Stack.Screen name="channelProfile" />
     </Stack>
   );
 };

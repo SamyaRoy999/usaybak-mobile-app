@@ -10,9 +10,9 @@ import { router } from "expo-router";
 const HeaderBar = () => {
   return (
     <View style={tw`flex-row w-full justify-between items-center px-5 py-6`}>
-      <View>
+      <TouchableOpacity onPress={() => router.push("/home/(tabs)/landingPage")}>
         <Image source={ImgLogo} style={tw`w-28 h-9`} />
-      </View>
+      </TouchableOpacity>
       <View style={tw`bg-secondaryRed100 p-4 rounded-full`}>
         <TouchableOpacity onPress={() => router.push("/allPages/search")}>
           <SvgXml xml={IconSearch} />

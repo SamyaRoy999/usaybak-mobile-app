@@ -7,8 +7,8 @@ import { router } from "expo-router";
 const index = () => {
   useEffect(() => {
     setTimeout(() => {
-      router.replace("/home/(tabs)/landingPage");
-      // router.replace("/allPages/search");
+      // router.replace("/home/(tabs)/landingPage");
+      router.replace("/allPages/channelProfile");
     }, 1000);
   }, []);
 

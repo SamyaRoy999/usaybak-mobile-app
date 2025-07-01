@@ -35,10 +35,14 @@ const Card = ({ data }: any) => {
         {/* Details section */}
         <View style={tw`flex-row px-4 py-3 items-start`}>
           {/* Channel profile image */}
-          <Image
-            source={{ uri: avatar }}
-            style={tw`w-10 h-10 rounded-full mr-3`}
-          />
+          <TouchableOpacity
+            onPress={() => router.push("/allPages/channelProfile")}
+          >
+            <Image
+              source={{ uri: avatar }}
+              style={tw`w-10 h-10 rounded-full mr-3`}
+            />
+          </TouchableOpacity>
 
           {/* Text info */}
           <View>
