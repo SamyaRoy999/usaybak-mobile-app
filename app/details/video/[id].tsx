@@ -28,6 +28,7 @@ import {
   IconShare,
 } from "@/icons/Icon";
 import Card from "@/components/landing_page/Card";
+import HeaderBar from "@/components/shear/HeaderBar";
 
 const SingleVideo = () => {
   const { id } = useLocalSearchParams();
@@ -52,7 +53,8 @@ const SingleVideo = () => {
 
   return (
     <View style={tw`flex-1  bg-primary`}>
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <HeaderBar />
         <View>
           {/* Video Player */}
           <VideoView
@@ -173,7 +175,7 @@ const SingleVideo = () => {
                 </TouchableOpacity>
               </View>
 
-              <ScrollView>
+              <ScrollView showsVerticalScrollIndicator={false}>
                 <View style={tw`flex-row  gap-4 pt-4  px-7`}>
                   <Image
                     source={{ uri: singleVideo.avatar }}

@@ -45,6 +45,7 @@ export default function RootLayout() {
         <Stack.Screen name="home/(tabs)" />
         <Stack.Screen name="auth" />
         <Stack.Screen name="details/video/[id]" />
+        <Stack.Screen name="details/Blog/[id]" />
       </Stack>
     </ThemeProvider>
   );

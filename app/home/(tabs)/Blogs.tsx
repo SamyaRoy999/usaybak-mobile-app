@@ -1,8 +1,16 @@
-import { View, Text, SafeAreaView, FlatList, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  SafeAreaView,
+  FlatList,
+  ScrollView,
+  TouchableOpacity,
+} from "react-native";
 import React from "react";
 import tw from "@/lib/tailwind";
 import { Image } from "expo-image";
 import HeaderBar from "@/components/shear/HeaderBar";
+import { router } from "expo-router";
 
 // data/blogs.js
 export const blogData = [
@@ -83,24 +91,30 @@ export const blogData = [
 ];
 
 const Blogs = () => {
-  const renderItem = ({ item }: any) => (
-    <View style={tw`mb-5 bg-primary overflow-hidden`}>
-      <Image
-        source={{ uri: item.image }}
-        style={tw`w-full h-48`}
-        resizeMode="cover"
-      />
-      <View style={tw`p-4`}>
-        <Text style={tw`font-poppinsMedium text-xl`}>{item.title}</Text>
-        <Text style={tw`text-sm font-poppins  mt-2 `}>
-          {item.description}
-          <Text style={tw`text-secondary font-poppinsSemiBold text-base `}>
-            Read more...
-          </Text>
-        </Text>
-      </View>
-    </View>
-  );
+  const renderItem = ({ item }: any) => {
+    console.log(item);
+
+    return (
+      <TouchableOpacity onPress={() => router.push(`/details/Blog/${item.id}`)}>
+        <View style={tw`mb-5 bg-primary overflow-hidden`}>
+          <Image
+            source={{ uri: item.image }}
+            style={tw`w-full h-48`}
+            resizeMode="cover"
+          />
+          <View style={tw`p-4`}>
+            <Text style={tw`font-poppinsMedium text-xl`}>{item.title}</Text>
+            <Text style={tw`text-sm font-poppins  mt-2 `}>
+              {item.description}
+              <Text style={tw`text-secondary font-poppinsSemiBold text-base `}>
+                Read more...
+              </Text>
+            </Text>
+          </View>
+        </View>
+      </TouchableOpacity>
+    );
+  };
 
   return (
     <View style={tw`flex-1 bg-primary`}>
