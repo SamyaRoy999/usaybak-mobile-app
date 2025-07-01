@@ -7,7 +7,8 @@
     "views": "22k",
     "time": "10 hours ago",
     "avatar": "https://i.imgur.com/3G4jXPa.jpg",
-    "promoted": true
+    "promoted": true,
+    "video": "https://www.w3schools.com/html/movie.mp4"
   },
   {
     "id": 2,
@@ -17,7 +18,8 @@
     "views": "18k",
     "time": "1 day ago",
     "avatar": "https://i.imgur.com/F0gR6O4.jpg",
-    "promoted": false
+    "promoted": false,
+    "video": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
   },
   {
     "id": 3,
@@ -27,7 +29,8 @@
     "views": "34k",
     "time": "5 hours ago",
     "avatar": "https://i.imgur.com/qLJZQtp.jpg",
-    "promoted": true
+    "promoted": true,
+    "video": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
   },
   {
     "id": 4,
@@ -37,7 +40,8 @@
     "views": "12k",
     "time": "6 hours ago",
     "avatar": "https://i.imgur.com/IWATmZK.jpg",
-    "promoted": false
+    "promoted": false,
+    "video": "https://www.w3schools.com/html/movie.mp4"
   },
   {
     "id": 5,
@@ -47,7 +51,8 @@
     "views": "29k",
     "time": "3 hours ago",
     "avatar": "https://i.imgur.com/yv7pF8W.jpg",
-    "promoted": true
+    "promoted": true,
+    "video": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
   },
   {
     "id": 6,
@@ -57,7 +62,8 @@
     "views": "21k",
     "time": "2 days ago",
     "avatar": "https://i.imgur.com/Ts9UpJO.jpg",
-    "promoted": false
+    "promoted": false,
+    "video": "https://www.w3schools.com/html/movie.mp4"
   },
   {
     "id": 7,
@@ -67,7 +73,8 @@
     "views": "49k",
     "time": "7 hours ago",
     "avatar": "https://i.imgur.com/WkUw9OJ.jpg",
-    "promoted": true
+    "promoted": true,
+    "video": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
   },
   {
     "id": 8,
@@ -77,7 +84,8 @@
     "views": "10k",
     "time": "4 hours ago",
     "avatar": "https://i.imgur.com/v2w4Lt5.jpg",
-    "promoted": false
+    "promoted": false,
+    "video": "https://www.w3schools.com/html/movie.mp4"
   },
   {
     "id": 9,
@@ -87,7 +95,8 @@
     "views": "65k",
     "time": "1 hour ago",
     "avatar": "https://i.imgur.com/UzqS9IT.jpg",
-    "promoted": true
+    "promoted": true,
+    "video": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
   },
   {
     "id": 10,
@@ -97,6 +106,7 @@
     "views": "40k",
     "time": "8 hours ago",
     "avatar": "https://i.imgur.com/3G4jXPa.jpg",
-    "promoted": false
+    "promoted": false,
+    "video": "https://www.w3schools.com/html/movie.mp4"
   }
 ]
