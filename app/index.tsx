@@ -8,7 +8,7 @@ const index = () => {
   useEffect(() => {
     setTimeout(() => {
       // router.replace("/home/(tabs)/landingPage");
-      router.replace("/allPages/history");
+      router.replace("/allPages/report");
     }, 1000);
   }, []);
 

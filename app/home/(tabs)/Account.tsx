@@ -230,7 +230,7 @@ const Account = () => {
         <TouchableOpacity
           style={tw`flex-row w-full justify-between items-center px-8 py-2`}
         >
-          <TouchableOpacity style={tw` flex-row gap-2 py-3 rounded-lg`}>
+          <TouchableOpacity style={tw` flex-row gap-2 py-3 rounded-lg`} onPress={() => router.push("/allPages/report")}>
             <SvgXml xml={IconReports} />
 
             <Text style={tw`font-poppinsMedium text-base text-secondaryBlack`}>

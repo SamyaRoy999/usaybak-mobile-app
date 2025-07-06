@@ -14,6 +14,7 @@ const AllPagelayout = () => {
       <Stack.Screen name="dashboard" />
       <Stack.Screen name="history" />
       <Stack.Screen name="likeds" />
+      <Stack.Screen name="report" />
     </Stack>
   );
 };
