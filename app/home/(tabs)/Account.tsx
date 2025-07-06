@@ -48,7 +48,7 @@ const Account = () => {
           </TouchableOpacity>
           <View style={tw``}>
             <TouchableOpacity
-             onPress={()=>router.push("/allPages/history")}
+              onPress={() => router.push("/allPages/history")}
               style={tw`py-3 px-5 rounded-full border border-primaryGray`}
             >
               <Text style={tw`font-poppinsMedium text-base text-black`}>
@@ -104,6 +104,7 @@ const Account = () => {
           <View style={tw``}>
             <TouchableOpacity
               style={tw`py-3 px-5 rounded-full border border-primaryGray`}
+              onPress={() => router.push("/allPages/likeds")}
             >
               <Text style={tw`font-poppinsMedium text-base text-black`}>
                 View all
@@ -150,8 +151,8 @@ const Account = () => {
           {/* dashboard */}
           <TouchableOpacity
             style={tw`flex-row w-full justify-between items-center px-8 pt-6`}
-            onPress={()=> router.push("/allPages/dashboard")}
-            >
+            onPress={() => router.push("/allPages/dashboard")}
+          >
             <TouchableOpacity style={tw` flex-row gap-2 py-3 rounded-lg`}>
               <SvgXml xml={IconDeshboard} />
               <Text
@@ -169,8 +170,8 @@ const Account = () => {
           {/* My videos */}
           <TouchableOpacity
             style={tw`flex-row w-full justify-between items-center px-8 py-2`}
-               onPress={()=> router.push("/allPages/channelProfile")}>
-          
+            onPress={() => router.push("/allPages/channelProfile")}>
+
             <TouchableOpacity style={tw` flex-row gap-2 py-3 rounded-lg`}>
               <SvgXml xml={IconMyvideos} />
 

@@ -13,6 +13,7 @@ const AllPagelayout = () => {
       <Stack.Screen name="channelProfile" />
       <Stack.Screen name="dashboard" />
       <Stack.Screen name="history" />
+      <Stack.Screen name="likeds" />
     </Stack>
   );
 };
