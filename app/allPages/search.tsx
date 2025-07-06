@@ -16,7 +16,7 @@ const search = () => {
             <SvgXml xml={IconBackLeft} />
           </TouchableOpacity>
         </View>
-        <Text style={tw`font-poppinsMedium text-xl`}>Search</Text>
+        <Text style={tw`font-poppinsMedium text-xl `}>Search</Text>
         <View></View>
       </View>
       <View>

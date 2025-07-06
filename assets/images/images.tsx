@@ -6,3 +6,4 @@ export const landingSliderImg = require("@/assets/images/landingSliderImg.png");
 export const blogeImg = require("@/assets/images/blog.jpg");
 export const profileBanner = require("@/assets/images/profileBanner.jpg");
 export const profleImg = require("@/assets/images/profleImg.jpg");
+export const historypage = require("@/assets/images/historypage.jpg");

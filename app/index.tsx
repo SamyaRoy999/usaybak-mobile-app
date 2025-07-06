@@ -8,7 +8,7 @@ const index = () => {
   useEffect(() => {
     setTimeout(() => {
       // router.replace("/home/(tabs)/landingPage");
-      router.replace("/allPages/channelProfile");
+      router.replace("/allPages/history");
     }, 1000);
   }, []);
 
