@@ -78,7 +78,6 @@ const likeds = () => {
                                     source={{ uri: item?.thumbnail }}
                                 />
                                 <View style={tw``}>
-
                                     <Text
                                         style={tw`text-base font-poppinsMedium py-1 text-secondaryBlack `}
                                     >

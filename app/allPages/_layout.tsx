@@ -15,6 +15,8 @@ const AllPagelayout = () => {
       <Stack.Screen name="history" />
       <Stack.Screen name="likeds" />
       <Stack.Screen name="report" />
+      <Stack.Screen name="my_videos" />
+      <Stack.Screen name="analytics" />
     </Stack>
   );
 };

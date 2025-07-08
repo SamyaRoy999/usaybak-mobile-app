@@ -27,7 +27,6 @@ const report = () => {
                         <Text style={tw`font-poppinsMedium text-xl `}>
                             Reports
                         </Text>
-
                         <View></View>
                     </View>
                 </View>
@@ -39,7 +38,7 @@ const report = () => {
                         showsHorizontalScrollIndicator={false}
                         scrollEnabled={false}
                         renderItem={({ item }) => (
-                            <View style={[tw` mr-4 flex-row gap-6 pb-5`, { width: _Width * 0.4 }]}>
+                            <View style={[tw` mr-4 flex-row gap-3 pb-5`, { width: _Width * 0.4 }]}>
                                 <Image
                                     style={[
                                         tw`rounded-xl`,
@@ -65,9 +64,6 @@ const report = () => {
                                     <Text style={tw`text-sm font-poppins  text-secondaryBlack `}>
                                         Tap to see details
                                     </Text>
-
-
-
                                 </View>
                             </View>
                         )}

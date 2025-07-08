@@ -190,6 +190,7 @@ const Account = () => {
           {/* Analytics */}
           <TouchableOpacity
             style={tw`flex-row w-full justify-between items-center px-8 py-2`}
+            onPress={() => router.push("/allPages/analytics")}
           >
             <TouchableOpacity style={tw` flex-row gap-2 py-3 rounded-lg`}>
               <SvgXml xml={IconAnalytics} />
