@@ -1,0 +1,132 @@
+import { View, Text, TouchableOpacity, ScrollView, TextInput, StyleSheet } from 'react-native'
+import React from 'react'
+import { router } from 'expo-router'
+import { IconBackLeft, IconClose, IconCloseBlack, profileChang } from '@/icons/Icon'
+import { SvgXml } from 'react-native-svg'
+import tw from '@/lib/tailwind'
+import HeaderBar from '@/components/shear/HeaderBar'
+import { Image } from 'expo-image'
+import { profileBanner, profleImg } from '@/assets/images/images'
+import { _HIGHT } from '@/utils/utils'
+
+const settings = () => {
+    return (
+        <View style={tw`flex-1 bg-primary`}>
+            <ScrollView contentContainerStyle={tw``} showsVerticalScrollIndicator={false}>
+                <HeaderBar />
+                <View style={tw`flex-row items-center justify-between px-5`}>
+                    <View
+                        style={tw`bg-primaryText w-13 h-13 p-4 rounded-full flex-row items-center justify-center border border-primaryGray`}
+                    >
+                        <TouchableOpacity onPress={() => router.back()}>
+                            <SvgXml xml={IconBackLeft} />
+                        </TouchableOpacity>
+                    </View>
+                    <Text style={tw`font-poppinsMedium text-xl`}>Settings</Text>
+                    <View></View>
+                </View>
+                <View style={tw`px-5 pt-5 `}>
+                    {/* Profile banner */}
+                    <Image
+                        source={profileBanner}
+                        style={[
+                            tw`w-full rounded-2xl relative`,
+                            {
+                                height: _HIGHT * 0.19,
+                            },
+                        ]}
+                    />
+                    {/* Profile  */}
+                    <View
+                        style={tw`bg-primary  rounded-full h-28 w-28 flex-row items-center justify-center  right-[45%] -bottom-10 absolute`}
+                    >
+                        <Image source={profleImg} style={tw`rounded-full h-24 w-24 `} />
+                    </View>
+                    <TouchableOpacity style={tw`absolute -bottom-10 left-[55%]`}>
+                        <SvgXml xml={profileChang} />
+                    </TouchableOpacity>
+                </View>
+                {/* login from */}
+                <View style={tw`mt-9`}>
+                    <View style={tw`py-3 px-6`}>
+                        <View style={tw`border border-primaryGray flex-col justify-center pl-7 relative rounded-full font-poppins text-base px-5 h-14`}>
+                            <Text style={tw`bg-primary  w-28 absolute -top-2 left-7`}> Channel name</Text>
+                            <Text style={tw`font-poppins text-base`}> Haircut Pro</Text>
+                        </View>
+                    </View>
+                    <View style={tw`py-3 px-6`}>
+                        <View style={tw`border border-primaryGray flex-col justify-center pl-7 relative rounded-full font-poppins text-base px-5 h-14`}>
+                            <Text style={tw`bg-primary  w-28 absolute -top-2 left-7`}> Your full name</Text>
+                            <Text style={tw`font-poppins text-base`}> Haircut Pro</Text>
+                        </View>
+                    </View>
+                    <View style={tw`py-3 px-6`}>
+                        <View style={tw`border border-primaryGray flex-col justify-center pl-7 relative rounded-full font-poppins text-base px-5 h-14`}>
+                            <Text style={tw`bg-primary  w-28 absolute -top-2 left-7`}> Email</Text>
+                            <Text style={tw`font-poppins text-base`}> example@gmail.com</Text>
+                        </View>
+                    </View>
+                    <View style={tw`py-3 px-6`}>
+                        <View style={tw`border border-primaryGray flex-col justify-center pl-7 relative rounded-full font-poppins text-base px-5 h-14`}>
+                            <Text style={tw`bg-primary  w-28 absolute -top-2 left-7`}>Contact</Text>
+                            <Text style={tw`font-poppins text-base`}> +9856425662</Text>
+                        </View>
+                    </View>
+                </View>
+                <View style={tw`py-3 px-6`}>
+                    <View style={tw`border border-primaryGray flex-col justify-center pl-7 relative rounded-2xl p-4 font-poppins text-base px-5 `}>
+                        <Text style={tw`bg-primary  w-12 absolute -top-2 left-7`}>Bio</Text>
+                        <Text style={tw`font-poppins sm`}> Lorem ipsum dolor sit amet consectetur, adipisicing elit. Reiciendis atque nesciunt autem eligendi id. Rem, ea esse temporibus facere eligendi iste tempore iure veritatis, earum nisi, optio animi dolores possimus?</Text>
+                    </View>
+                </View>
+                {/* .........services.......... */}
+                <View style={tw`py-3 px-6`}>
+                    <View style={tw`border border-primaryGray flex-col justify-center pl-7 relative rounded-2xl p-4 font-poppins text-base px-5 `}>
+                        <Text style={tw`bg-primary  w-28 absolute -top-2 left-7`}>Services</Text>
+                        <View style={tw`flex-row gap-3 flex-wrap`}>
+                            <View
+                                style={tw` gap-3 py-2 px-4 border flex-row justify-center items-center border-primaryGray rounded-full `}
+                            >
+                                <Text>Hair cutting</Text>
+                                <SvgXml xml={IconCloseBlack} />
+                            </View>
+                            <View
+                                style={tw` gap-3 py-2 px-4 border flex-row justify-center items-center border-primaryGray rounded-full `}
+                            >
+                                <Text>Hair cutting</Text>
+                                <SvgXml xml={IconCloseBlack} />
+                            </View>
+                            <View
+                                style={tw` gap-3 py-2 px-4 border flex-row justify-center items-center border-primaryGray rounded-full `}
+                            >
+                                <Text>Hair cutting</Text>
+                                <SvgXml xml={IconCloseBlack} />
+                            </View>
+                            <View
+                                style={tw` gap-3 py-2 px-4 border flex-row justify-center items-center border-primaryGray rounded-full `}
+                            >
+                                <Text>Hair cutting</Text>
+                                <SvgXml xml={IconCloseBlack} />
+                            </View>
+                                                               
+                            <View
+                                style={tw` gap-3 py-2 px-4 border flex-row justify-center items-center border-primaryGray rounded-full `}
+                            >
+                                <Text>Type & hit enter</Text>
+                               
+                            </View>
+                           
+                        </View>
+                    </View>
+                </View>
+                <View style={tw`py-3 px-6`}>
+                    <View style={tw`border border-primaryGray flex-col justify-center pl-7 relative rounded-2xl p-4 font-poppins text-base px-5 `}>
+                        <Text style={tw`bg-primary  w-28 absolute -top-2 left-7`}>Services</Text>
+                    </View>
+                </View>
+            </ScrollView>
+        </View>
+    )
+}
+
+export default settings

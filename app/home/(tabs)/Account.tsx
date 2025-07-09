@@ -172,7 +172,7 @@ const Account = () => {
             style={tw`flex-row w-full justify-between items-center px-8 py-2`}
             onPress={() => router.push("/allPages/channelProfile")}>
 
-            <TouchableOpacity style={tw` flex-row gap-2 py-3 rounded-lg`}>
+            <View style={tw` flex-row gap-2 py-3 rounded-lg`}>
               <SvgXml xml={IconMyvideos} />
 
               <Text
@@ -180,7 +180,7 @@ const Account = () => {
               >
                 My videos
               </Text>
-            </TouchableOpacity>
+            </View>
             <View style={tw``}>
               <TouchableOpacity style={tw`border-primaryGray`}>
                 <SvgXml xml={IconBack} />
@@ -192,7 +192,7 @@ const Account = () => {
             style={tw`flex-row w-full justify-between items-center px-8 py-2`}
             onPress={() => router.push("/allPages/analytics")}
           >
-            <TouchableOpacity style={tw` flex-row gap-2 py-3 rounded-lg`}>
+            <View style={tw` flex-row gap-2 py-3 rounded-lg`}>
               <SvgXml xml={IconAnalytics} />
 
               <Text
@@ -200,7 +200,7 @@ const Account = () => {
               >
                 Analytics
               </Text>
-            </TouchableOpacity>
+            </View>
             <View style={tw``}>
               <TouchableOpacity style={tw`border-primaryGray`}>
                 <SvgXml xml={IconBack} />
@@ -210,8 +210,10 @@ const Account = () => {
           {/*  Settings */}
           <TouchableOpacity
             style={tw`flex-row w-full justify-between items-center px-8 py-2`}
+            onPress={()=> router.push('/allPages/settings')}
+            
           >
-            <TouchableOpacity style={tw` flex-row gap-2 py-3 rounded-lg`}>
+            <View style={tw` flex-row gap-2 py-3 rounded-lg`}>
               <SvgXml xml={IconSettings} />
 
               <Text
@@ -219,7 +221,7 @@ const Account = () => {
               >
                 Settings
               </Text>
-            </TouchableOpacity>
+            </View>
             <View style={tw``}>
               <TouchableOpacity style={tw`border-primaryGray`}>
                 <SvgXml xml={IconBack} />
