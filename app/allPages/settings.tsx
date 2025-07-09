@@ -1,15 +1,16 @@
-import { View, Text, TouchableOpacity, ScrollView, TextInput, StyleSheet } from 'react-native'
+import { View, Text, TouchableOpacity, ScrollView, TextInput, StyleSheet, Modal } from 'react-native'
 import React from 'react'
 import { router } from 'expo-router'
-import { IconBackLeft, IconClose, IconCloseBlack, profileChang } from '@/icons/Icon'
+import { IconAdd, IconAddsm, IconBackLeft, IconButtonBack, IconClose, IconCloseBlack, IconPrmt, IconSavechanges, profileChang } from '@/icons/Icon'
 import { SvgXml } from 'react-native-svg'
 import tw from '@/lib/tailwind'
 import HeaderBar from '@/components/shear/HeaderBar'
 import { Image } from 'expo-image'
-import { profileBanner, profleImg } from '@/assets/images/images'
+import { Imgsuccess, profileBanner, profleImg } from '@/assets/images/images'
 import { _HIGHT } from '@/utils/utils'
 
 const settings = () => {
+    const [isVisible, setIsVisible] = React.useState(false);
     return (
         <View style={tw`flex-1 bg-primary`}>
             <ScrollView contentContainerStyle={tw``} showsVerticalScrollIndicator={false}>
@@ -76,7 +77,7 @@ const settings = () => {
                 <View style={tw`py-3 px-6`}>
                     <View style={tw`border border-primaryGray flex-col justify-center pl-7 relative rounded-2xl p-4 font-poppins text-base px-5 `}>
                         <Text style={tw`bg-primary  w-12 absolute -top-2 left-7`}>Bio</Text>
-                        <Text style={tw`font-poppins sm`}> Lorem ipsum dolor sit amet consectetur, adipisicing elit. Reiciendis atque nesciunt autem eligendi id. Rem, ea esse temporibus facere eligendi iste tempore iure veritatis, earum nisi, optio animi dolores possimus?</Text>
+                        <Text style={tw`font-poppins `}> Lorem ipsum dolor sit amet consectetur, adipisicing elit. Reiciendis atque nesciunt autem eligendi id. Rem, ea esse temporibus facere eligendi iste tempore iure veritatis, earum nisi, optio animi dolores possimus?</Text>
                     </View>
                 </View>
                 {/* .........services.......... */}
@@ -108,25 +109,101 @@ const settings = () => {
                                 <Text>Hair cutting</Text>
                                 <SvgXml xml={IconCloseBlack} />
                             </View>
-                                                               
+
                             <View
                                 style={tw` gap-3 py-2 px-4 border flex-row justify-center items-center border-primaryGray rounded-full `}
                             >
                                 <Text>Type & hit enter</Text>
-                               
                             </View>
-                           
+
                         </View>
                     </View>
                 </View>
                 <View style={tw`py-3 px-6`}>
                     <View style={tw`border border-primaryGray flex-col justify-center pl-7 relative rounded-2xl p-4 font-poppins text-base px-5 `}>
-                        <Text style={tw`bg-primary  w-28 absolute -top-2 left-7`}>Services</Text>
+                        <Text style={tw`bg-primary  w-40 absolute -top-2 left-7`}>Business locations</Text>
+                        <View style={tw`py-4`}>
+                            <View
+                                style={tw` gap-3 py-2 px-4 border flex-row justify-between items-center border-primaryGray rounded-full `}
+                            >
+                                <Text>Location 1</Text>
+                                <View>
+                                    <TouchableOpacity onPress={() => setIsVisible(true)} style={tw`  border rounded-full p-2 px-3 flex-row items-center gap-3 `}>
+                                        <Text style={tw`text-base  border-primaryGray`}>Office type</Text>
+                                        <SvgXml xml={IconButtonBack} />
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                        </View>
+                        <View
+                            style={tw`flex-row items-center gap-2 py-3 bg-secondary px-4 w-36 rounded-full`}
+                        >
+                            <SvgXml xml={IconAddsm} />
+                            <Text style={tw`text-primaryText text-base font-poppinsBold`}>
+                                Add more
+                            </Text>
+                        </View>
                     </View>
                 </View>
+                <View
+                    style={tw`flex-row items-center gap-2 py-3 bg-secondary px-4 mx-5 mt-14 rounded-full justify-center`}
+                >
+                    <SvgXml xml={IconSavechanges} />
+                    <Text style={tw`text-primaryText text-base font-poppinsBold`}>
+                        Save changes
+                    </Text>
+                </View>
+                {/* Modal of Office type */}
+                <Modal
+                    visible={isVisible}
+                    transparent={true}
+                    animationType="fade"
+                    onRequestClose={() => setIsVisible(false)}
+                >
+
+                    <View style={styles.modalContainer}>
+                        <View style={tw`bg-primary rounded-t-3xl  w-full  absolute  bottom-0`}>
+                            <View
+                                style={tw`bg-secondary w-full h-16 rounded-t-3xl flex-row items-center justify-between p-5`}
+                            >
+                                <View></View>
+                                <Text style={tw`font-poppinsMedium text-lg text-primary`}>
+                                    Comments
+                                </Text>
+
+                                <TouchableOpacity onPress={() => setIsVisible(false)}>
+                                    <SvgXml xml={IconClose} />
+                                </TouchableOpacity>
+                            </View>
+                            <View style={tw`py-9`}>
+
+                                <View>
+                                    <View style={tw` mx-5 flex-row justify-center mb-4 rounded-lg bg-primaryText`} >
+                                        <Text style={tw`py-5 font-poppins text-lg`}>Branch</Text>
+                                    </View>
+                                </View>
+                                <View >
+                                    <View style={tw` mx-5 flex-row justify-center rounded-lg bg-primaryText`} >
+                                        <Text style={tw`py-5 font-poppins text-lg`}>Head office</Text>
+                                    </View>
+                                </View>
+                            </View>
+                        </View>
+                    </View>
+                </Modal>
             </ScrollView>
         </View>
     )
 }
 
 export default settings
+
+const styles = StyleSheet.create({
+    modalContainer: {
+        flex: 1,
+        height: 500,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "rgba(0,0,0,0.5)",
+    },
+});
