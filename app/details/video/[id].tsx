@@ -1,25 +1,8 @@
-import {
-  View,
-  Text,
-  Image,
-  StyleSheet,
-  Button,
-  ScrollView,
-  FlatList,
-  Modal,
-  TouchableOpacity,
-  TextInput,
-} from "react-native";
-import React, { useEffect, useState } from "react";
-import { useLocalSearchParams } from "expo-router";
-import { useVideoPlayer, VideoView } from "expo-video";
-import { useEvent } from "expo";
-import data from "../../../lib/data.json";
-import { _Width } from "@/utils/utils";
-import tw from "@/lib/tailwind";
-import { SvgXml } from "react-native-svg";
+import Card from "@/components/landing_page/Card";
+import HeaderBar from "@/components/shear/HeaderBar";
 import {
   IconClose,
+  IconCopy,
   IconDislike,
   Iconfevarite,
   IconLike,
@@ -27,13 +10,47 @@ import {
   IconReport,
   IconShare,
 } from "@/icons/Icon";
-import Card from "@/components/landing_page/Card";
-import HeaderBar from "@/components/shear/HeaderBar";
+import tw from "@/lib/tailwind";
+import { _Width } from "@/utils/utils";
+import { useEvent } from "expo";
+import { useLocalSearchParams } from "expo-router";
+import { useVideoPlayer, VideoView } from "expo-video";
+import React, { useEffect, useState } from "react";
+import {
+  FlatList,
+  Image,
+  Modal,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View
+} from "react-native";
+import { SvgXml } from "react-native-svg";
+import data from "../../../lib/data.json";
 
 const SingleVideo = () => {
   const { id } = useLocalSearchParams();
   const [singleVideo, setSingleVideo] = useState<any>(null);
   const [isVisible, setIsVisible] = useState(false);
+  const [shareVisible, setIsShareVisible] = useState(false);
+  const [reportVisible, setReportVisible] = useState(false);
+  const [selectedReason, setSelectedReason] = useState("Sexual content");
+
+  const reportOptions = [
+    "Sexual content",
+    "Violent or repulsive content",
+    "Hateful or abusive content",
+    "Harassment or bullying",
+    "Harmful or dangerous acts",
+    "Misinformation",
+    "Child abuse",
+    "Promotes terrorism",
+    "Spam or misleading",
+    "Legal issue",
+    "Captions issue",
+  ];
 
   useEffect(() => {
     const videoData = data.find((item: any) => item?.id === Number(id));
@@ -92,33 +109,36 @@ const SingleVideo = () => {
               showsHorizontalScrollIndicator={false}
               contentContainerStyle={tw`gap-3 px-4 py-4`}
             >
-              <View
+              <TouchableOpacity
                 style={tw`flex-row items-center gap-4 py-2 px-6 border justify-center border-primaryGray rounded-full `}
               >
                 <SvgXml xml={IconLike} />
                 <Text>10</Text>
-              </View>
+              </TouchableOpacity>
 
-              <View
+              <TouchableOpacity
                 style={tw`flex-row items-center gap-4 py-2 px-6 border justify-center border-primaryGray rounded-full `}
               >
                 <SvgXml xml={IconDislike} />
                 <Text>10</Text>
-              </View>
+              </TouchableOpacity>
 
-              <View
+              <TouchableOpacity
                 style={tw`flex-row items-center gap-4 py-2 px-6 border justify-center border-primaryGray rounded-full `}
+                onPress={() => setIsShareVisible(true)}
               >
                 <SvgXml xml={IconShare} />
                 <Text>Share</Text>
-              </View>
+              </TouchableOpacity>
 
-              <View
-                style={tw`flex-row items-center gap-4 py-2 px-6 border justify-center border-primaryGray rounded-full `}
+              <TouchableOpacity
+                style={tw`flex-row items-center gap-4 py-2 px-6 border justify-center border-primaryGray rounded-full`}
+                onPress={() => setReportVisible(true)}
               >
                 <SvgXml xml={IconReport} />
                 <Text>Report</Text>
-              </View>
+              </TouchableOpacity>
+
             </ScrollView>
           </View>
           {/* Comments */}
@@ -154,6 +174,50 @@ const SingleVideo = () => {
             scrollEnabled={false}
           />
         </View>
+        {/* shear modal */}
+        <Modal
+          visible={shareVisible}
+          transparent={true}
+          animationType="fade"
+          onRequestClose={() => setIsShareVisible(false)}
+        >
+          <View style={styles.modalContainer}>
+            <View style={tw` rounded-t-3xl absolute bottom-0 w-full flex-col items-end justify-end`}>
+              <View style={tw`bg-primary rounded-t-3xl`}>
+                <View
+                  style={tw`bg-secondary w-full  rounded-t-3xl flex-row items-center justify-between p-5`}
+                >
+                  <View></View>
+                  <Text style={tw`font-poppinsMedium text-lg text-primary`}>
+                    Share
+                  </Text>
+
+                  <TouchableOpacity onPress={() => setIsShareVisible(false)}>
+                    <SvgXml xml={IconClose} />
+                  </TouchableOpacity>
+                </View>
+                <View style={tw`text-center flex items-center justify-center px-11 py-5`}>
+                  <Text style={tw`text-xl font-poppinsMedium`}>Link for this video</Text>
+                  <Text style={tw`text-sm text-center py- font-poppins text-primaryGrayDeep my-3`}>Copy this link and share to your friends through anything you want</Text>
+                </View>
+                <View
+                  style={tw`bg-primaryText py-4 px-7 rounded-full mx-5`}
+                >
+                  <Text>https://www.youtube.com/watch?v=dtW...</Text>
+                </View>
+
+                <TouchableOpacity
+                  style={[tw`flex-row items-center bg-primaryText justify-center my-3 mx-auto gap-4 py-4 px-9 border  border-primaryGray rounded-full `, {
+                    width: _Width * 0.4
+                  }]}
+                >
+                  <SvgXml xml={IconCopy} />
+                  <Text>Copy link</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
         <Modal
           visible={isVisible}
           transparent={true}
@@ -337,6 +401,62 @@ const SingleVideo = () => {
             </View>
           </View>
         </Modal>
+        {/* repoart */}
+        <Modal
+          visible={reportVisible}
+          transparent={true}
+          animationType="fade"
+          onRequestClose={() => setReportVisible(false)}
+        >
+          <View style={styles.modalContainer}>
+            <View style={tw`bg-white w-full absolute bottom-0 rounded-t-3xl overflow-hidden`}>
+              {/* Header */}
+              <View style={tw`bg-red-500 py-4 px-6 flex-row justify-between items-center`}>
+                <Text style={tw`text-white text-base font-poppinsMedium`}>Report this video</Text>
+                <TouchableOpacity onPress={() => setReportVisible(false)}>
+                  <SvgXml xml={IconClose} />
+                </TouchableOpacity>
+              </View>
+
+              {/* Options */}
+              <ScrollView contentContainerStyle={tw`py-4 px-6`}>
+                {reportOptions.map((option) => (
+                  <TouchableOpacity
+                    key={option}
+                    onPress={() => setSelectedReason(option)}
+                    style={tw`flex-row items-center py-2`}
+                  >
+                    <View
+                      style={[
+                        tw`w-5 h-5 rounded-full border-2 mr-3 justify-center items-center`,
+                        { borderColor: "#ff3b30" },
+                      ]}
+                    >
+                      {selectedReason === option && (
+                        <View style={tw`w-3 h-3 rounded-full bg-red-500`} />
+                      )}
+                    </View>
+                    <Text style={tw`text-base font-poppins`}>{option}</Text>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
+
+              {/* Footer */}
+              <View style={tw`flex-row justify-between px-6 py-4 border-t border-gray-200`}>
+                <TouchableOpacity onPress={() => setReportVisible(false)}>
+                  <Text style={tw`text-base font-poppins`}>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => {
+                  // You can handle submission here
+                  setReportVisible(false);
+                }}>
+                  <Text style={tw`text-base font-poppins text-red-500`}>Next</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
+
       </ScrollView>
     </View>
   );

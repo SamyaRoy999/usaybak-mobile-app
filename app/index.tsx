@@ -1,15 +1,15 @@
-import { View, ActivityIndicator, Text, SafeAreaView } from "react-native";
-import React, { useEffect } from "react";
 import tw from "@/lib/tailwind";
 import { Image } from "expo-image";
 import { router } from "expo-router";
+import React, { useEffect } from "react";
+import { ActivityIndicator, View } from "react-native";
 
 const index = () => {
   useEffect(() => {
     setTimeout(() => {
       // router.replace("/home/(tabs)/Account");
-      router.replace("/allPages/settings");
-      // router.replace("/auth/login");
+      // router.replace("/allPages/settings");
+      router.replace("/auth/login");
     }, 1000);
   }, []);
 
