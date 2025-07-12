@@ -10,13 +10,13 @@ const index = () => {
       // router.replace("/home/(tabs)/landingPage");
       // router.replace("/home/(tabs)/Account");
       // router.replace("/auth/login");
-      router.replace("/allPages/termsConditions");
+      router.replace("/allPages/onsiteAccount");
 
     }, 1000);
   }, []);
 
   return (
-    <View style={tw`flex-1 py-16 bg-white justify-between items-center `}>
+  <View style={tw`flex-1 py-16 bg-white justify-between items-center `}>
       <View></View>
       <Image
         style={tw`w-[233px] h-[76px] `}
