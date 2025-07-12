@@ -9,7 +9,9 @@ const index = () => {
     setTimeout(() => {
       // router.replace("/home/(tabs)/Account");
       // router.replace("/allPages/settings");
-      router.replace("/auth/login");
+      // router.replace("/auth/login");
+      router.replace("/home/(tabs)/landingPage");
+
     }, 1000);
   }, []);
 

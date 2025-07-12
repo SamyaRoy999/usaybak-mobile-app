@@ -37,6 +37,12 @@ const SingleVideo = () => {
   const [shareVisible, setIsShareVisible] = useState(false);
   const [reportVisible, setReportVisible] = useState(false);
   const [selectedReason, setSelectedReason] = useState("Sexual content");
+  const [feedbackVisible, setFeedbackVisible] = useState(false);
+  const [feedbackText, setFeedbackText] = useState("");
+  const [descriptionVisible, setDescriptionVisible] = useState(false);
+  const [commentVisible, setCommentVisible] = useState(false);
+  const [replyVisible, setReplyVisible] = useState(false);
+
 
   const reportOptions = [
     "Sexual content",
@@ -86,10 +92,14 @@ const SingleVideo = () => {
             <Text style={tw`font-poppinsMedium text-xl `}>
               {singleVideo.title}
             </Text>
-            <Text style={tw`font-poppins text-sm text-primaryGrayDeep py-2`}>
-              {singleVideo.views} views · {singleVideo.time}{" "}
-              <Text>...more</Text>
-            </Text>
+            <View style={tw`flex-row items-center gap-2`}>
+              <Text style={tw`font-poppins text-sm text-primaryGrayDeep py-2`}>
+                {singleVideo.views} views · {singleVideo.time}{" "}
+              </Text>
+              <TouchableOpacity onPress={() => setDescriptionVisible(true)}>
+                <Text style={tw``}>...more</Text>
+              </TouchableOpacity>
+            </View>
 
             {/* Channel Info */}
             <View style={tw`flex-row items-center gap-3`}>
@@ -178,7 +188,7 @@ const SingleVideo = () => {
         <Modal
           visible={shareVisible}
           transparent={true}
-          animationType="fade"
+          animationType="slide"
           onRequestClose={() => setIsShareVisible(false)}
         >
           <View style={styles.modalContainer}>
@@ -188,7 +198,7 @@ const SingleVideo = () => {
                   style={tw`bg-secondary w-full  rounded-t-3xl flex-row items-center justify-between p-5`}
                 >
                   <View></View>
-                  <Text style={tw`font-poppinsMedium text-lg text-primary`}>
+                  <Text style={tw`text-primary text-xl font-poppins`}>
                     Share
                   </Text>
 
@@ -198,7 +208,7 @@ const SingleVideo = () => {
                 </View>
                 <View style={tw`text-center flex items-center justify-center px-11 py-5`}>
                   <Text style={tw`text-xl font-poppinsMedium`}>Link for this video</Text>
-                  <Text style={tw`text-sm text-center py- font-poppins text-primaryGrayDeep my-3`}>Copy this link and share to your friends through anything you want</Text>
+                  <Text style={tw`text-sm text-center  font-poppins text-primaryGrayDeep my-3`}>Copy this link and share to your friends through anything you want</Text>
                 </View>
                 <View
                   style={tw`bg-primaryText py-4 px-7 rounded-full mx-5`}
@@ -218,10 +228,11 @@ const SingleVideo = () => {
             </View>
           </View>
         </Modal>
+        {/* comments modal */}
         <Modal
           visible={isVisible}
           transparent={true}
-          animationType="fade"
+          animationType="slide"
           onRequestClose={() => setIsVisible(false)}
         >
           <View style={styles.modalContainer}>
@@ -230,7 +241,7 @@ const SingleVideo = () => {
                 style={tw`bg-secondary w-full h-16 rounded-t-3xl flex-row items-center justify-between p-5`}
               >
                 <View></View>
-                <Text style={tw`font-poppinsMedium text-lg text-primary`}>
+                <Text style={tw`text-primary text-xl font-poppins`}>
                   Comments
                 </Text>
 
@@ -262,10 +273,15 @@ const SingleVideo = () => {
                         <SvgXml xml={Iconfevarite} />
                         <Text>2.6k</Text>
                       </View>
-                      <View style={tw`flex-row gap-4 `}>
+                      <TouchableOpacity onPress={() => {
+                        setCommentVisible(false); // hide comment modal
+                        setTimeout(() => {
+                          setReplyVisible(true); // show reply modal (with delay for smooth transition)
+                        }, 300);
+                      }} style={tw`flex-row gap-4 `}>
                         <SvgXml xml={IconMessage} />
                         <Text>10</Text>
-                      </View>
+                      </TouchableOpacity>
                     </View>
                   </View>
                 </View>
@@ -291,10 +307,15 @@ const SingleVideo = () => {
                         <SvgXml xml={Iconfevarite} />
                         <Text>2.6k</Text>
                       </View>
-                      <View style={tw`flex-row gap-4 `}>
+                      <TouchableOpacity onPress={() => {
+                        setCommentVisible(false); // hide comment modal
+                        setTimeout(() => {
+                          setReplyVisible(true); // show reply modal (with delay for smooth transition)
+                        }, 300);
+                      }} style={tw`flex-row gap-4 `}>
                         <SvgXml xml={IconMessage} />
                         <Text>10</Text>
-                      </View>
+                      </TouchableOpacity>
                     </View>
                   </View>
                 </View>
@@ -320,10 +341,15 @@ const SingleVideo = () => {
                         <SvgXml xml={Iconfevarite} />
                         <Text>2.6k</Text>
                       </View>
-                      <View style={tw`flex-row gap-4 `}>
+                      <TouchableOpacity onPress={() => {
+                        setCommentVisible(false); // hide comment modal
+                        setTimeout(() => {
+                          setReplyVisible(true); // show reply modal (with delay for smooth transition)
+                        }, 300);
+                      }} style={tw`flex-row gap-4 `}>
                         <SvgXml xml={IconMessage} />
                         <Text>10</Text>
-                      </View>
+                      </TouchableOpacity>
                     </View>
                   </View>
                 </View>
@@ -349,10 +375,15 @@ const SingleVideo = () => {
                         <SvgXml xml={Iconfevarite} />
                         <Text>2.6k</Text>
                       </View>
-                      <View style={tw`flex-row gap-4 `}>
+                      <TouchableOpacity onPress={() => {
+                        setCommentVisible(false); // hide comment modal
+                        setTimeout(() => {
+                          setReplyVisible(true); // show reply modal (with delay for smooth transition)
+                        }, 300);
+                      }} style={tw`flex-row gap-4 `}>
                         <SvgXml xml={IconMessage} />
                         <Text>10</Text>
-                      </View>
+                      </TouchableOpacity>
                     </View>
                   </View>
                 </View>
@@ -378,10 +409,15 @@ const SingleVideo = () => {
                         <SvgXml xml={Iconfevarite} />
                         <Text>2.6k</Text>
                       </View>
-                      <View style={tw`flex-row gap-4 `}>
+                      <TouchableOpacity onPress={() => {
+                        setCommentVisible(false); // hide comment modal
+                        setTimeout(() => {
+                          setReplyVisible(true); // show reply modal (with delay for smooth transition)
+                        }, 300);
+                      }} style={tw`flex-row gap-4 `}>
                         <SvgXml xml={IconMessage} />
                         <Text>10</Text>
-                      </View>
+                      </TouchableOpacity>
                     </View>
                   </View>
                 </View>
@@ -405,14 +441,15 @@ const SingleVideo = () => {
         <Modal
           visible={reportVisible}
           transparent={true}
-          animationType="fade"
+          animationType="slide"
           onRequestClose={() => setReportVisible(false)}
         >
           <View style={styles.modalContainer}>
             <View style={tw`bg-white w-full absolute bottom-0 rounded-t-3xl overflow-hidden`}>
               {/* Header */}
               <View style={tw`bg-red-500 py-4 px-6 flex-row justify-between items-center`}>
-                <Text style={tw`text-white text-base font-poppinsMedium`}>Report this video</Text>
+                <View></View>
+                <Text style={tw`text-primary text-xl font-poppins`}>Report this video</Text>
                 <TouchableOpacity onPress={() => setReportVisible(false)}>
                   <SvgXml xml={IconClose} />
                 </TouchableOpacity>
@@ -442,21 +479,204 @@ const SingleVideo = () => {
               </ScrollView>
 
               {/* Footer */}
-              <View style={tw`flex-row justify-between px-6 py-4 border-t border-gray-200`}>
+              <View style={tw`flex-row justify-end gap-12 px-6 py-4  border-gray-200`}>
                 <TouchableOpacity onPress={() => setReportVisible(false)}>
                   <Text style={tw`text-base font-poppins`}>Cancel</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => {
-                  // You can handle submission here
-                  setReportVisible(false);
-                }}>
+                <TouchableOpacity
+                  onPress={() => {
+                    setReportVisible(false);
+                    setFeedbackVisible(true); // New modal open
+                  }}
+                >
                   <Text style={tw`text-base font-poppins text-red-500`}>Next</Text>
+                </TouchableOpacity>
+
+              </View>
+            </View>
+          </View>
+        </Modal>
+        <Modal
+          visible={feedbackVisible}
+          transparent={true}
+          animationType="slide"
+          onRequestClose={() => setFeedbackVisible(false)}
+        >
+          <View style={styles.modalContainer}>
+            <View style={tw`bg-white w-full absolute bottom-0 rounded-t-3xl overflow-hidden`}>
+              {/* Header */}
+              <View style={tw`bg-red-500 py-4 px-6 flex-row justify-between items-center`}>
+                <View></View>
+                <Text style={tw`text-primary text-xl font-poppinsMedium`}>Report this video</Text>
+                <TouchableOpacity onPress={() => setFeedbackVisible(false)}>
+                  <SvgXml xml={IconClose} />
+                </TouchableOpacity>
+              </View>
+
+              {/* Text Input */}
+              <View style={tw`p-6`}>
+                <TextInput
+                  multiline
+                  numberOfLines={6}
+                  maxLength={1000}
+                  value={feedbackText}
+                  onChangeText={setFeedbackText}
+                  placeholder="Describe your issue..."
+                  placeholderTextColor="#888"
+                  style={tw`border border-gray-300 rounded-xl p-4 text-base text-black h-40`}
+                />
+                <Text style={tw`text-right text-xs mt-2 text-gray-500`}>
+                  {feedbackText.length} / 1000
+                </Text>
+              </View>
+
+              {/* Footer */}
+              <View style={tw`flex-row justify-end gap-12 px-6 py-4 border-t border-gray-200`}>
+                <TouchableOpacity onPress={() => setFeedbackVisible(false)}>
+                  <Text style={tw`text-base font-poppins`}>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => {
+                    // Submit feedback logic here
+                    console.log("Submitted reason:", selectedReason);
+                    console.log("Feedback:", feedbackText);
+                    setFeedbackVisible(false);
+                  }}
+                >
+                  <Text style={tw`text-base font-poppins text-red-500`}>Report</Text>
                 </TouchableOpacity>
               </View>
             </View>
           </View>
         </Modal>
+        {/* more Description */}
+        <Modal
+          visible={descriptionVisible}
+          transparent={true}
+          animationType="slide"
+          onRequestClose={() => setDescriptionVisible(false)}
+        >
+          <View style={styles.modalContainer}>
+            <View style={tw`bg-white w-full absolute bottom-0 rounded-t-3xl overflow-hidden`}>
+              {/* Header */}
+              <View style={tw`bg-red-500 py-4 px-6 flex-row justify-between items-center`}>
+                <View></View>
+                <Text style={tw`text-white text-xl font-poppinsMedium`}>Description</Text>
+                <TouchableOpacity onPress={() => setDescriptionVisible(false)}>
+                  <SvgXml xml={IconClose} />
+                </TouchableOpacity>
+              </View>
 
+              {/* Content */}
+              <ScrollView contentContainerStyle={tw`p-6`}>
+                <Text style={tw`text-lg font-poppinsMedium py-8`}>
+                  Joe's Expert Auto LLC. - Address: 2740 N Elston Ave, Chicago, IL 60647,
+                </Text>
+
+                {/* Stats row */}
+                <View style={tw`flex-row justify-between mb-6`}>
+                  <View style={tw`items-center`}>
+                    <Text style={tw` font-poppinsSemiBold  text-3xl`}>10</Text>
+                    <Text style={tw`text-base font-poppins text-gray-600`}>Likes</Text>
+                  </View>
+                  <View style={tw`items-center`}>
+                    <Text style={tw`font-poppinsSemiBold  text-3xl`}>{singleVideo.views}</Text>
+                    <Text style={tw`text-base font-poppins text-gray-600`}>Views</Text>
+                  </View>
+                  <View style={tw`items-center`}>
+                    <Text style={tw`font-poppinsSemiBold  text-3xl`}>2025</Text>
+                    <Text style={tw`text-base font-poppins text-gray-600`}>May 08</Text>
+                  </View>
+                </View>
+
+                <Text style={tw`font-poppins text-base text-black leading-6 `}>
+                  Lorem ipsum dolor sit amet consectetur. Fermentum vitae nisi donec
+                  lacus morbi pharetra sed in. In ultrices nunc mi amet vulputate.
+                  Interdum varius tellus tempus placerat et commodo pellentesque...
+                </Text>
+              </ScrollView>
+            </View>
+          </View>
+        </Modal>
+        {/* Replies */}
+        <Modal
+          visible={replyVisible}
+          transparent={true}
+          animationType="slide"
+          onRequestClose={() => setReplyVisible(false)}
+        >
+          <View style={styles.modalContainer}>
+            <View style={tw`bg-primary rounded-t-3xl  w-full h-4/6 mt-78  `}>
+              <View
+                style={tw`bg-secondary w-full h-16 rounded-t-3xl flex-row items-center justify-between p-5`}
+              >
+                <View></View>
+                <Text style={tw`text-primary text-xl font-poppins`}>
+                  Replies
+                </Text>
+
+                <TouchableOpacity onPress={() => setReplyVisible(false)}>
+                  <SvgXml xml={IconClose} />
+                </TouchableOpacity>
+              </View>
+
+              <ScrollView showsVerticalScrollIndicator={false}>
+                <View style={tw`flex-row  gap-4 pt-4  px-7`}>
+                  <Image
+                    source={{ uri: singleVideo.avatar }}
+                    style={tw`w-10 h-10 rounded-full`}
+                  />
+                  <View>
+                    <View style={tw`flex-row items-center gap-2`}>
+                      <Text style={tw`font-poppinsMedium text-lg`}>
+                        Abid Hasan
+                      </Text>
+                      <View style={tw`bg-primaryGray rounded-full h-2 w-2`} />
+                      <Text>10 hours ago</Text>
+                    </View>
+                    <Text style={tw` font-poppins text-sm`}>
+                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                      Consectetur
+                    </Text>
+                    <View style={tw`flex-row gap-4 py-5`}>
+                      <View style={tw`flex-row gap-4 `}>
+                        <SvgXml xml={Iconfevarite} />
+                        <Text>2.6k</Text>
+                      </View>
+
+                    </View>
+                  </View>
+                </View>
+                <View style={tw`flex-row  gap-4 pt-4  px-7`}>
+                  <Image
+                    source={{ uri: singleVideo.avatar }}
+                    style={tw`w-10 h-10 rounded-full`}
+                  />
+                  <View>
+                    <View style={tw`flex-row items-center gap-2`}>
+                      <Text style={tw`font-poppinsMedium text-lg`}>
+                        Abid Hasan
+                      </Text>
+                      <View style={tw`bg-primaryGray rounded-full h-2 w-2`} />
+                      <Text>10 hours ago</Text>
+                    </View>
+                    <Text style={tw` font-poppins text-sm`}>
+                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                      Consectetur
+                    </Text>
+                    <View style={tw`flex-row gap-4 py-5`}>
+                      <View style={tw`flex-row gap-4 `}>
+                        <SvgXml xml={Iconfevarite} />
+                        <Text>2.6k</Text>
+                      </View>
+
+                    </View>
+                  </View>
+                </View>
+              </ScrollView>
+            </View>
+          </View>
+        </Modal>
       </ScrollView>
     </View>
   );
