@@ -1,13 +1,4 @@
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  ScrollView,
-  FlatList,
-} from "react-native";
-import React from "react";
-import tw from "@/lib/tailwind";
-import { SvgXml } from "react-native-svg";
+import HeaderBar from "@/components/shear/HeaderBar";
 import {
   IconAboutus,
   IconAnalytics,
@@ -15,7 +6,6 @@ import {
   IconCansel,
   IconContactus,
   IconDeshboard,
-  IconErowred,
   IconFAQ,
   IconLike,
   IconLine,
@@ -24,13 +14,22 @@ import {
   IconReports,
   IconSettings,
   IconTerms,
-  IconTime,
+  IconTime
 } from "@/icons/Icon";
-import HeaderBar from "@/components/shear/HeaderBar";
-import { Image } from "expo-image";
-import data from "../../../lib/data.json";
+import tw from "@/lib/tailwind";
 import { _HIGHT, _Width } from "@/utils/utils";
+import { Image } from "expo-image";
 import { router } from "expo-router";
+import React from "react";
+import {
+  FlatList,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { SvgXml } from "react-native-svg";
+import data from "../../../lib/data.json";
 
 const Account = () => {
   return (
@@ -271,14 +270,15 @@ const Account = () => {
         {/* Aboutus */}
         <TouchableOpacity
           style={tw`flex-row w-full justify-between items-center px-8 py-2`}
+          onPress={()=> router.push("/allPages/aboutUs")}
         >
-          <TouchableOpacity style={tw` flex-row gap-2 py-3 rounded-lg`}>
+          <View style={tw` flex-row gap-2 py-3 rounded-lg`}>
             <SvgXml xml={IconAboutus} />
 
             <Text style={tw`font-poppinsMedium text-base text-secondaryBlack`}>
               About us
             </Text>
-          </TouchableOpacity>
+          </View>
           <View>
             <TouchableOpacity style={tw`border-primaryGray`}>
               <SvgXml xml={IconBack} />

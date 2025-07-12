@@ -1,6 +1,5 @@
-import { View, Text } from "react-native";
-import React from "react";
 import { Stack } from "expo-router";
+import React from "react";
 
 const AllPagelayout = () => {
   return (
@@ -18,6 +17,7 @@ const AllPagelayout = () => {
       <Stack.Screen name="my_videos" />
       <Stack.Screen name="analytics" />
       <Stack.Screen name="settings" />
+      <Stack.Screen name="aboutUs" />
     </Stack>
   );
 };
