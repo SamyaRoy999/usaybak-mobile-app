@@ -18,6 +18,7 @@ const AllPagelayout = () => {
       <Stack.Screen name="analytics" />
       <Stack.Screen name="settings" />
       <Stack.Screen name="aboutUs" />
+      <Stack.Screen name="contactUs" />
     </Stack>
   );
 };

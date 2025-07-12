@@ -8,9 +8,9 @@ const index = () => {
   useEffect(() => {
     setTimeout(() => {
       // router.replace("/home/(tabs)/Account");
-      router.replace("/home/(tabs)/Account");
+      // router.replace("/home/(tabs)/Account");
       // router.replace("/auth/login");
-      // router.replace("/home/(tabs)/landingPage");
+      router.replace("/allPages/contactUs");
 
     }, 1000);
   }, []);

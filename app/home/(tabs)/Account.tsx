@@ -209,8 +209,8 @@ const Account = () => {
           {/*  Settings */}
           <TouchableOpacity
             style={tw`flex-row w-full justify-between items-center px-8 py-2`}
-            onPress={()=> router.push('/allPages/settings')}
-            
+            onPress={() => router.push('/allPages/settings')}
+
           >
             <View style={tw` flex-row gap-2 py-3 rounded-lg`}>
               <SvgXml xml={IconSettings} />
@@ -270,7 +270,7 @@ const Account = () => {
         {/* Aboutus */}
         <TouchableOpacity
           style={tw`flex-row w-full justify-between items-center px-8 py-2`}
-          onPress={()=> router.push("/allPages/aboutUs")}
+          onPress={() => router.push("/allPages/aboutUs")}
         >
           <View style={tw` flex-row gap-2 py-3 rounded-lg`}>
             <SvgXml xml={IconAboutus} />
@@ -287,15 +287,16 @@ const Account = () => {
         </TouchableOpacity>
         {/* Reports */}
         <TouchableOpacity
+          onPress={()=>router.push("/allPages/contactUs")}
           style={tw`flex-row w-full justify-between items-center px-8 py-2`}
         >
-          <TouchableOpacity style={tw` flex-row gap-2 py-3 rounded-lg`}>
+          <View style={tw` flex-row gap-2 py-3 rounded-lg`}>
             <SvgXml xml={IconContactus} />
 
             <Text style={tw`font-poppinsMedium text-base text-secondaryBlack`}>
               Contact us
             </Text>
-          </TouchableOpacity>
+          </View>
           <View style={tw``}>
             <TouchableOpacity style={tw`border-primaryGray`}>
               <SvgXml xml={IconBack} />
