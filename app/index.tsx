@@ -7,10 +7,10 @@ import { ActivityIndicator, View } from "react-native";
 const index = () => {
   useEffect(() => {
     setTimeout(() => {
-      // router.replace("/home/(tabs)/Account");
+      // router.replace("/home/(tabs)/landingPage");
       // router.replace("/home/(tabs)/Account");
       // router.replace("/auth/login");
-      router.replace("/allPages/contactUs");
+      router.replace("/allPages/termsConditions");
 
     }, 1000);
   }, []);

@@ -306,14 +306,14 @@ const Account = () => {
         {/* Reports */}
         <TouchableOpacity
           style={tw`flex-row w-full justify-between items-center px-8 py-2`}
+          onPress={()=>router.push("/allPages/termsConditions")}
         >
-          <TouchableOpacity style={tw` flex-row gap-2 py-3 rounded-lg`}>
+          <View style={tw` flex-row gap-2 py-3 rounded-lg`}>
             <SvgXml xml={IconTerms} />
-
             <Text style={tw`font-poppinsMedium text-base text-secondaryBlack`}>
               Terms & Conditions
             </Text>
-          </TouchableOpacity>
+          </View>
           <View style={tw``}>
             <TouchableOpacity style={tw`border-primaryGray`}>
               <SvgXml xml={IconBack} />

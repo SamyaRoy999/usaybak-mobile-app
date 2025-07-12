@@ -19,7 +19,7 @@ const AboutUs = () => {
                 </View>
 
                 {/* Title */}
-                <Text style={tw`text-2xl font-poppinsBold text-center  mb-8 bg-primaryText py-4 rounded-full `}>About Us</Text>
+                <Text style={tw`text-lg font-poppinsMedium text-center  mb-8 bg-primaryText py-4 rounded-full `}>About Us</Text>
                 <Text style={tw`text-base text-center font-poppinsMedium  mb-6`}>
                     Welcome to mytsv.com – your destination for connection, creativity, and community.
                 </Text>

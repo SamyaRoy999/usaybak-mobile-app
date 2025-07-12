@@ -19,7 +19,7 @@ const contactUs = () => {
                     <SvgXml xml={IconAboutUsimge} />
                 </View>
                 {/* Title */}
-                <Text style={tw`text-2xl font-poppinsBold text-center  mb-8 bg-primaryText py-4 rounded-full `}>Contact us</Text>
+                <Text style={tw`text-lg font-poppinsMedium text-center  mb-8 bg-primaryText py-4 rounded-full`}>Contact us</Text>
 
                 {/* Mission Section */}
                 <View style={tw`border rounded-xl p-7 mb-4 border-primaryGray`}>
@@ -50,9 +50,7 @@ const contactUs = () => {
                         </View>
                         <TextInput
                             style={tw`border border-primaryGray rounded-full font-poppins text-base px-5 h-16`}
-                        // placeholder="Email"
-                        // value={}
-                        // onChangeText={(txt) => setFieldValue("email", txt)}
+                      
                         />
                     </View>
                     <View style={tw`relative`}>
@@ -61,9 +59,7 @@ const contactUs = () => {
                         </View>
                         <TextInput
                             style={tw`border border-primaryGray rounded-full font-poppins text-base px-5 h-16`}
-                        // placeholder="Email"
-                        // value={}
-                        // onChangeText={(txt) => setFieldValue("email", txt)}
+                      
                         />
                     </View>
                     <View style={tw`relative`}>
@@ -72,9 +68,7 @@ const contactUs = () => {
                         </View>
                         <TextInput
                             style={tw`border border-primaryGray rounded-full font-poppins text-base px-5 h-16`}
-                        // placeholder="Email"
-                        // value={}
-                        // onChangeText={(txt) => setFieldValue("email", txt)}
+                       
                         />
                     </View>
                     <View style={tw`relative`}>
@@ -83,9 +77,7 @@ const contactUs = () => {
                         </View>
                         <TextInput
                             style={tw`border border-primaryGray rounded-xl font-poppins text-base px-5 h-40`}
-                        // placeholder="Email"
-                        // value={}
-                        // onChangeText={(txt) => setFieldValue("email", txt)}
+                        
                         />
                     </View>
                 </View>
