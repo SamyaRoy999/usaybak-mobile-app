@@ -1,11 +1,12 @@
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
-import "react-native-reanimated";
 import React from "react";
+import "react-native-reanimated";
 
-import ThemeProvider from "../context/ThemeProvider";
-import { useDeviceContext } from "twrnc";
 import tw from "@/lib/tailwind";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { useDeviceContext } from "twrnc";
+import ThemeProvider from "../context/ThemeProvider";
 // import ThemeProvider from "./context/ThemeProvider";
 
 export default function RootLayout() {
@@ -35,19 +36,21 @@ export default function RootLayout() {
   }
 
   return (
-    <ThemeProvider>
-      <Stack
-        screenOptions={{
-          headerShown: false,
-        }}
-      >
-        <Stack.Screen name="index" />
-        <Stack.Screen name="home/(tabs)" />
-        <Stack.Screen name="auth" />
-        <Stack.Screen name="details/video/[id]" />
-        <Stack.Screen name="details/Blog/[id]" />
-        <Stack.Screen name="allPages" />
-      </Stack>
-    </ThemeProvider>
+    <GestureHandlerRootView>
+      <ThemeProvider>
+        <Stack
+          screenOptions={{
+            headerShown: false,
+          }}
+        >
+          <Stack.Screen name="index" />
+          <Stack.Screen name="home/(tabs)" />
+          <Stack.Screen name="auth" />
+          <Stack.Screen name="details/video/[id]" />
+          <Stack.Screen name="details/Blog/[id]" />
+          <Stack.Screen name="allPages" />
+        </Stack>
+      </ThemeProvider>
+    </GestureHandlerRootView>
   );
 }

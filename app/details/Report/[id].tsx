@@ -1,13 +1,14 @@
 
 import { thumbnail } from '@/assets/images/images'
 import HeaderBar from '@/components/shear/HeaderBar'
-import { IconClose, IconWorning } from '@/icons/Icon'
+import { IconBackLeft, IconClose, IconSend, IconWorning } from '@/icons/Icon'
 import tw from '@/lib/tailwind'
 import { _HIGHT } from '@/utils/utils'
 import { Image } from 'expo-image'
+import { router } from 'expo-router'
 import { useLocalSearchParams } from 'expo-router/build/hooks'
 import React, { useEffect, useState } from 'react'
-import { Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Modal, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import { SvgXml } from 'react-native-svg'
 import data from "../../../lib/data.json"
 
@@ -15,7 +16,7 @@ const ReportDetails = () => {
     const { id } = useLocalSearchParams();
     const [singleVideo, setSingleVideo] = useState<any>(null);
     const [descriptionVisible, setDescriptionVisible] = useState(false);
-
+    const [appealVisible, setAppealVisible] = useState(false)
     useEffect(() => {
         const videoData = data.find((item: any) => item?.id === Number(id));
         setSingleVideo(videoData);
@@ -31,6 +32,19 @@ const ReportDetails = () => {
                     }]}>
                         <View>
                             <HeaderBar />
+                            <View style={tw`flex-row justify-between items-center gap-5 px-5 mb-8`}>
+                                <View
+                                    style={tw`bg-primaryText w-13 h-13 p-4 rounded-full flex-row items-center justify-center border border-primaryGray`}
+                                >
+                                    <TouchableOpacity onPress={() => router.back()}>
+                                        <SvgXml xml={IconBackLeft} />
+                                    </TouchableOpacity>
+                                </View>
+                                <Text style={tw`font-poppinsMedium text-xl `}>
+                                    Liked videos
+                                </Text>
+                                <View></View>
+                            </View>
                             <View>
                                 {/* Video Player */}
                                 <Image
@@ -69,10 +83,11 @@ const ReportDetails = () => {
                         {/* Register Button */}
                         <View style={tw`px-5 mb-10`}>
                             <TouchableOpacity
+                                onPress={() => setAppealVisible(true)}
                                 style={tw`flex-row items-center gap-2 py-4 bg-secondary px-4  mt-14 rounded-full justify-center`}
                             >
                                 <Text style={tw`text-primaryText text-lg font-poppinsMedium`}>
-                                    Pay & register now
+                                    Appeal to MyTSV
                                 </Text>
 
                             </TouchableOpacity>
@@ -124,6 +139,60 @@ const ReportDetails = () => {
                                         lacus morbi pharetra sed in. In ultrices nunc mi amet vulputate.
                                         Interdum varius tellus tempus placerat et commodo pellentesque...
                                     </Text>
+                                </ScrollView>
+                            </View>
+                        </View>
+                    </Modal>
+                    {/* Appeal Visible */}
+                    <Modal
+                        visible={appealVisible}
+                        transparent={true}
+                        animationType="slide"
+                        onRequestClose={() => setAppealVisible(false)}
+                    >
+                        <View style={styles.modalContainer}>
+                            <View style={tw`bg-white w-full absolute bottom-0 rounded-t-3xl overflow-hidden`}>
+                                {/* Header */}
+                                <View style={tw`bg-red-500 py-4 px-6 flex-row justify-between items-center`}>
+                                    <View></View>
+                                    <Text style={tw`text-white text-xl font-poppinsMedium`}>Appeal to MyTSV</Text>
+                                    <TouchableOpacity onPress={() => setAppealVisible(false)}>
+                                        <SvgXml xml={IconClose} />
+                                    </TouchableOpacity>
+                                </View>
+
+                                {/* Content */}
+                                <ScrollView contentContainerStyle={tw`p-6`}>
+                                    <View style={tw`flex-col gap-6 mt-9`}>
+
+                                        <View style={tw`relative`}>
+                                            <View style={tw`bg-primaryText absolute px-4 flex-row justify-center items-center left-7 font-poppins text-base -top-2 z-10`}>
+                                                <Text style={tw`font-poppins text-base`}>* Subject</Text>
+                                            </View>
+                                            <TextInput
+                                                style={tw`border border-primaryGray rounded-full font-poppins text-base px-5 h-16`}
+
+                                            />
+                                        </View>
+                                        <View style={tw`relative`}>
+                                            <View style={tw`bg-primaryText absolute px-4 flex-row justify-center items-center left-7 font-poppins text-base -top-2 z-10`}>
+                                                <Text style={tw`font-poppins text-base`}>* Your message</Text>
+                                            </View>
+                                            <TextInput
+                                                style={tw`border border-primaryGray rounded-xl font-poppins text-base px-5 h-40`}
+
+                                            />
+                                        </View>
+                                    </View>
+                                    <TouchableOpacity
+                                        style={tw`flex-row items-center gap-2 py-5 bg-secondary px-4  mt-14 rounded-full justify-center`}
+                                    >
+                                        <Text style={tw`text-primaryText text-base font-poppinsBold`}>
+                                            Send message
+                                        </Text>
+                                        <SvgXml xml={IconSend} />
+                                    </TouchableOpacity>
+
                                 </ScrollView>
                             </View>
                         </View>

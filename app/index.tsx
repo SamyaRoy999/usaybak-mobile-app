@@ -9,8 +9,8 @@ const index = () => {
     setTimeout(() => {
       // router.replace("/home/(tabs)/landingPage");
       // router.replace("/home/(tabs)/Account");
-      router.replace("/allPages/report");
       // router.replace("/allPages/report");
+      router.replace("/allPages/my_videos");
 
     }, 1000);
   }, []);

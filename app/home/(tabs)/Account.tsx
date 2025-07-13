@@ -152,24 +152,24 @@ const Account = () => {
             style={tw`flex-row w-full justify-between items-center px-8 pt-6`}
             onPress={() => router.push("/allPages/dashboard")}
           >
-            <TouchableOpacity style={tw` flex-row gap-2 py-3 rounded-lg`}>
+            <View style={tw` flex-row gap-2 py-3 rounded-lg`}>
               <SvgXml xml={IconDeshboard} />
               <Text
                 style={tw`font-poppinsMedium text-base text-secondaryBlack`}
               >
                 Dashboard
               </Text>
-            </TouchableOpacity>
+            </View>
             <View style={tw``}>
-              <TouchableOpacity style={tw`border-primaryGray`}>
+              <View style={tw`border-primaryGray`}>
                 <SvgXml xml={IconBack} />
-              </TouchableOpacity>
+              </View>
             </View>
           </TouchableOpacity>
           {/* My videos */}
           <TouchableOpacity
             style={tw`flex-row w-full justify-between items-center px-8 py-2`}
-            onPress={() => router.push("/allPages/channelProfile")}>
+            onPress={() => router.push("/allPages/my_videos")}>
 
             <View style={tw` flex-row gap-2 py-3 rounded-lg`}>
               <SvgXml xml={IconMyvideos} />
@@ -181,9 +181,9 @@ const Account = () => {
               </Text>
             </View>
             <View style={tw``}>
-              <TouchableOpacity style={tw`border-primaryGray`}>
+              <View style={tw`border-primaryGray`}>
                 <SvgXml xml={IconBack} />
-              </TouchableOpacity>
+              </View>
             </View>
           </TouchableOpacity>
           {/* Analytics */}
@@ -201,9 +201,9 @@ const Account = () => {
               </Text>
             </View>
             <View style={tw``}>
-              <TouchableOpacity style={tw`border-primaryGray`}>
+              <View style={tw`border-primaryGray`}>
                 <SvgXml xml={IconBack} />
-              </TouchableOpacity>
+              </View>
             </View>
           </TouchableOpacity>
           {/*  Settings */}
@@ -222,27 +222,28 @@ const Account = () => {
               </Text>
             </View>
             <View style={tw``}>
-              <TouchableOpacity style={tw`border-primaryGray`}>
+              <View style={tw`border-primaryGray`}>
                 <SvgXml xml={IconBack} />
-              </TouchableOpacity>
+              </View>
             </View>
           </TouchableOpacity>
         </View>
         {/* Reports */}
         <TouchableOpacity
           style={tw`flex-row w-full justify-between items-center px-8 py-2`}
+          onPress={() => router.push("/allPages/report")}
         >
-          <TouchableOpacity style={tw` flex-row gap-2 py-3 rounded-lg`} onPress={() => router.push("/allPages/report")}>
+          <View style={tw` flex-row gap-2 py-3 rounded-lg`} >
             <SvgXml xml={IconReports} />
 
             <Text style={tw`font-poppinsMedium text-base text-secondaryBlack`}>
               Reports
             </Text>
-          </TouchableOpacity>
+          </View>
           <View style={tw``}>
-            <TouchableOpacity style={tw`border-primaryGray`}>
+            <View style={tw`border-primaryGray`}>
               <SvgXml xml={IconBack} />
-            </TouchableOpacity>
+            </View>
           </View>
         </TouchableOpacity>
 
@@ -281,9 +282,9 @@ const Account = () => {
             </Text>
           </View>
           <View>
-            <TouchableOpacity style={tw`border-primaryGray`}>
+            <View style={tw`border-primaryGray`}>
               <SvgXml xml={IconBack} />
-            </TouchableOpacity>
+            </View>
           </View>
         </TouchableOpacity>
         {/* Reports */}
@@ -299,9 +300,9 @@ const Account = () => {
             </Text>
           </View>
           <View style={tw``}>
-            <TouchableOpacity style={tw`border-primaryGray`}>
+            <View style={tw`border-primaryGray`}>
               <SvgXml xml={IconBack} />
-            </TouchableOpacity>
+            </View>
           </View>
         </TouchableOpacity>
         {/* Reports */}
@@ -316,9 +317,9 @@ const Account = () => {
             </Text>
           </View>
           <View style={tw``}>
-            <TouchableOpacity style={tw`border-primaryGray`}>
+            <View style={tw`border-primaryGray`}>
               <SvgXml xml={IconBack} />
-            </TouchableOpacity>
+            </View>
           </View>
         </TouchableOpacity>
         <TouchableOpacity
