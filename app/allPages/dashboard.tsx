@@ -1,19 +1,15 @@
-import { View, Text, TouchableOpacity, ScrollView } from 'react-native'
-import React from 'react'
-import HeaderBar from '@/components/shear/HeaderBar'
-import tw from '@/lib/tailwind'
-import { router } from 'expo-router'
-import { SvgXml } from 'react-native-svg'
-import { IconBackLeft, IconGmail, IconLikes, IconLoction, IconPhone, IconPhoto, IconVideo } from '@/icons/Icon'
-import { Image } from 'expo-image'
 import { profileBanner, profleImg } from '@/assets/images/images'
+import HeaderBar from '@/components/shear/HeaderBar'
+import { IconBackLeft, IconLikes, IconLoction, IconPhoto, IconVideo } from '@/icons/Icon'
+import tw from '@/lib/tailwind'
 import { _HIGHT, _Width } from '@/utils/utils'
-import { Dimensions } from "react-native";
+import { Image } from 'expo-image'
+import { router } from 'expo-router'
+import React from 'react'
+import { Dimensions, ScrollView, Text, TouchableOpacity, View } from 'react-native'
+import { SvgXml } from 'react-native-svg'
 const screenWidth = Dimensions.get("window").width;
-import {
-  LineChart,
 
-} from "react-native-chart-kit";
 
 const dashboard = () => {
 
@@ -117,12 +113,8 @@ const dashboard = () => {
                     <Text style={tw`font-poppins text-base pb-2 `}>4. Hair Treatments</Text>
                     <Text style={tw`font-poppins text-base pb-2 `}>5. Chemical Services </Text>
                 </View>
-                {/* <LineChart
-                    data={data}
-                    width={screenWidth}
-                    height={220}
-                    chartConfig={chartConfig}
-                /> */}
+               <Text style={tw`font-poppins text-xl`}>Views analytics</Text>
+            
             </ScrollView>
         </View>
     )

@@ -253,18 +253,19 @@ const Account = () => {
         {/* Reports */}
         <TouchableOpacity
           style={tw`flex-row w-full justify-between items-center px-8 py-2`}
+          onPress={() => router.push("/allPages/faqSection")}
         >
-          <TouchableOpacity style={tw` flex-row gap-2 py-3 rounded-lg`}>
+          <View style={tw` flex-row gap-2 py-3 rounded-lg`}>
             <SvgXml xml={IconFAQ} />
 
             <Text style={tw`font-poppinsMedium text-base text-secondaryBlack`}>
               FAQ
             </Text>
-          </TouchableOpacity>
+          </View>
           <View style={tw``}>
-            <TouchableOpacity style={tw`border-primaryGray`}>
+            <View style={tw`border-primaryGray`}>
               <SvgXml xml={IconBack} />
-            </TouchableOpacity>
+            </View>
           </View>
         </TouchableOpacity>
         {/* Aboutus */}
@@ -287,7 +288,7 @@ const Account = () => {
         </TouchableOpacity>
         {/* Reports */}
         <TouchableOpacity
-          onPress={()=>router.push("/allPages/contactUs")}
+          onPress={() => router.push("/allPages/contactUs")}
           style={tw`flex-row w-full justify-between items-center px-8 py-2`}
         >
           <View style={tw` flex-row gap-2 py-3 rounded-lg`}>
@@ -306,7 +307,7 @@ const Account = () => {
         {/* Reports */}
         <TouchableOpacity
           style={tw`flex-row w-full justify-between items-center px-8 py-2`}
-          onPress={()=>router.push("/allPages/termsConditions")}
+          onPress={() => router.push("/allPages/termsConditions")}
         >
           <View style={tw` flex-row gap-2 py-3 rounded-lg`}>
             <SvgXml xml={IconTerms} />
@@ -322,18 +323,19 @@ const Account = () => {
         </TouchableOpacity>
         <TouchableOpacity
           style={tw`flex-row w-full justify-between items-center px-8 py-2`}
+          onPress={() => router.push("/allPages/onsiteAccount")}
         >
-          <TouchableOpacity style={tw` flex-row gap-2 py-3 rounded-lg`}>
+          <View style={tw` flex-row gap-2 py-3 rounded-lg`}>
             <SvgXml xml={IconOnsite} />
 
             <Text style={tw`font-poppinsMedium text-base text-secondaryBlack`}>
               Onsite account creation
             </Text>
-          </TouchableOpacity>
+          </View>
           <View style={tw``}>
-            <TouchableOpacity style={tw`border-primaryGray`}>
+            <View style={tw`border-primaryGray`}>
               <SvgXml xml={IconBack} />
-            </TouchableOpacity>
+            </View>
           </View>
         </TouchableOpacity>
       </ScrollView>
