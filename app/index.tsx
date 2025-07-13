@@ -8,15 +8,15 @@ const index = () => {
   useEffect(() => {
     setTimeout(() => {
       // router.replace("/home/(tabs)/landingPage");
-      router.replace("/home/(tabs)/Account");
-      // router.replace("/auth/login");
-      // router.replace("/allPages/onsiteAccount");
+      // router.replace("/home/(tabs)/Account");
+      router.replace("/allPages/report");
+      // router.replace("/allPages/report");
 
     }, 1000);
   }, []);
 
   return (
-  <View style={tw`flex-1 py-16 bg-white justify-between items-center `}>
+    <View style={tw`flex-1 py-16 bg-white justify-between items-center `}>
       <View></View>
       <Image
         style={tw`w-[233px] h-[76px] `}

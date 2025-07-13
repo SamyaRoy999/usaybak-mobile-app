@@ -1,5 +1,5 @@
 import HeaderBar from '@/components/shear/HeaderBar'
-import { IconAboutUsimge, IconbackRight, IconEmail, IconLoction, IconPhone, IconSend } from '@/icons/Icon'
+import { IconbackRight, IconContactusImg, IconEmail, IconLoction, IconPhone, IconSend } from '@/icons/Icon'
 import tw from '@/lib/tailwind'
 import { router } from 'expo-router'
 import React from 'react'
@@ -16,7 +16,7 @@ const contactUs = () => {
                 </TouchableOpacity>
                 {/* Top Logo and Image */}
                 <View style={tw`items-center `}>
-                    <SvgXml xml={IconAboutUsimge} />
+                    <SvgXml xml={IconContactusImg} />
                 </View>
                 {/* Title */}
                 <Text style={tw`text-lg font-poppinsMedium text-center  mb-8 bg-primaryText py-4 rounded-full`}>Contact us</Text>

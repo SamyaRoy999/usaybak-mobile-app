@@ -1,5 +1,5 @@
 import HeaderBar from "@/components/shear/HeaderBar";
-import { IconAboutUsimge, IconbackRight } from "@/icons/Icon";
+import { IconbackRight, IconFAQSection } from "@/icons/Icon";
 import tw from "@/lib/tailwind";
 import { _Width } from "@/utils/utils";
 import { AntDesign } from "@expo/vector-icons";
@@ -53,7 +53,7 @@ const FaqSection = () => {
                 </TouchableOpacity>
                 {/* Top Logo and Image */}
                 <View style={tw`items-center `}>
-                    <SvgXml xml={IconAboutUsimge} />
+                    <SvgXml xml={IconFAQSection} />
                 </View>
                 {/* Title */}
                 <Text style={tw`text-lg font-poppinsMedium text-center  mb-8 bg-primaryText py-4 rounded-full`}>Frequently Asked Questions (FAQ)</Text>

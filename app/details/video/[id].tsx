@@ -669,7 +669,6 @@ const SingleVideo = () => {
                         <SvgXml xml={Iconfevarite} />
                         <Text>2.6k</Text>
                       </View>
-
                     </View>
                   </View>
                 </View>

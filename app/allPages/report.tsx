@@ -1,12 +1,12 @@
-import { View, Text, ScrollView, TouchableOpacity, FlatList, Image } from 'react-native'
-import React from 'react'
 import HeaderBar from '@/components/shear/HeaderBar'
+import { IconBackLeft, IconWornoing } from '@/icons/Icon'
+import data from "@/lib/data2.json"
 import tw from '@/lib/tailwind'
-import { SvgXml } from 'react-native-svg'
-import { IconBackLeft, IconCansel, IconWornoing } from '@/icons/Icon'
-import { router } from 'expo-router'
 import { _HIGHT, _Width } from '@/utils/utils'
-import data from "@/lib/data2.json";
+import { router } from 'expo-router'
+import React from 'react'
+import { FlatList, Image, ScrollView, Text, TouchableOpacity, View } from 'react-native'
+import { SvgXml } from 'react-native-svg'
 
 const report = () => {
     return (
@@ -38,19 +38,24 @@ const report = () => {
                         showsHorizontalScrollIndicator={false}
                         scrollEnabled={false}
                         renderItem={({ item }) => (
-                            <View style={[tw` mr-4 flex-row gap-3 pb-5`, { width: _Width * 0.4 }]}>
+                            <TouchableOpacity onPress={() => router.push({
+                                pathname: "/details/Report/[id]",
+                                params: { id: item.id.toString() },
+                            })} style={[tw` mr-4 flex-row gap-3 pb-5`, { width: _Width * 0.4 }]}>
                                 <Image
                                     style={[
                                         tw`rounded-xl`,
-                                        { width: _Width * 0.4, height: _HIGHT * 0.1 },
+                                        { width: _Width * 0.42, height: _HIGHT * 0.13 },
                                     ]}
                                     source={{ uri: item?.thumbnail }}
                                 />
-                                <View style={tw``}>
+                                <View >
                                     <View style={tw`flex-row items-center gap-2`}>
                                         <SvgXml xml={IconWornoing} />
                                         <Text
-                                            style={tw`text-base font-poppinsMedium py-1 text-secondaryBlack `}
+                                            style={[tw`text-base  font-poppinsMedium py-1 text-secondaryBlack `, {
+                                                width: _Width * 0.39,
+                                            }]}
                                         >
                                             Video title goes here
                                         </Text>
@@ -65,7 +70,7 @@ const report = () => {
                                         Tap to see details
                                     </Text>
                                 </View>
-                            </View>
+                            </TouchableOpacity>
                         )}
                     />
                 </View>
