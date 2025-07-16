@@ -22,6 +22,7 @@ const AllPagelayout = () => {
       <Stack.Screen name="termsConditions" />
       <Stack.Screen name="onsiteAccount" />
       <Stack.Screen name="FaqSection" />
+      <Stack.Screen name="editvideo" />
     </Stack>
   );
 };
