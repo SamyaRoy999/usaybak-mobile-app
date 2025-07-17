@@ -1,29 +1,27 @@
-import { IconBackLeft, IconClose, IconErowBack, IconSucssMsg, IconUpload, IconUploadBlue, IconWorningGary } from '@/icons/Icon'
+import { IconBackLeft, IconClose, IconErowBack, IconPromoted, IconSucssMsg, IconUploadBlue, IconWorningGary } from '@/icons/Icon'
 import tw from '@/lib/tailwind'
-import { _Width } from '@/utils/utils'
 import { router } from 'expo-router'
 import React from 'react'
-import { ActivityIndicator, KeyboardAvoidingView, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import { TextInput } from 'react-native-gesture-handler'
+import { ActivityIndicator, KeyboardAvoidingView, Modal, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import { SvgXml } from 'react-native-svg'
 
-const uploadVideo = () => {
+const youTubeLink = () => {
+
     const [paymentVisible, setPaymentVisible] = React.useState(false)
     const [sucssMassage, setSucssMassage] = React.useState(false)
-
+    const [promotedOn, setPromotedOn] = React.useState(false);
     setTimeout(() => {
         setSucssMassage(false)
     }, 3000);
 
-
     return (
         <KeyboardAvoidingView
             enabled={true}
-            behavior={"padding"} style={tw`bg-primary flex-1 p-4`}>
-            <ScrollView showsVerticalScrollIndicator={false}>
+            behavior={"padding"} style={tw`bg-primary flex-1 p-4 `}>
+            <ScrollView contentContainerStyle={tw`pb-10`} showsVerticalScrollIndicator={false}>
                 <View style={tw`relative`}>
 
-                    <View style={tw`flex-row justify-between items-center gap-5 px-5 mb-8`}>
+                    <View style={tw`flex-row justify-between items-center gap-5 px-5 pb-8`}>
                         <View
                             style={tw`bg-primaryText w-13 h-13 p-4 rounded-full flex-row items-center justify-center border border-primaryGray`}
                         >
@@ -32,38 +30,36 @@ const uploadVideo = () => {
                             </TouchableOpacity>
                         </View>
                         <Text style={tw`font-poppinsMedium text-xl `}>
-                            Upload Video
+                            Upload YouTube Link
                         </Text>
                         <View></View>
                     </View>
                 </View>
-                <View style={tw`border border-dashed rounded-lg justify-center items-center flex-col py-10`}>
-                    <SvgXml xml={IconUpload} />
-                    <Text style={tw`font-poppinsMedium text-xl`}>Upload your video</Text>
-                    <Text style={tw`font-poppins text-base text-primaryGrayDeep`}>Drag & drop your file in this area</Text>
-                    <Text style={tw`font-poppins text-base text-primaryGrayDeep`}>or</Text>
-                    <TouchableOpacity style={tw`font-poppins text-base bg-secondary rounded-md`}><Text style={tw`text-primary py-2 px-6 `}>Browse files</Text></TouchableOpacity>
+                <View style={tw`pt-5`}>
+                    <TextInput
+                        placeholder='Paste your link here'
+                        style={tw`border border-gray-300 font-poppins text-base rounded-full px-4 py-3 `}
+                    />
                 </View>
-                {/* <View style={tw`flex-row gap-2 py-7`}>
-                    <SvgXml xml={IconWorning} />
-                    <Text style={tw`text-base font-poppins`}>You have to pay $9.99 per video for publishing it. It will be a promoted video and it will go on the op of searches. On the other hand YouTube videos link sharing is free.</Text>
-                </View> */}
-                {/* State, City, Category */}
                 {['State', 'City', 'Category'].map((item) => (
-                    <TouchableOpacity
-                        key={item}
-                        style={tw`flex-row items-center justify-between border border-primaryGray px-6 py-3 rounded-full mt-4`}
-                    >
-                        <Text style={tw`font-poppins text-base`}>{item}</Text>
-                        <SvgXml xml={IconErowBack} />
-                    </TouchableOpacity>
+                    <View key={item} style={tw`pt-4`}>
+                        <TouchableOpacity
+
+                            style={tw`flex-row items-center justify-between border border-primaryGray px-6 py-3 rounded-full `}
+                        >
+                            <Text style={tw`font-poppins text-base`}>{item}</Text>
+                            <SvgXml xml={IconErowBack} />
+                        </TouchableOpacity>
+                    </View>
                 ))}
                 {/* Title & Description */}
-                <View style={tw`mt-5`}>
-                    <TextInput
-                        placeholder='Video title goes here'
-                        style={tw`border border-gray-300 font-poppins text-base rounded-full px-4 py-3 mb-4`}
-                    />
+                <View style={tw`py-5`}>
+                    <View style={tw`pb-5`}>
+                        <TextInput
+                            placeholder='Video title goes here'
+                            style={tw`border border-gray-300 font-poppins text-base rounded-full px-4 py-3 `}
+                        />
+                    </View>
                     <TextInput
                         placeholder='Description'
                         multiline
@@ -71,13 +67,9 @@ const uploadVideo = () => {
                         style={tw`border border-gray-300 font-poppins text-base rounded-2xl px-4 py-3 h-52`}
                     />
                 </View>
-                {/* <View style={tw`flex-row gap-2 py-7`}>
-                    <SvgXml xml={IconWorning} />
-                    <Text style={tw`text-base font-poppins`}>You have to pay $9.99 per video for publishing it. It will be a promoted video and it will go on the op of searches. On the other hand YouTube videos link sharing is free.</Text>
-                </View> */}
                 <View
 
-                    style={tw`flex-row items-center justify-between border border-primaryGray px-6 py-3 rounded-full mt-4`}
+                    style={tw`flex-row items-center justify-between border border-primaryGray px-6 py-3 rounded-full `}
                 >
                     <Text style={tw`font-poppins text-base`}>Thumbnail</Text>
                     <TouchableOpacity style={tw`flex-row items-center gap-3 border border-[#3B97D3] py-2 px-5 rounded-full`}>
@@ -86,23 +78,43 @@ const uploadVideo = () => {
                     </TouchableOpacity>
                 </View>
                 {/* Visibility */}
-                <TouchableOpacity style={tw`flex-row items-center justify-between border border-primaryGray px-6 py-3 rounded-full mt-4`}>
-                    <Text style={tw`font-poppins text-base`}>Visibility</Text>
-                    <SvgXml xml={IconErowBack} />
-                </TouchableOpacity>
-                {/* Footer */}
-                <View style={tw`flex-row justify-end gap-3 px-6 py-4  `}>
-                    <TouchableOpacity style={tw`border flex-row items-center border-primaryGray rounded-md`}>
-                        <Text style={tw`text-2xl font-poppinsMedium py-2 px-7`}>$99.00</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => setPaymentVisible(true)} style={tw`border flex-row items-center bg-secondary border-primaryGray rounded-md`}>
-                        <Text style={tw`text-base font-poppinsMedium py-2 px-7 text-primary`}>Pay now</Text>
+                <View style={tw`pt-5`}>
+                    <TouchableOpacity style={tw`flex-row items-center justify-between border border-primaryGray px-6 py-3 rounded-full `}>
+                        <Text style={tw`font-poppins text-base`}>Visibility</Text>
+                        <SvgXml xml={IconErowBack} />
                     </TouchableOpacity>
                 </View>
-                <View style={tw`flex-row gap-2 py-7`}>
-                    <SvgXml xml={IconWorningGary} />
-                    <Text style={tw`text-base font-poppins`}>After payment you will be returned here immediately.</Text>
+                {/* Visibility */}
+                <View style={tw`pt-5`}>
+                    <TouchableOpacity onPress={() => setPromotedOn(!promotedOn)} style={tw`flex-row items-center gap-3 ${promotedOn ? "bg-secondary" : "bg-[#EFEFEF]"}  w-5/6  px-6 py-3 rounded-full `}>
+                        <SvgXml xml={IconPromoted} />
+                        <Text style={tw`font-poppins text-base ${promotedOn ? "text-primary" : ""}`}>Promote for $99 / Month</Text>
+                    </TouchableOpacity>
                 </View>
+                {promotedOn ? (
+                    <View>
+                        {/* Footer */}
+                        <View style={tw`flex-row justify-end gap-3 px-6 py-4  `}>
+                            <TouchableOpacity style={tw`border flex-row items-center border-primaryGray rounded-md`}>
+                                <Text style={tw`text-2xl font-poppinsMedium py-2 px-7`}>$99.00</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => setPaymentVisible(true)} style={tw`border flex-row items-center bg-secondary border-primaryGray rounded-md`}>
+                                <Text style={tw`text-base font-poppinsMedium py-2 px-7 text-primary`}>Pay now</Text>
+                            </TouchableOpacity>
+                        </View>
+                        <View style={tw`flex-row gap-2 py-7`}>
+                            <SvgXml xml={IconWorningGary} />
+                            <Text style={tw`text-base font-poppins`}>After payment you will be returned here immediately.</Text>
+                        </View>
+                    </View>
+                ) :
+                    <View style={tw`pt-5`}>
+                        <TouchableOpacity style={tw`flex-row items-center gap-3  bg-secondary  px-6 py-3 rounded-full justify-center`}>
+                            <Text style={tw`font-poppinsMedium text-primary text-base `}>Publish</Text>
+                        </TouchableOpacity>
+                    </View>
+                }
+
                 <Modal
                     visible={paymentVisible}
                     transparent={true}
@@ -202,23 +214,10 @@ const uploadVideo = () => {
                         </View>
                     </View>
                 </Modal>
+
             </ScrollView>
-        </KeyboardAvoidingView>
+        </KeyboardAvoidingView >
     )
 }
 
-export default uploadVideo
-
-const styles = StyleSheet.create({
-    modalContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'rgba(0,0,0,0.5)',
-    },
-    video: {
-        width: _Width,
-        height: 250,
-    },
-});
-
+export default youTubeLink

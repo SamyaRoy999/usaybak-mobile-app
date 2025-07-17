@@ -39,6 +39,7 @@ module.exports = {
         secondaryBlack: "#000000",
         secondaryGren: "#319F43",
         secondaryRed100: "#FFE8E8",
+        secondarygray: "#888888",
       },
     },
   },

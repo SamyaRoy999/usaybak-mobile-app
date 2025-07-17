@@ -24,6 +24,7 @@ const AllPagelayout = () => {
       <Stack.Screen name="FaqSection" />
       <Stack.Screen name="editvideo" />
       <Stack.Screen name="uploadVideo" />
+      <Stack.Screen name="youTubeLink" />
     </Stack>
   );
 };

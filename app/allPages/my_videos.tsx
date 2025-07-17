@@ -115,7 +115,7 @@ const my_videos = () => {
                                         </View>
                                         <SvgXml xml={IconErowBack} />
                                     </TouchableOpacity>
-                                    <TouchableOpacity style={tw` py-5 bg-primaryText flex-row rounded-2xl justify-between px-4 items-center gap-3 `}>
+                                    <TouchableOpacity onPress={()=> router.push("/allPages/youTubeLink")} style={tw` py-5 bg-primaryText flex-row rounded-2xl justify-between px-4 items-center gap-3 `}>
                                         <View style={tw`flex-row items-center gap-3`}>
                                             <SvgXml xml={IconYoutub} />
                                             <Text style={tw`text-lg font-poppins`}>YouTube Link  <Text style={tw`text-sm`}>(Free)</Text> </Text>
@@ -131,7 +131,7 @@ const my_videos = () => {
         </View >
     )
 }
-//
+
 export default my_videos
 
 const styles = StyleSheet.create({
