@@ -10,7 +10,7 @@ const index = () => {
       // router.replace("/home/(tabs)/landingPage");
       // router.replace("/home/(tabs)/Account");
       // router.replace("/allPages/report");
-      router.replace("/allPages/my_videos");
+      router.replace("/allPages/uploadVideo");
 
     }, 1000);
   }, []);
