@@ -1,18 +1,20 @@
-import { View, Text, TouchableOpacity, ScrollView, TextInput, StyleSheet, Modal } from 'react-native'
-import React from 'react'
-import { router } from 'expo-router'
-import { IconAdd, IconAddsm, IconBackLeft, IconButtonBack, IconClose, IconCloseBlack, IconPrmt, IconSavechanges, profileChang } from '@/icons/Icon'
-import { SvgXml } from 'react-native-svg'
-import tw from '@/lib/tailwind'
+import { profileBanner, profleImg } from '@/assets/images/images'
 import HeaderBar from '@/components/shear/HeaderBar'
-import { Image } from 'expo-image'
-import { Imgsuccess, profileBanner, profleImg } from '@/assets/images/images'
+import { IconAddsm, IconBackLeft, IconButtonBack, IconClose, IconCloseBlack, IconDeleteRed, IconErowBackRight, IconSavechanges, IconUpload, profileChang } from '@/icons/Icon'
+import tw from '@/lib/tailwind'
 import { _HIGHT } from '@/utils/utils'
+import { Image } from 'expo-image'
+import { router } from 'expo-router'
+import React from 'react'
+import { KeyboardAvoidingView, Modal, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { SvgXml } from 'react-native-svg'
 
 const settings = () => {
     const [isVisible, setIsVisible] = React.useState(false);
+    const [profilePicure, setProfilePicure] = React.useState(false);
     return (
-        <View style={tw`flex-1 bg-primary`}>
+        <KeyboardAvoidingView enabled={true}
+            behavior={"padding"} style={tw`flex-1 bg-primary`}>
             <ScrollView contentContainerStyle={tw``} showsVerticalScrollIndicator={false}>
                 <HeaderBar />
                 <View style={tw`flex-row items-center justify-between px-5`}>
@@ -43,7 +45,7 @@ const settings = () => {
                     >
                         <Image source={profleImg} style={tw`rounded-full h-24 w-24 `} />
                     </View>
-                    <TouchableOpacity style={tw`absolute -bottom-10 left-[55%]`}>
+                    <TouchableOpacity onPress={() => setProfilePicure(true)} style={tw`absolute -bottom-10 left-[55%]`}>
                         <SvgXml xml={profileChang} />
                     </TouchableOpacity>
                 </View>
@@ -52,32 +54,38 @@ const settings = () => {
                     <View style={tw`py-3 px-6`}>
                         <View style={tw`border border-primaryGray flex-col justify-center pl-7 relative rounded-full font-poppins text-base px-5 h-14`}>
                             <Text style={tw`bg-primary  w-28 absolute -top-2 left-7`}> Channel name</Text>
-                            <Text style={tw`font-poppins text-base`}> Haircut Pro</Text>
+                            <TextInput defaultValue="Haircut Pro" style={tw`font-poppins  text-base`} />
                         </View>
                     </View>
                     <View style={tw`py-3 px-6`}>
                         <View style={tw`border border-primaryGray flex-col justify-center pl-7 relative rounded-full font-poppins text-base px-5 h-14`}>
                             <Text style={tw`bg-primary  w-28 absolute -top-2 left-7`}> Your full name</Text>
-                            <Text style={tw`font-poppins text-base`}> Haircut Pro</Text>
+                            <TextInput defaultValue="Haircut Pro" style={tw`font-poppins  text-base`} />
                         </View>
                     </View>
                     <View style={tw`py-3 px-6`}>
                         <View style={tw`border border-primaryGray flex-col justify-center pl-7 relative rounded-full font-poppins text-base px-5 h-14`}>
                             <Text style={tw`bg-primary  w-28 absolute -top-2 left-7`}> Email</Text>
-                            <Text style={tw`font-poppins text-base`}> example@gmail.com</Text>
+                            <TextInput defaultValue="example@gmail.com" style={tw`font-poppins  text-base`} />
                         </View>
                     </View>
                     <View style={tw`py-3 px-6`}>
                         <View style={tw`border border-primaryGray flex-col justify-center pl-7 relative rounded-full font-poppins text-base px-5 h-14`}>
                             <Text style={tw`bg-primary  w-28 absolute -top-2 left-7`}>Contact</Text>
-                            <Text style={tw`font-poppins text-base`}> +9856425662</Text>
+                            <TextInput defaultValue="+9856425662" style={tw`font-poppins  text-base`} />
                         </View>
                     </View>
                 </View>
                 <View style={tw`py-3 px-6`}>
                     <View style={tw`border border-primaryGray flex-col justify-center pl-7 relative rounded-2xl p-4 font-poppins text-base px-5 `}>
                         <Text style={tw`bg-primary  w-12 absolute -top-2 left-7`}>Bio</Text>
-                        <Text style={tw`font-poppins `}> Lorem ipsum dolor sit amet consectetur, adipisicing elit. Reiciendis atque nesciunt autem eligendi id. Rem, ea esse temporibus facere eligendi iste tempore iure veritatis, earum nisi, optio animi dolores possimus?</Text>
+                        <TextInput
+                            placeholder='Description'
+                            defaultValue='Lorem ipsum dolor sit amet consectetur, adipisicing elit. Reiciendis atque nesciunt autem eligendi id. Rem, ea esse temporibus facere eligendi iste tempore iure veritatis, earum nisi, optio animi dolores possimus?'
+                            multiline
+                            textAlignVertical="top"
+                            style={tw`font-poppins  text-base`}
+                        />
                     </View>
                 </View>
                 {/* .........services.......... */}
@@ -110,11 +118,11 @@ const settings = () => {
                                 <SvgXml xml={IconCloseBlack} />
                             </View>
 
-                            <View
+                            <TouchableOpacity
                                 style={tw` gap-3 py-2 px-4 border flex-row justify-center items-center border-primaryGray rounded-full `}
                             >
                                 <Text>Type & hit enter</Text>
-                            </View>
+                            </TouchableOpacity>
 
                         </View>
                     </View>
@@ -122,42 +130,42 @@ const settings = () => {
                 <View style={tw`py-3 px-6`}>
                     <View style={tw`border border-primaryGray flex-col justify-center pl-7 relative rounded-2xl p-4 font-poppins text-base px-5 `}>
                         <Text style={tw`bg-primary  w-40 absolute -top-2 left-7`}>Business locations</Text>
-                        <View style={tw`py-4`}>
-                            <View
-                                style={tw` gap-3 py-2 px-4 border flex-row justify-between items-center border-primaryGray rounded-full `}
-                            >
-                                <Text>Location 1</Text>
-                                <View>
-                                    <TouchableOpacity onPress={() => setIsVisible(true)} style={tw`  border rounded-full p-2 px-3 flex-row items-center gap-3 `}>
-                                        <Text style={tw`text-base  border-primaryGray`}>Office type</Text>
-                                        <SvgXml xml={IconButtonBack} />
-                                    </TouchableOpacity>
-                                </View>
+                        <View style={tw`py-4 relative`}>
+                            <TextInput
+                                defaultValue='Location 1'
+                                style={tw`py-4 px-4 border border-primaryGray rounded-full `}
+                            />
+
+                            <View>
+                                <TouchableOpacity onPress={() => setIsVisible(true)} style={tw`absolute -top-12 right-2 border border-primaryGray w-2/5 rounded-full p-2 px-3 flex-row items-center gap-3 `}>
+                                    <Text style={tw`text-base  border-primaryGray`}>Office type</Text>
+                                    <SvgXml xml={IconButtonBack} />
+                                </TouchableOpacity>
                             </View>
                         </View>
-                        <View
+                        <TouchableOpacity
                             style={tw`flex-row items-center gap-2 py-3 bg-secondary px-4 w-36 rounded-full`}
                         >
                             <SvgXml xml={IconAddsm} />
                             <Text style={tw`text-primaryText text-base font-poppinsBold`}>
                                 Add more
                             </Text>
-                        </View>
+                        </TouchableOpacity>
                     </View>
                 </View>
-                <View
+                <TouchableOpacity
                     style={tw`flex-row items-center gap-2 py-3 bg-secondary px-4 mx-5 mt-14 rounded-full justify-center`}
                 >
                     <SvgXml xml={IconSavechanges} />
                     <Text style={tw`text-primaryText text-base font-poppinsBold`}>
                         Save changes
                     </Text>
-                </View>
+                </TouchableOpacity>
                 {/* Modal of Office type */}
                 <Modal
                     visible={isVisible}
                     transparent={true}
-                    animationType="fade"
+                    animationType="slide"
                     onRequestClose={() => setIsVisible(false)}
                 >
 
@@ -177,22 +185,66 @@ const settings = () => {
                             </View>
                             <View style={tw`py-9`}>
 
-                                <View>
+                                <TouchableOpacity>
                                     <View style={tw` mx-5 flex-row justify-center mb-4 rounded-lg bg-primaryText`} >
                                         <Text style={tw`py-5 font-poppins text-lg`}>Branch</Text>
                                     </View>
-                                </View>
-                                <View >
+                                </TouchableOpacity>
+                                <TouchableOpacity >
                                     <View style={tw` mx-5 flex-row justify-center rounded-lg bg-primaryText`} >
                                         <Text style={tw`py-5 font-poppins text-lg`}>Head office</Text>
                                     </View>
-                                </View>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    </View>
+                </Modal>
+                {/* Modal of Channel profile picure */}
+                <Modal
+                    visible={profilePicure}
+                    transparent={true}
+                    animationType="slide"
+                    onRequestClose={() => setProfilePicure(false)}
+                >
+
+                    <View style={styles.modalContainer}>
+                        <View style={tw`bg-primary rounded-t-3xl  w-full  absolute  bottom-0`}>
+                            <View
+                                style={tw`bg-secondary w-full h-16 rounded-t-3xl flex-row items-center justify-between p-5`}
+                            >
+                                <View></View>
+                                <Text style={tw`font-poppinsMedium text-lg text-primary`}>
+                                    Comments
+                                </Text>
+
+                                <TouchableOpacity onPress={() => setProfilePicure(false)}>
+                                    <SvgXml xml={IconClose} />
+                                </TouchableOpacity>
+                            </View>
+                            <View style={tw`py-9`}>
+
+                                <TouchableOpacity style={tw`mx-5 mb-4 px-4 rounded-lg bg-primaryText flex-row justify-between items-center`}>
+                                    <View style={tw`flex-row   gap-3 items-center  `} >
+                                        <SvgXml xml={IconUpload} />
+                                        <Text style={tw`py-5 font-poppins text-lg`}>Upload new picture</Text>
+                                    </View>
+                                    <SvgXml xml={IconErowBackRight} />
+                                </TouchableOpacity>
+
+                                <TouchableOpacity style={tw`mx-5 mb-4 px-4 rounded-lg bg-primaryText flex-row justify-between items-center`}>
+                                    <View style={tw`flex-row   gap-3 items-center  `} >
+                                        <SvgXml xml={IconDeleteRed} />
+                                        <Text style={tw`py-5 font-poppins text-lg text-secondary`}>Delete picture</Text>
+                                    </View>
+                                    <SvgXml xml={IconErowBackRight} />
+                                </TouchableOpacity>
+
                             </View>
                         </View>
                     </View>
                 </Modal>
             </ScrollView>
-        </View>
+        </KeyboardAvoidingView>
     )
 }
 

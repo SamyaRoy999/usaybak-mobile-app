@@ -19,6 +19,7 @@ import React, { useEffect, useState } from "react";
 import {
   FlatList,
   Image,
+  KeyboardAvoidingView,
   Modal,
   ScrollView,
   StyleSheet,
@@ -75,7 +76,8 @@ const SingleVideo = () => {
   if (!singleVideo) return null;
 
   return (
-    <View style={tw`flex-1  bg-primary`}>
+    <KeyboardAvoidingView enabled={true}
+      behavior={"padding"} style={tw`flex-1  bg-primary`}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <HeaderBar />
         <View>
@@ -274,7 +276,39 @@ const SingleVideo = () => {
                         <Text>2.6k</Text>
                       </View>
                       <TouchableOpacity onPress={() => {
-                        setCommentVisible(false); // hide comment modal
+                        // setCommentVisible(false); // hide comment modal
+                        setReplyVisible(true); // show reply modal (with delay for smooth transition)
+                      }} style={tw`flex-row gap-4 `}>
+                        <SvgXml xml={IconMessage} />
+                        <Text>10</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                </View>
+                <View style={tw`flex-row  gap-4 pt-4  px-7`}>
+                  <Image
+                    source={{ uri: singleVideo.avatar }}
+                    style={tw`w-10 h-10 rounded-full`}
+                  />
+                  <View>
+                    <View style={tw`flex-row items-center gap-2`}>
+                      <Text style={tw`font-poppinsMedium text-lg`}>
+                        Abid Hasan
+                      </Text>
+                      <View style={tw`bg-primaryGray rounded-full h-2 w-2`} />
+                      <Text>10 hours ago</Text>
+                    </View>
+                    <Text style={tw` font-poppins text-sm`}>
+                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                      Consectetur
+                    </Text>
+                    <View style={tw`flex-row gap-4 py-5`}>
+                      <View style={tw`flex-row gap-4 `}>
+                        <SvgXml xml={Iconfevarite} />
+                        <Text>2.6k</Text>
+                      </View>
+                      <TouchableOpacity onPress={() => {
+                        // setCommentVisible(false); // hide comment modal
                         setTimeout(() => {
                           setReplyVisible(true); // show reply modal (with delay for smooth transition)
                         }, 300);
@@ -308,7 +342,7 @@ const SingleVideo = () => {
                         <Text>2.6k</Text>
                       </View>
                       <TouchableOpacity onPress={() => {
-                        setCommentVisible(false); // hide comment modal
+                        // setCommentVisible(false); // hide comment modal
                         setTimeout(() => {
                           setReplyVisible(true); // show reply modal (with delay for smooth transition)
                         }, 300);
@@ -342,7 +376,7 @@ const SingleVideo = () => {
                         <Text>2.6k</Text>
                       </View>
                       <TouchableOpacity onPress={() => {
-                        setCommentVisible(false); // hide comment modal
+                        // setCommentVisible(false); // hide comment modal
                         setTimeout(() => {
                           setReplyVisible(true); // show reply modal (with delay for smooth transition)
                         }, 300);
@@ -376,41 +410,7 @@ const SingleVideo = () => {
                         <Text>2.6k</Text>
                       </View>
                       <TouchableOpacity onPress={() => {
-                        setCommentVisible(false); // hide comment modal
-                        setTimeout(() => {
-                          setReplyVisible(true); // show reply modal (with delay for smooth transition)
-                        }, 300);
-                      }} style={tw`flex-row gap-4 `}>
-                        <SvgXml xml={IconMessage} />
-                        <Text>10</Text>
-                      </TouchableOpacity>
-                    </View>
-                  </View>
-                </View>
-                <View style={tw`flex-row  gap-4 pt-4  px-7`}>
-                  <Image
-                    source={{ uri: singleVideo.avatar }}
-                    style={tw`w-10 h-10 rounded-full`}
-                  />
-                  <View>
-                    <View style={tw`flex-row items-center gap-2`}>
-                      <Text style={tw`font-poppinsMedium text-lg`}>
-                        Abid Hasan
-                      </Text>
-                      <View style={tw`bg-primaryGray rounded-full h-2 w-2`} />
-                      <Text>10 hours ago</Text>
-                    </View>
-                    <Text style={tw` font-poppins text-sm`}>
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Consectetur
-                    </Text>
-                    <View style={tw`flex-row gap-4 py-5`}>
-                      <View style={tw`flex-row gap-4 `}>
-                        <SvgXml xml={Iconfevarite} />
-                        <Text>2.6k</Text>
-                      </View>
-                      <TouchableOpacity onPress={() => {
-                        setCommentVisible(false); // hide comment modal
+                        // setCommentVisible(false); // hide comment modal
                         setTimeout(() => {
                           setReplyVisible(true); // show reply modal (with delay for smooth transition)
                         }, 300);
@@ -422,7 +422,7 @@ const SingleVideo = () => {
                   </View>
                 </View>
               </ScrollView>
-              <View style={tw`flex-row items-center  px-5 w-full`}>
+              <View style={tw`flex-row items-center pb-10 px-5 w-full`}>
                 <Image
                   source={{ uri: singleVideo.avatar }}
                   style={tw`w-10 h-10 rounded-full `}
@@ -669,15 +669,106 @@ const SingleVideo = () => {
                         <SvgXml xml={Iconfevarite} />
                         <Text>2.6k</Text>
                       </View>
+
+                    </View>
+                  </View>
+                </View>
+                <View style={tw`flex-row  gap-4 pt-4  px-7`}>
+                  <Image
+                    source={{ uri: singleVideo.avatar }}
+                    style={tw`w-10 h-10 rounded-full`}
+                  />
+                  <View>
+                    <View style={tw`flex-row items-center gap-2`}>
+                      <Text style={tw`font-poppinsMedium text-lg`}>
+                        Abid Hasan
+                      </Text>
+                      <View style={tw`bg-primaryGray rounded-full h-2 w-2`} />
+                      <Text>10 hours ago</Text>
+                    </View>
+                    <Text style={tw` font-poppins text-sm`}>
+                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                      Consectetur
+                    </Text>
+                    <View style={tw`flex-row gap-4 py-5`}>
+                      <View style={tw`flex-row gap-4 `}>
+                        <SvgXml xml={Iconfevarite} />
+                        <Text>2.6k</Text>
+                      </View>
+
+                    </View>
+                  </View>
+                </View>
+                <View style={tw`flex-row  gap-4 pt-4  px-7`}>
+                  <Image
+                    source={{ uri: singleVideo.avatar }}
+                    style={tw`w-10 h-10 rounded-full`}
+                  />
+                  <View>
+                    <View style={tw`flex-row items-center gap-2`}>
+                      <Text style={tw`font-poppinsMedium text-lg`}>
+                        Abid Hasan
+                      </Text>
+                      <View style={tw`bg-primaryGray rounded-full h-2 w-2`} />
+                      <Text>10 hours ago</Text>
+                    </View>
+                    <Text style={tw` font-poppins text-sm`}>
+                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                      Consectetur
+                    </Text>
+                    <View style={tw`flex-row gap-4 py-5`}>
+                      <View style={tw`flex-row gap-4 `}>
+                        <SvgXml xml={Iconfevarite} />
+                        <Text>2.6k</Text>
+                      </View>
+
+                    </View>
+                  </View>
+                </View>
+                <View style={tw`flex-row  gap-4 pt-4  px-7`}>
+                  <Image
+                    source={{ uri: singleVideo.avatar }}
+                    style={tw`w-10 h-10 rounded-full`}
+                  />
+                  <View>
+                    <View style={tw`flex-row items-center gap-2`}>
+                      <Text style={tw`font-poppinsMedium text-lg`}>
+                        Abid Hasan
+                      </Text>
+                      <View style={tw`bg-primaryGray rounded-full h-2 w-2`} />
+                      <Text>10 hours ago</Text>
+                    </View>
+                    <Text style={tw` font-poppins text-sm`}>
+                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                      Consectetur
+                    </Text>
+                    <View style={tw`flex-row gap-4 py-5`}>
+                      <View style={tw`flex-row gap-4 `}>
+                        <SvgXml xml={Iconfevarite} />
+                        <Text>2.6k</Text>
+                      </View>
+
                     </View>
                   </View>
                 </View>
               </ScrollView>
+              <View style={tw`flex-row items-center pb-10 px-5 w-full`}>
+                <Image
+                  source={{ uri: singleVideo.avatar }}
+                  style={tw`w-10 h-10 rounded-full `}
+                />
+                <View style={tw`w-72`}>
+                  <TextInput
+                    style={tw` w-full bg-primaryOff rounded-full font-poppins px-4  text-sm  m-6 h-12`}
+                    placeholder="Add your comment..."
+                  />
+                </View>
+              </View>
             </View>
           </View>
         </Modal>
       </ScrollView>
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 
