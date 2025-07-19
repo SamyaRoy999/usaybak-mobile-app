@@ -1,4 +1,4 @@
-import { IconBackLeft, IconClose, IconErowBack, IconSucssMsg, IconUpload, IconUploadBlue, IconWorningGary } from '@/icons/Icon'
+import { IconBackLeft, IconClose, IconErowBack, IconLock, IconSucssMsg, IconUpload, IconUploadBlue, IconWorld, IconWorningGary } from '@/icons/Icon'
 import tw from '@/lib/tailwind'
 import { _Width } from '@/utils/utils'
 import { router } from 'expo-router'
@@ -10,6 +10,10 @@ import { SvgXml } from 'react-native-svg'
 const uploadVideo = () => {
     const [paymentVisible, setPaymentVisible] = React.useState(false)
     const [sucssMassage, setSucssMassage] = React.useState(false)
+    const [stateModalVisible, setStateModalVisible] = React.useState(false);
+    const [cityModalVisible, setCityModalVisible] = React.useState(false);
+    const [categoryModalVisible, setCategoryModalVisible] = React.useState(false);
+    const [visibility, setVisibility] = React.useState(false);
 
     setTimeout(() => {
         setSucssMassage(false)
@@ -49,15 +53,33 @@ const uploadVideo = () => {
                     <Text style={tw`text-base font-poppins`}>You have to pay $9.99 per video for publishing it. It will be a promoted video and it will go on the op of searches. On the other hand YouTube videos link sharing is free.</Text>
                 </View> */}
                 {/* State, City, Category */}
-                {['State', 'City', 'Category'].map((item) => (
+                <View style={tw`pt-4`}>
                     <TouchableOpacity
-                        key={item}
-                        style={tw`flex-row items-center justify-between border border-primaryGray px-6 py-3 rounded-full mt-4`}
+                        onPress={() => setStateModalVisible(true)}
+                        style={tw`flex-row items-center justify-between border border-primaryGray px-6 py-3 rounded-full `}
                     >
-                        <Text style={tw`font-poppins text-base`}>{item}</Text>
+                        <Text style={tw`font-poppins text-base`}>State</Text>
                         <SvgXml xml={IconErowBack} />
                     </TouchableOpacity>
-                ))}
+                </View>
+                <View style={tw`pt-4`}>
+                    <TouchableOpacity
+                        onPress={() => setCityModalVisible(true)}
+                        style={tw`flex-row items-center justify-between border border-primaryGray px-6 py-3 rounded-full `}
+                    >
+                        <Text style={tw`font-poppins text-base`}>City</Text>
+                        <SvgXml xml={IconErowBack} />
+                    </TouchableOpacity>
+                </View>
+                <View style={tw`pt-4`}>
+                    <TouchableOpacity
+                        onPress={() => setCategoryModalVisible(true)}
+                        style={tw`flex-row items-center justify-between border border-primaryGray px-6 py-3 rounded-full `}
+                    >
+                        <Text style={tw`font-poppins text-base`}>Category</Text>
+                        <SvgXml xml={IconErowBack} />
+                    </TouchableOpacity>
+                </View>
                 {/* Title & Description */}
                 <View style={tw`mt-5`}>
                     <TextInput
@@ -86,7 +108,7 @@ const uploadVideo = () => {
                     </TouchableOpacity>
                 </View>
                 {/* Visibility */}
-                <TouchableOpacity style={tw`flex-row items-center justify-between border border-primaryGray px-6 py-3 rounded-full mt-4`}>
+                <TouchableOpacity onPress={()=>setVisibility(true)} style={tw`flex-row items-center justify-between border border-primaryGray px-6 py-3 rounded-full mt-4`}>
                     <Text style={tw`font-poppins text-base`}>Visibility</Text>
                     <SvgXml xml={IconErowBack} />
                 </TouchableOpacity>
@@ -199,6 +221,180 @@ const uploadVideo = () => {
                                 <ActivityIndicator color={"gray"} size={"small"} />
                                 <Text style={tw`font-poppins text-sm text-secondarygray`}>Redirecting to publishing page</Text>
                             </View>
+                        </View>
+                    </View>
+                </Modal>
+                                {/* state  */}
+                <Modal
+                    visible={stateModalVisible}
+                    transparent={true}
+                    animationType="slide"
+                    onRequestClose={() => setStateModalVisible(false)}
+                >
+                    <View style={tw`flex-1 justify-end bg-black/50`}>
+                        <View style={tw`bg-primary rounded-t-3xl w-full `}>
+                            {/* Header */}
+                            <View style={tw`bg-secondary w-full h-16 rounded-t-3xl flex-row items-center justify-between px-4`}>
+                                <View></View>
+                                <Text style={tw`text-primary text-xl font-poppins`}>Pay to MyTSV</Text>
+                                <TouchableOpacity onPress={() => setStateModalVisible(false)}>
+                                    <SvgXml xml={IconClose} />
+                                </TouchableOpacity>
+                            </View>
+                            <TouchableOpacity style={tw` bg-black/50 justify-center `}>
+                                <View style={tw`bg-primary flex-col justify-center border border-dashed border-primaryGray py-4 items-center `}>
+                                    <Text style={tw`font-poppins text-base`}>State 1</Text>
+                                </View>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={tw` bg-black/50 justify-center `}>
+                                <View style={tw`bg-primary flex-col justify-center border border-dashed border-primaryGray py-4 items-center `}>
+                                    <Text style={tw`font-poppins text-base`}>State 1</Text>
+                                </View>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={tw` bg-black/50 justify-center `}>
+                                <View style={tw`bg-primary flex-col justify-center border border-dashed border-primaryGray py-4 items-center `}>
+                                    <Text style={tw`font-poppins text-base`}>State 1</Text>
+                                </View>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={tw` bg-black/50 justify-center `}>
+                                <View style={tw`bg-primary flex-col justify-center border border-dashed border-primaryGray py-4 items-center `}>
+                                    <Text style={tw`font-poppins text-base`}>State 1</Text>
+                                </View>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={tw` bg-black/50 justify-center `}>
+                                <View style={tw`bg-primary flex-col justify-center border border-dashed border-primaryGray py-4 items-center `}>
+                                    <Text style={tw`font-poppins text-base`}>State 1</Text>
+                                </View>
+                            </TouchableOpacity>
+
+                        </View>
+                    </View>
+                </Modal>
+                {/* Select city */}
+                <Modal
+                    visible={cityModalVisible}
+                    transparent={true}
+                    animationType="slide"
+                    onRequestClose={() => setCityModalVisible(false)}
+                >
+                    <View style={tw`flex-1 justify-end bg-black/50`}>
+                        <View style={tw`bg-primary rounded-t-3xl w-full `}>
+                            {/* Header */}
+                            <View style={tw`bg-secondary w-full h-16 rounded-t-3xl flex-row items-center justify-between px-4`}>
+                                <View></View>
+                                <Text style={tw`text-primary text-xl font-poppins`}>Select city</Text>
+                                <TouchableOpacity onPress={() => setCityModalVisible(false)}>
+                                    <SvgXml xml={IconClose} />
+                                </TouchableOpacity>
+                            </View>
+                            <TouchableOpacity style={tw` bg-black/50 justify-center `}>
+                                <View style={tw`bg-primary flex-col justify-center border border-dashed border-primaryGray py-4 items-center `}>
+                                    <Text style={tw`font-poppins text-base`}>City 1</Text>
+                                </View>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={tw` bg-black/50 justify-center `}>
+                                <View style={tw`bg-primary flex-col justify-center border border-dashed border-primaryGray py-4 items-center `}>
+                                    <Text style={tw`font-poppins text-base`}>City 1</Text>
+                                </View>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={tw` bg-black/50 justify-center `}>
+                                <View style={tw`bg-primary flex-col justify-center border border-dashed border-primaryGray py-4 items-center `}>
+                                    <Text style={tw`font-poppins text-base`}>City 1</Text>
+                                </View>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={tw` bg-black/50 justify-center `}>
+                                <View style={tw`bg-primary flex-col justify-center border border-dashed border-primaryGray py-4 items-center `}>
+                                    <Text style={tw`font-poppins text-base`}>City 1</Text>
+                                </View>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={tw` bg-black/50 justify-center `}>
+                                <View style={tw`bg-primary flex-col justify-center border border-dashed border-primaryGray py-4 items-center `}>
+                                    <Text style={tw`font-poppins text-base`}>City 1</Text>
+                                </View>
+                            </TouchableOpacity>
+
+                        </View>
+                    </View>
+                </Modal>
+                {/* Select Category */}
+                <Modal
+                    visible={categoryModalVisible}
+                    transparent={true}
+                    animationType="slide"
+                    onRequestClose={() => setCategoryModalVisible(false)}
+                >
+                    <View style={tw`flex-1 justify-end bg-black/50`}>
+                        <View style={tw`bg-primary rounded-t-3xl w-full `}>
+                            {/* Header */}
+                            <View style={tw`bg-secondary w-full h-16 rounded-t-3xl flex-row items-center justify-between px-4`}>
+                                <View></View>
+                                <Text style={tw`text-primary text-xl font-poppins`}>Select Category</Text>
+                                <TouchableOpacity onPress={() => setCategoryModalVisible(false)}>
+                                    <SvgXml xml={IconClose} />
+                                </TouchableOpacity>
+                            </View>
+                            <TouchableOpacity style={tw` bg-black/50 justify-center `}>
+                                <View style={tw`bg-primary flex-col justify-center border border-dashed border-primaryGray py-4 items-center `}>
+                                    <Text style={tw`font-poppins text-base`}>Category 1</Text>
+                                </View>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={tw` bg-black/50 justify-center `}>
+                                <View style={tw`bg-primary flex-col justify-center border border-dashed border-primaryGray py-4 items-center `}>
+                                    <Text style={tw`font-poppins text-base`}>Category 1</Text>
+                                </View>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={tw` bg-black/50 justify-center `}>
+                                <View style={tw`bg-primary flex-col justify-center border border-dashed border-primaryGray py-4 items-center `}>
+                                    <Text style={tw`font-poppins text-base`}>Category 1</Text>
+                                </View>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={tw` bg-black/50 justify-center `}>
+                                <View style={tw`bg-primary flex-col justify-center border border-dashed border-primaryGray py-4 items-center `}>
+                                    <Text style={tw`font-poppins text-base`}>Category 1</Text>
+                                </View>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={tw` bg-black/50 justify-center `}>
+                                <View style={tw`bg-primary flex-col justify-center border border-dashed border-primaryGray py-4 items-center `}>
+                                    <Text style={tw`font-poppins text-base`}>Category 1</Text>
+                                </View>
+                            </TouchableOpacity>
+
+                        </View>
+                    </View>
+                </Modal>
+                {/*Visibility Only me Everyone */}
+                <Modal
+                    visible={visibility}
+                    transparent={true}
+                    animationType="slide"
+                    onRequestClose={() => setVisibility(false)}
+                >
+                    <View style={tw`flex-1 justify-end bg-black/50`}>
+                        <View style={tw`bg-primary rounded-t-3xl w-full `}>
+                            {/* Header */}
+                            <View style={tw`bg-secondary w-full h-16 rounded-t-3xl flex-row items-center justify-between px-4`}>
+                                <View></View>
+                                <Text style={tw`text-primary text-xl font-poppins`}>Select city</Text>
+                                <TouchableOpacity onPress={() => setVisibility(false)}>
+                                    <SvgXml xml={IconClose} />
+                                </TouchableOpacity>
+                            </View>
+                            <TouchableOpacity style={tw` bg-black/50 justify-center `}>
+                                <View style={tw`bg-primary flex-col justify-center border border-dashed border-primaryGray py-4 items-center `}>
+                                    <View style={tw`flex-row items-center justify-center gap-3`}>
+                                        <SvgXml xml={IconWorld} />
+                                        <Text style={tw`font-poppins text-base`}>Everyone</Text>
+                                    </View>
+                                </View>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={tw` bg-black/50 justify-center `}>
+                                <View style={tw`bg-primary flex-col justify-center border border-dashed border-primaryGray py-4 items-center `}>
+                                    <View style={tw`flex-row items-center justify-center gap-3`}>
+                                        <SvgXml xml={IconLock} />
+                                        <Text style={tw`font-poppins text-base`}>Only me</Text>
+                                    </View>
+                                </View>
+                            </TouchableOpacity>
                         </View>
                     </View>
                 </Modal>
