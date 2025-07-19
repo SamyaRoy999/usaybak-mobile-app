@@ -1,5 +1,3 @@
-import React from "react";
-import { Tabs } from "expo-router";
 import {
   IconAccount,
   IconAccountActive,
@@ -11,12 +9,16 @@ import {
   IconPromotions,
   IconPromotionsActive,
 } from "@/icons/Icon";
-import { SvgXml } from "react-native-svg";
-import { LinearGradient } from "expo-linear-gradient";
-import { Text, View } from "react-native";
 import tw from "@/lib/tailwind";
+import { LinearGradient } from "expo-linear-gradient";
+import { Tabs } from "expo-router";
+import React from "react";
+import { SvgXml } from "react-native-svg";
 
 const tabLayout = () => {
+  const isLoggedIn = {
+    email: "samya@gmail.com"
+  };
   return (
     <Tabs
       screenOptions={{
@@ -55,22 +57,24 @@ const tabLayout = () => {
           },
         }}
       />
-      <Tabs.Screen
-        name="AddModal"
-        options={{
-          headerShown: false,
-          tabBarIcon() {
-            return (
-              <LinearGradient
-                colors={["#EF4444", "#FF6868"]}
-                style={tw`p-5 mb-20 absolute rounded-full shadow-2xl`}
-              >
-                <SvgXml xml={IconAdd} />
-              </LinearGradient>
-            );
-          },
-        }}
-      />
+      {isLoggedIn.email  && (
+        <Tabs.Screen
+          name="AddModal"
+          options={{
+            headerShown: false,
+            tabBarIcon() {
+              return (
+                <LinearGradient
+                  colors={["#EF4444", "#FF6868"]}
+                  style={tw`p-5 mb-20 absolute rounded-full shadow-2xl`}
+                >
+                  <SvgXml xml={IconAdd} />
+                </LinearGradient>
+              );
+            },
+          }}
+        />
+      )}
 
       <Tabs.Screen
         name="Promotions"

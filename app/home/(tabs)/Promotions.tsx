@@ -1,16 +1,17 @@
-import {
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-  FlatList,
-} from "react-native";
-import React from "react";
-import tw from "@/lib/tailwind";
-import { SvgXml } from "react-native-svg";
-import { IconErowred } from "@/icons/Icon";
-import HeaderBar from "@/components/shear/HeaderBar";
 import Card from "@/components/landing_page/Card";
+import HeaderBar from "@/components/shear/HeaderBar";
+import { IconErowred } from "@/icons/Icon";
+import tw from "@/lib/tailwind";
+import { router } from "expo-router";
+import React from "react";
+import {
+  FlatList,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { SvgXml } from "react-native-svg";
 import data from "../../../lib/data.json";
 
 const Promotions = () => {
@@ -23,13 +24,14 @@ const Promotions = () => {
         <View
           style={tw`flex-row w-full justify-between items-center px-5 py-6`}
         >
-          <TouchableOpacity style={tw`bg-secondaryRed100 py-3 px-4 rounded-lg`}>
+          <View style={tw`bg-secondaryRed100 py-3 px-4 rounded-lg`}>
             <Text style={tw`font-poppinsMedium text-base text-secondaryBlack`}>
               Beauty esthetics
             </Text>
-          </TouchableOpacity>
+          </View>
           <View style={tw``}>
             <TouchableOpacity
+              onPress={() => router.push("/allPages/beautyEsthetics")}
               style={tw`py-3 flex-row gap-4 items-center  px-5 rounded-full border border-secondary`}
             >
               <Text style={tw`font-poppinsMedium text-base text-secondary`}>
