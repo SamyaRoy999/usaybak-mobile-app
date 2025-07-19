@@ -13,7 +13,6 @@ const restaurantCatering = () => {
     return (
         <View>
             <ScrollView showsVerticalScrollIndicator={false}>
-
                 <HeaderBar />
                 <View style={tw`flex-row justify-between items-center gap-5 px-5 mb-8`}>
                     <View
@@ -24,7 +23,7 @@ const restaurantCatering = () => {
                         </TouchableOpacity>
                     </View>
                     <Text style={tw`font-poppinsMedium text-xl `}>
-                       Restaurant & Catering
+                        Restaurant & Catering
                     </Text>
                     <View></View>
                 </View>

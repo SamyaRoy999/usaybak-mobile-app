@@ -52,7 +52,7 @@ const landingPage = () => {
           showsVerticalScrollIndicator={false}
           scrollEnabled={false}
         />
-        {/* Beauty esthetics btn */}
+        {/* Restaurant btn */}
         <View
           style={tw`flex-row w-full justify-between items-center px-5 py-6`}
         >
@@ -73,7 +73,7 @@ const landingPage = () => {
             </TouchableOpacity>
           </View>
         </View>
-        {/* Beauty esthetics end */}
+        {/* Restaurant end */}
       </ScrollView>
     </View>
   );

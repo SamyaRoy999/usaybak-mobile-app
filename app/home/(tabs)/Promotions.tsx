@@ -51,6 +51,28 @@ const Promotions = () => {
           showsVerticalScrollIndicator={false}
           scrollEnabled={false}
         />
+        {/* Restaurant btn */}
+        <View
+          style={tw`flex-row w-full justify-between items-center px-5 py-6`}
+        >
+          <View style={tw`bg-secondaryRed100 py-3 px-4 rounded-lg`}>
+            <Text style={tw`font-poppinsMedium text-base text-secondaryBlack`}>
+              Restaurant & Catering
+            </Text>
+          </View>
+          <View style={tw``}>
+            <TouchableOpacity
+              onPress={() => router.push("/allPages/restaurantCatering")}
+              style={tw`py-3 flex-row gap-4 items-center  px-5 rounded-full border border-secondary`}
+            >
+              <Text style={tw`font-poppinsMedium text-base text-secondary`}>
+                See all
+              </Text>
+              <SvgXml xml={IconErowred} />
+            </TouchableOpacity>
+          </View>
+        </View>
+        {/* Restaurant end */}
       </ScrollView>
     </View>
   );
