@@ -1,11 +1,11 @@
-import { View, Text, TouchableOpacity } from 'react-native'
-import React from 'react'
 import HeaderBar from '@/components/shear/HeaderBar'
+import { IconBackLeft } from '@/icons/Icon'
 import tw from '@/lib/tailwind'
 import { router } from 'expo-router'
+import React from 'react'
+import { Text, TouchableOpacity, View } from 'react-native'
+import { BarChart } from "react-native-gifted-charts"
 import { SvgXml } from 'react-native-svg'
-import { IconBackLeft } from '@/icons/Icon'
-import { BarChart } from "react-native-gifted-charts";
 
 const Analytics = () => {
     const barData = [
@@ -55,7 +55,6 @@ const Analytics = () => {
             <Text style={tw`text-xl font-poppins px-12 py-6 text-center`}>
                 Your channel got 10,256 views in this month
             </Text>
-
             {/* Bar Chart */}
             <View style={tw`px-4`}>
                 <BarChart

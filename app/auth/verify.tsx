@@ -1,24 +1,24 @@
+import { ImgLogo } from "@/assets/images/images";
+import { IconForgetNest } from "@/icons/Icon";
+import tw from "@/lib/tailwind";
+import React from "react";
 import {
-  View,
-  Text,
   Image,
-  TextInput,
   KeyboardAvoidingView,
   ScrollView,
+  Text,
   TouchableOpacity,
+  View
 } from "react-native";
-import React from "react";
-import tw from "@/lib/tailwind";
 import { SvgXml } from "react-native-svg";
-import { IconForgetNest } from "@/icons/Icon";
-import { ImgLogo } from "@/assets/images/images";
 
 // import { Image } from "expo-image";
-import { Formik } from "formik";
-import * as Yup from "yup";
-import { OtpInput } from "react-native-otp-entry";
+import { useVerifyOtpMutation } from "@/redux/apiSlices/authApiSlices";
 import { router } from "expo-router";
+import { ALERT_TYPE, Toast } from "react-native-alert-notification";
+import { OtpInput } from "react-native-otp-entry";
 const verify = () => {
+  const [verifyOtp] = useVerifyOtpMutation()
   return (
     <KeyboardAvoidingView style={tw`flex-1 bg-secondary`}>
       <ScrollView showsVerticalScrollIndicator={false} style={tw``}>
@@ -50,9 +50,41 @@ const verify = () => {
               <OtpInput
                 numberOfDigits={6}
                 onTextChange={(text) => {
-                  console.log(text);
+                  // console.log(text);
                 }}
-                onFilled={(text) => {
+                onFilled={async (text) => {
+                  try {
+                    const res = await verifyOtp(text).unwrap();
+                    console.log(res);
+                    if (res.status) {
+                      Toast.show({
+                        type: ALERT_TYPE.SUCCESS,
+                        title: 'Success',
+                        textBody: res?.message,
+                        autoClose: 2000,
+                      });
+                      setTimeout(() => {
+                        router.replace("/auth/newPass");
+                      }, 1000);
+                    } else {
+                      Toast.show({
+                        type: ALERT_TYPE.DANGER,
+                        title: 'Error',
+                        textBody: res?.message?.email?.[0] || "Something went wrong!",
+                        autoClose: 2000,
+                      });
+                    }
+
+                  } catch (error: any) {
+
+                    Toast.show({
+                      type: ALERT_TYPE.WARNING,
+                      title: 'Error',
+                      textBody: error?.message,
+                    });
+
+                    console.log(error);
+                  }
                   console.log(text);
                 }}
                 // onBlur={handleBlur("otp")}
@@ -75,7 +107,7 @@ const verify = () => {
           <TouchableOpacity
             style={tw`bg-secondary rounded-full mx-6`}
             onPress={() => {
-              router.replace("/auth/newPass");
+
             }}
           >
             <Text

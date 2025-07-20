@@ -1,38 +1,71 @@
+import { ImgLogo } from "@/assets/images/images";
 import {
-  View,
-  Text,
+  IconForgetNest
+} from "@/icons/Icon";
+import tw from "@/lib/tailwind";
+import { router } from "expo-router";
+import React from "react";
+import {
   Image,
-  TextInput,
   KeyboardAvoidingView,
   ScrollView,
-  Touchable,
+  Text,
+  TextInput,
   TouchableOpacity,
+  View
 } from "react-native";
-import React from "react";
-import tw from "@/lib/tailwind";
 import { SvgXml } from "react-native-svg";
-import {
-  IconErow,
-  IconErow2,
-  IconForgetNest,
-  IconGoogle,
-  IconLogin,
-} from "@/icons/Icon";
-import { ImgLogo } from "@/assets/images/images";
-import Entypo from "@expo/vector-icons/Entypo";
-import Checkbox from "expo-checkbox";
-import { router } from "expo-router";
 // import { Image } from "expo-image";
+import { useForgotPasswordMutation } from "@/redux/apiSlices/authApiSlices";
 import { Formik } from "formik";
+import { ALERT_TYPE, Toast } from "react-native-alert-notification";
 import * as Yup from "yup";
 const forgotPass = () => {
   const [showNewPassword, setShowNewPassword] = React.useState(false);
   const [isChecked, setChecked] = React.useState(false);
+  const [forgotPassword] = useForgotPasswordMutation()
   return (
     <KeyboardAvoidingView style={tw`flex-1 bg-secondary`}>
       <Formik
         initialValues={{ email: "" }}
-        onSubmit={(values) => console.log(values)}
+        onSubmit={async (values) => {
+          const data = {
+            email: values.email
+          }
+          console.log(data);
+          try {
+            const res = await forgotPassword(data).unwrap();
+            console.log(res);
+            if (res.status) {
+              Toast.show({
+                type: ALERT_TYPE.SUCCESS,
+                title: 'Success',
+                textBody: res?.message,
+                autoClose: 2000,
+              });
+              setTimeout(() => {
+                router.push("/auth/verify");
+              }, 1000);
+            } else {
+              Toast.show({
+                type: ALERT_TYPE.DANGER,
+                title: 'Error',
+                textBody: res?.message?.email?.[0] || "Something went wrong!",
+                autoClose: 2000,
+              });
+            }
+
+          } catch (error: any) {
+
+            Toast.show({
+              type: ALERT_TYPE.WARNING,
+              title: 'Error',
+              textBody: error?.message,
+            });
+
+            console.log(error);
+          }
+        }}
         validationSchema={Yup.object({
           email: Yup.string().email().required("email is required"),
         })}
@@ -84,7 +117,6 @@ const forgotPass = () => {
                   style={tw`bg-secondary rounded-full mx-6`}
                   onPress={() => {
                     handleSubmit();
-                    router.push("/auth/verify");
                   }}
                 >
                   <Text

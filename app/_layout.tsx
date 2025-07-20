@@ -4,7 +4,9 @@ import React from "react";
 import "react-native-reanimated";
 
 import tw from "@/lib/tailwind";
+import store from "@/redux/store";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { Provider } from "react-redux";
 import { useDeviceContext } from "twrnc";
 import ThemeProvider from "../context/ThemeProvider";
 // import ThemeProvider from "./context/ThemeProvider";
@@ -37,20 +39,22 @@ export default function RootLayout() {
 
   return (
     <GestureHandlerRootView>
-      <ThemeProvider>
-        <Stack
-          screenOptions={{
-            headerShown: false,
-          }}
-        >
-          <Stack.Screen name="index" />
-          <Stack.Screen name="home/(tabs)" />
-          <Stack.Screen name="auth" />
-          <Stack.Screen name="details/video/[id]" />
-          <Stack.Screen name="details/Blog/[id]" />
-          <Stack.Screen name="allPages" />
-        </Stack>
-      </ThemeProvider>
+      <Provider store={store}>
+        <ThemeProvider>
+          <Stack
+            screenOptions={{
+              headerShown: false,
+            }}
+          >
+            <Stack.Screen name="index" />
+            <Stack.Screen name="home/(tabs)" />
+            <Stack.Screen name="auth" />
+            <Stack.Screen name="details/video/[id]" />
+            <Stack.Screen name="details/Blog/[id]" />
+            <Stack.Screen name="allPages" />
+          </Stack>
+        </ThemeProvider>
+      </Provider>
     </GestureHandlerRootView>
   );
 }
