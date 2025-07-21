@@ -1,42 +1,87 @@
-import {
-  View,
-  Text,
-  Image,
-  TextInput,
-  KeyboardAvoidingView,
-  ScrollView,
-  TouchableOpacity,
-  Modal,
-  StyleSheet,
-} from "react-native";
-import React from "react";
-import tw from "@/lib/tailwind";
-import { SvgXml } from "react-native-svg";
-import { IconNewPass } from "@/icons/Icon";
 import { ImgLogo, Imgsuccess } from "@/assets/images/images";
+import { IconNewPass } from "@/icons/Icon";
+import tw from "@/lib/tailwind";
+import React from "react";
+import {
+  Image,
+  KeyboardAvoidingView,
+  Modal,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { SvgXml } from "react-native-svg";
 // import success from "@/assets/images/success.gif";
 import Entypo from "@expo/vector-icons/Entypo";
 
 // import { Image } from "expo-image";
+import { useResetPasswordMutation } from "@/redux/apiSlices/authApiSlices";
+import { router, useLocalSearchParams } from "expo-router";
 import { Formik } from "formik";
+import { ALERT_TYPE, Toast } from "react-native-alert-notification";
 import * as Yup from "yup";
-import { router } from "expo-router";
 const newPass = () => {
   const [showNewPassword, setShowNewPassword] = React.useState(false);
   const [confirmPassword, SetConfirmPassword] = React.useState(false);
   const [isVisible, setIsVisible] = React.useState(false);
+
+  //-----------get email----------
+  const { email } = useLocalSearchParams();
+  // ----------api-----------
+  const [resetPassword] = useResetPasswordMutation()
+
   return (
     <KeyboardAvoidingView style={tw`flex-1 bg-secondary`}>
       <Formik
         initialValues={{ password: "", confirm_password: "" }}
-        onSubmit={(values) => console.log(values)}
+        onSubmit={async(values) => {
+          const data = {
+            email: email,
+            password: values.password,
+            c_password: values.confirm_password,
+          }
+          try {
+            const res = await resetPassword(data).unwrap();
+            if (res.status) {
+              Toast.show({
+                type: ALERT_TYPE.SUCCESS,
+                title: 'Success',
+                textBody: res?.message,
+                autoClose: 2000,
+              });
+              setTimeout(() => {
+                router.push('/auth/login');
+              }, 1000);
+            } else {
+              Toast.show({
+                type: ALERT_TYPE.DANGER,
+                title: 'Error',
+                textBody: res?.message?.email?.[0] || "Something went wrong!",
+                autoClose: 2000,
+              });
+            }
+
+          } catch (error: any) {
+
+            Toast.show({
+              type: ALERT_TYPE.WARNING,
+              title: 'Error',
+              textBody: error?.message,
+            });
+          }
+        }
+      }
+        
         validationSchema={Yup.object({
           password: Yup.string()
-            .min(6, "Password is too sort ")
+            .min(4, "Password is too sort ")
             .required("email is required")
             .uppercase("1 lowercase letter added"),
           confirm_password: Yup.string()
-            .min(6, "Password is too sort ")
+            .min(4, "Password is too sort ")
             .required("email is required")
             .uppercase("1 lowercase letter added"),
         })}

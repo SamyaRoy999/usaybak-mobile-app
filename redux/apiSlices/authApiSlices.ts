@@ -14,13 +14,12 @@ const authSlice = api.injectEndpoints({
             }),
             invalidatesTags: ["user"],
         }),
-        verifyOtp: builder.mutation<any, any>({
+        verifyOtp: builder.mutation<any, { email: string; otp: string }>({
             query: (data) => ({
                 url: `/auth/otp-verification`,
                 method: "POST",
                 body: data,
             }),
-            invalidatesTags: ["user"],
         }),
         loginUser: builder.mutation<any, any>({
             query: (data) => ({
@@ -38,9 +37,17 @@ const authSlice = api.injectEndpoints({
             }),
             invalidatesTags: ["user"],
         }),
-        
+        resetPassword: builder.mutation<any, any>({
+            query: (data) => ({
+                url: `/auth/reset-password`,
+                method: "POST",
+                body: data,
+            }),
+            invalidatesTags: ["user"],
+        }),
+
     }),
     overrideExisting: true
 });
 
-export const { useRegisterUserMutation, useVerifyOtpMutation, useLoginUserMutation, useForgotPasswordMutation } = authSlice;
+export const { useRegisterUserMutation, useVerifyOtpMutation, useLoginUserMutation, useForgotPasswordMutation, useResetPasswordMutation } = authSlice;

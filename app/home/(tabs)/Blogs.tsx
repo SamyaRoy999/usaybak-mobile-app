@@ -1,16 +1,15 @@
-import {
-  View,
-  Text,
-  SafeAreaView,
-  FlatList,
-  ScrollView,
-  TouchableOpacity,
-} from "react-native";
-import React from "react";
+import HeaderBar from "@/components/shear/HeaderBar";
 import tw from "@/lib/tailwind";
 import { Image } from "expo-image";
-import HeaderBar from "@/components/shear/HeaderBar";
 import { router } from "expo-router";
+import React from "react";
+import {
+    FlatList,
+    ScrollView,
+    Text,
+    TouchableOpacity,
+    View
+} from "react-native";
 
 // data/blogs.js
 export const blogData = [
@@ -92,7 +91,7 @@ export const blogData = [
 
 const Blogs = () => {
   const renderItem = ({ item }: any) => {
-    console.log(item);
+    (item);
 
     return (
       <TouchableOpacity onPress={() => router.push(`/details/Blog/${item.id}`)}>

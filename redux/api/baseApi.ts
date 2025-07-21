@@ -20,7 +20,7 @@ const baseQueryWithRath: BaseQueryFn<BaseQueryArgs, unknown, unknown> = async (
   try {
     const token = await AsyncStorage.getItem("token");
 
-    // console.log(token);
+    // (token);
 
     const result: AxiosResponse = await axios({
       // baseURL: "http://182.252.68.227:8002/api",
@@ -35,7 +35,7 @@ const baseQueryWithRath: BaseQueryFn<BaseQueryArgs, unknown, unknown> = async (
       },
     });
 
-    // console.log(result.data);
+    // (result.data);
     // Check if response data is a string and malformed
     if (result?.status === 403) {
       AsyncStorage.removeItem("token");
@@ -81,7 +81,7 @@ export const api = createApi({
   reducerPath: "api",
   baseQuery: baseQueryWithRath,
   endpoints: () => ({}),
-  tagTypes: ["user"],
+  tagTypes: ["user", "home"],
 });
 
 // export const imageUrl = 'http://192.168.12.160:7000/';

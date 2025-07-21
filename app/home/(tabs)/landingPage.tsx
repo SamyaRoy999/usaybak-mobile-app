@@ -1,5 +1,6 @@
 import Card from "@/components/landing_page/Card";
-import CarouselCard from "@/components/landing_page/CarouselCard";
+// import CarouselCard from "@/components/landing_page/CarouselCard";
+import { CarouselCard } from "@/components/landing_page/CarouselCard";
 import SliderLanding from "@/components/landing_page/SliderLanding";
 import HeaderBar from "@/components/shear/HeaderBar";
 import { IconErowred } from "@/icons/Icon";
@@ -17,6 +18,7 @@ import { SvgXml } from "react-native-svg";
 import data from "../../../lib/data.json";
 
 const landingPage = () => {
+
   return (
     <View>
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -58,7 +60,7 @@ const landingPage = () => {
         >
           <View style={tw`bg-secondaryRed100 py-3 px-4 rounded-lg`}>
             <Text style={tw`font-poppinsMedium text-base text-secondaryBlack`}>
-             Restaurant & Catering
+              Restaurant & Catering
             </Text>
           </View>
           <View style={tw``}>

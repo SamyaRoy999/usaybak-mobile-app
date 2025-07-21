@@ -21,7 +21,7 @@ const videodetails = () => {
     const [deleteModalVisible, setDeleteModalVisible] = React.useState(false);
 
     const { id } = useLocalSearchParams()
-    console.log(id);
+    (id);
     useEffect(() => {
         const videoData = data.find((item: any) => item?.id === Number(id));
         setSingleVideo(videoData);
@@ -37,7 +37,7 @@ const videodetails = () => {
     });
 
     if (!singleVideo) return null;
-    console.log(singleVideo);
+    (singleVideo);
 
     return (
 

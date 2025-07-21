@@ -1,12 +1,12 @@
-import * as React from "react";
-import { TouchableOpacity, View } from "react-native";
-import Carousel from "react-native-reanimated-carousel";
-import { useSharedValue } from "react-native-reanimated";
-import { SvgXml } from "react-native-svg";
 import { IconNextLeft, IconNextRight } from "@/icons/Icon";
 import tw from "@/lib/tailwind";
+import { useBannerQuery } from "@/redux/apiSlices/Home/homeApiSlices";
 import { Image } from "expo-image";
-import { landingSliderImg } from "@/assets/images/images";
+import * as React from "react";
+import { TouchableOpacity, View } from "react-native";
+import { useSharedValue } from "react-native-reanimated";
+import Carousel from "react-native-reanimated-carousel";
+import { SvgXml } from "react-native-svg";
 
 const defaultDataWith6Colors = [
   "#B0604D",
@@ -17,35 +17,29 @@ const defaultDataWith6Colors = [
   "#F1F1F1",
 ];
 
-export const renderItem =
-  ({ rounded }: any) =>
-  ({ item }: any) =>
-    (
-      <View
-        style={{
-          //   backgroundColor: item,
-          flex: 1,
-
-          borderRadius: rounded ? 20 : 0,
-        }}
-      >
-        <Image
-          source={landingSliderImg}
-          style={tw`h-[200px] w-[380px] rounded-2xl`}
-        />
-      </View>
-    );
 
 const SliderLanding = () => {
   const progress = useSharedValue<number>(0);
   const carouselRef = React.useRef<any>(null);
+  // ------GET DATA -----------
+  const {
+    data: banner,
+    isFetching,
+    isLoading,
+    refetch,
+  } = useBannerQuery({
+    params: {
+      per_page: 500,
+    },
+  });
+(banner);
 
   return (
     <View style={tw`w-full relative`}>
       <Carousel
         ref={carouselRef}
-        autoPlayInterval={1000}
-        data={defaultDataWith6Colors}
+        autoPlayInterval={3000}
+        data={banner?.data?.data} // backend images used here
         height={230}
         width={380}
         loop
@@ -57,8 +51,17 @@ const SliderLanding = () => {
           parallaxScrollingOffset: 50,
         }}
         onProgressChange={progress}
-        renderItem={renderItem({ rounded: true })}
+        renderItem={({ item }: any) => (
+          <View style={{ flex: 1, borderRadius: 20 }}>
+            <Image
+              source={{ uri: item.image }}
+              style={tw`h-[200px] w-[380px] rounded-2xl`}
+              contentFit="cover"
+            />
+          </View>
+        )}
       />
+
 
       {/* Navigation Buttons */}
       <View

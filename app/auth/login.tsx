@@ -8,14 +8,14 @@ import { router } from "expo-router";
 import { Formik } from "formik";
 import React from "react";
 import {
-  Image,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View
+    Image,
+    KeyboardAvoidingView,
+    Platform,
+    ScrollView,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View
 } from "react-native";
 import { ALERT_TYPE, AlertNotificationRoot, Toast } from "react-native-alert-notification";
 import { SvgXml } from "react-native-svg";
@@ -39,11 +39,11 @@ const login = () => {
                 email: values.email,
                 password: values.password,
               }
-              console.log(data);
+              (data);
               try {
 
                 const res = await loginUser(data).unwrap();
-                console.log(res);
+                (res);
 
                 if (res.status) {
                   Toast.show({
@@ -72,7 +72,7 @@ const login = () => {
                   textBody: error?.message,
                 });
 
-                console.log(error);
+                (error);
               }
             }}
 

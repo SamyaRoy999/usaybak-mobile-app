@@ -1,13 +1,14 @@
-import { View, Text, Image, TouchableOpacity } from "react-native";
-import React from "react";
-import tw from "@/lib/tailwind";
-import { SvgXml } from "react-native-svg";
 import { IconPrmt } from "@/icons/Icon";
+import tw from "@/lib/tailwind";
+import { _Width } from "@/utils/utils";
 import { router } from "expo-router";
+import React from "react";
+import { Image, Text, TouchableOpacity, View } from "react-native";
+import { SvgXml } from "react-native-svg";
 
 const Card = ({ data }: any) => {
   if (!data) return null;
-  const { thumbnail, avatar, title, channelName, views, time, promoted, id } =
+  const { thumbnail, title, views_count, created_at_format, is_promoted, id, user } =
     data;
 
   return (
@@ -20,7 +21,7 @@ const Card = ({ data }: any) => {
             style={tw`w-full h-48`}
             resizeMode="cover"
           />
-          {promoted && (
+          {is_promoted && (
             <View
               style={tw`absolute top-2 flex-row items-center gap-2 right-2 bg-secondary px-4 py-1 rounded-full`}
             >
@@ -31,7 +32,6 @@ const Card = ({ data }: any) => {
             </View>
           )}
         </View>
-
         {/* Details section */}
         <View style={tw`flex-row px-4 py-3 items-start`}>
           {/* Channel profile image */}
@@ -39,29 +39,31 @@ const Card = ({ data }: any) => {
             onPress={() => router.push("/allPages/channelProfile")}
           >
             <Image
-              source={{ uri: avatar }}
+              source={{ uri: user?.avatar }}
               style={tw`w-10 h-10 rounded-full mr-3`}
             />
           </TouchableOpacity>
 
           {/* Text info */}
           <View>
-            <Text style={tw`font-poppinsMedium text-lg text-secondaryBlack`}>
+            <Text style={[tw`font-poppinsMedium text-lg text-secondaryBlack`, {
+              width: _Width * 0.8
+            }]}>
               {title}
             </Text>
             <View style={tw`flex-row items-center gap-2 flex-wrap`}>
               <Text
                 style={tw`text-secondaryBlack text-base font-poppinsMedium`}
               >
-                {channelName}
+                {user?.channel_name}
               </Text>
               <View style={tw`bg-primaryGray rounded-full h-2 w-2`} />
               <Text style={tw`text-secondaryBlack text-base font-poppinsLight`}>
-                {views} views
+                {views_count} views
               </Text>
               <View style={tw`bg-primaryGray rounded-full h-2 w-2`} />
               <Text style={tw`text-secondaryBlack text-base font-poppinsLight`}>
-                {time}
+                {created_at_format}
               </Text>
             </View>
           </View>

@@ -67,7 +67,6 @@ const signUp = () => {
                 password: values.password,
                 c_password: values.c_password,
               }
-              console.log(data);
               try {
 
                 const res = await registerUser(data).unwrap();
@@ -79,8 +78,9 @@ const signUp = () => {
                     textBody: res?.message,
                     autoClose: 2000,
                   });
-
-                  router?.push(`/auth/verify`);
+                  (values.email ,"signUp page 82");
+                  
+                  router.push(`/auth/verify?email=${values?.email}`);
                 } else {
                   Toast.show({
                     type: ALERT_TYPE.DANGER,
@@ -91,14 +91,14 @@ const signUp = () => {
                 }
 
               } catch (error: any) {
-            
+
                 Toast.show({
                   type: ALERT_TYPE.WARNING,
                   title: 'Error',
                   textBody: error?.message,
                 });
 
-                console.log(error);
+                (error);
               }
             }}
           >

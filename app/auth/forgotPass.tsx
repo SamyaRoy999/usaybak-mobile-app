@@ -26,16 +26,17 @@ const forgotPass = () => {
   const [forgotPassword] = useForgotPasswordMutation()
   return (
     <KeyboardAvoidingView style={tw`flex-1 bg-secondary`}>
+
       <Formik
         initialValues={{ email: "" }}
         onSubmit={async (values) => {
           const data = {
             email: values.email
           }
-          console.log(data);
+          (data);
           try {
             const res = await forgotPassword(data).unwrap();
-            console.log(res);
+            (res);
             if (res.status) {
               Toast.show({
                 type: ALERT_TYPE.SUCCESS,
@@ -44,7 +45,7 @@ const forgotPass = () => {
                 autoClose: 2000,
               });
               setTimeout(() => {
-                router.push("/auth/verify");
+                router.push(`/auth/verify?email=${values?.email}`);
               }, 1000);
             } else {
               Toast.show({
@@ -63,7 +64,7 @@ const forgotPass = () => {
               textBody: error?.message,
             });
 
-            console.log(error);
+            (error);
           }
         }}
         validationSchema={Yup.object({
@@ -130,7 +131,7 @@ const forgotPass = () => {
           );
         }}
       </Formik>
-    </KeyboardAvoidingView>
+    </KeyboardAvoidingView >
   );
 };
 

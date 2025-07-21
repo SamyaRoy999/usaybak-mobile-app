@@ -21,7 +21,7 @@ const ReportDetails = () => {
         const videoData = data.find((item: any) => item?.id === Number(id));
         setSingleVideo(videoData);
     }, [id]);
-    console.log("IconGoogle", singleVideo);
+    ("IconGoogle", singleVideo);
 
     return (
         <View style={tw`flex-1  bg-primary`}>
