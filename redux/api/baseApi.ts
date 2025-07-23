@@ -31,9 +31,10 @@ const baseQueryWithRath: BaseQueryFn<BaseQueryArgs, unknown, unknown> = async (
       data: args.body,
       headers: {
         ...args.headers,
-        Authorization: token ? `Bearer ${JSON.parse(token)}` : "",
+        Authorization: token ? `Bearer ${token}` : "",
       },
     });
+
 
     // (result.data);
     // Check if response data is a string and malformed
@@ -81,7 +82,7 @@ export const api = createApi({
   reducerPath: "api",
   baseQuery: baseQueryWithRath,
   endpoints: () => ({}),
-  tagTypes: ["user", "home"],
+  tagTypes: ["user", "home", "singleVideo", "catagoryDetails", "blogs"],
 });
 
 // export const imageUrl = 'http://192.168.12.160:7000/';

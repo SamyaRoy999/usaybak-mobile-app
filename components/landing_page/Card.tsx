@@ -7,10 +7,11 @@ import { Image, Text, TouchableOpacity, View } from "react-native";
 import { SvgXml } from "react-native-svg";
 
 const Card = ({ data }: any) => {
+ 
   if (!data) return null;
-  const { thumbnail, title, views_count, created_at_format, is_promoted, id, user } =
+  const { thumbnail, title, views_count_formated, created_at_format, is_promoted, id, user } =
     data;
-
+    
   return (
     <View style={tw`bg-primary mb-4 overflow-hidden`}>
       {/* Thumbnail with Promoted badge */}
@@ -59,7 +60,7 @@ const Card = ({ data }: any) => {
               </Text>
               <View style={tw`bg-primaryGray rounded-full h-2 w-2`} />
               <Text style={tw`text-secondaryBlack text-base font-poppinsLight`}>
-                {views_count} views
+                {views_count_formated} views
               </Text>
               <View style={tw`bg-primaryGray rounded-full h-2 w-2`} />
               <Text style={tw`text-secondaryBlack text-base font-poppinsLight`}>
@@ -72,5 +73,4 @@ const Card = ({ data }: any) => {
     </View>
   );
 };
-
 export default Card;

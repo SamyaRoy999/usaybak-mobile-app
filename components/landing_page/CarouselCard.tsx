@@ -1,5 +1,4 @@
 import tw from "@/lib/tailwind";
-import { usePromotedVideoQuery } from "@/redux/apiSlices/Home/homeApiSlices";
 import { _HIGHT, _Width } from "@/utils/utils";
 import * as React from "react";
 import { View } from "react-native";
@@ -8,25 +7,14 @@ import Carousel from "react-native-reanimated-carousel";
 import Card from "./Card";
 
 
-export const CarouselCard = () => {
+export const CarouselCard = ({promotedVideo}: any) => {
   const progress = useSharedValue<number>(0);
-
-  const {
-    data: promoted,
-    isFetching,
-    isLoading,
-    refetch,
-  } = usePromotedVideoQuery({
-    params: {
-      per_page: 10,
-    },
-  });
 
   return (
     <View style={tw`w-full relative`}>
       <Carousel
         autoPlayInterval={2000}
-        data={promoted?.data?.data || []}
+        data={promotedVideo || []}
         autoPlay={true}
         height={_HIGHT * 0.3}
         width={_Width * 1}

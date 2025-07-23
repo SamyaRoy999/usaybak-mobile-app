@@ -33,10 +33,8 @@ const forgotPass = () => {
           const data = {
             email: values.email
           }
-          (data);
           try {
             const res = await forgotPassword(data).unwrap();
-            (res);
             if (res.status) {
               Toast.show({
                 type: ALERT_TYPE.SUCCESS,
@@ -64,7 +62,6 @@ const forgotPass = () => {
               textBody: error?.message,
             });
 
-            (error);
           }
         }}
         validationSchema={Yup.object({

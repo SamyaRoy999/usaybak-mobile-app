@@ -3,19 +3,20 @@ import { IconErow, IconErow2, IconGoogle, IconLogin } from "@/icons/Icon";
 import tw from "@/lib/tailwind";
 import { useLoginUserMutation } from "@/redux/apiSlices/authApiSlices";
 import Entypo from "@expo/vector-icons/Entypo";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import Checkbox from "expo-checkbox";
 import { router } from "expo-router";
 import { Formik } from "formik";
 import React from "react";
 import {
-    Image,
-    KeyboardAvoidingView,
-    Platform,
-    ScrollView,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View
 } from "react-native";
 import { ALERT_TYPE, AlertNotificationRoot, Toast } from "react-native-alert-notification";
 import { SvgXml } from "react-native-svg";
@@ -23,29 +24,21 @@ import * as Yup from "yup";
 const login = () => {
   const [showNewPassword, setShowNewPassword] = React.useState(false);
   const [isChecked, setChecked] = React.useState(false);
-  const [loginUser] = useLoginUserMutation()
+  const [loginUser, loginResults] = useLoginUserMutation()
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={tw`flex-1 bg-secondary`}
-    // keyboardVerticalOffset={top}
     >
       <ScrollView>
         <AlertNotificationRoot>
           <Formik
             initialValues={{ email: "", password: "" }}
-            onSubmit={async (values) => {
-              const data = {
-                email: values.email,
-                password: values.password,
-              }
-              (data);
+            onSubmit={async (values) => {           
               try {
-
-                const res = await loginUser(data).unwrap();
-                (res);
-
+                const res = await loginUser(values).unwrap();
                 if (res.status) {
+                   AsyncStorage.setItem("token", res?.data?.access_token);
                   Toast.show({
                     type: ALERT_TYPE.SUCCESS,
                     title: 'Success',
@@ -58,21 +51,20 @@ const login = () => {
                 } else {
                   Toast.show({
                     type: ALERT_TYPE.DANGER,
-                    title: 'Error',
+                    title: 'Waring',
                     textBody: res?.message?.email?.[0] || "Something went wrong!",
                     autoClose: 2000,
                   });
                 }
 
               } catch (error: any) {
-
                 Toast.show({
                   type: ALERT_TYPE.WARNING,
-                  title: 'Error',
+                  title: 'Waring',
                   textBody: error?.message,
                 });
 
-                (error);
+              
               }
             }}
 
@@ -168,6 +160,7 @@ const login = () => {
                     <TouchableOpacity
                       style={tw`bg-secondary rounded-full mx-6`}
                       onPress={() => {
+                      
                         handleSubmit();
                         // router.replace("/home/(tabs)/landingPage");
                       }}

@@ -1,5 +1,5 @@
 import Card from '@/components/landing_page/Card'
-import CarouselCard from '@/components/landing_page/CarouselCard'
+import { CarouselCard } from '@/components/landing_page/CarouselCard'
 import HeaderBar from '@/components/shear/HeaderBar'
 import { IconBackLeft } from '@/icons/Icon'
 import tw from '@/lib/tailwind'
@@ -15,13 +15,13 @@ const restaurantCatering = () => {
             <ScrollView showsVerticalScrollIndicator={false}>
                 <HeaderBar />
                 <View style={tw`flex-row justify-between items-center gap-5 px-5 mb-8`}>
-                    <View
-                        style={tw`bg-primaryText w-13 h-13 p-4 rounded-full flex-row items-center justify-center border border-primaryGray`}
-                    >
-                        <TouchableOpacity onPress={() => router.back()}>
+                    <TouchableOpacity onPress={() => router.back()}>
+                        <View
+                            style={tw`bg-primaryText w-13 h-13 p-4 rounded-full flex-row items-center justify-center border border-primaryGray`}
+                        >
                             <SvgXml xml={IconBackLeft} />
-                        </TouchableOpacity>
-                    </View>
+                        </View>
+                    </TouchableOpacity>
                     <Text style={tw`font-poppinsMedium text-xl `}>
                         Restaurant & Catering
                     </Text>

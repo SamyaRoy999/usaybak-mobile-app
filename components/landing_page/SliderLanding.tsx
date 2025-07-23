@@ -8,16 +8,6 @@ import { useSharedValue } from "react-native-reanimated";
 import Carousel from "react-native-reanimated-carousel";
 import { SvgXml } from "react-native-svg";
 
-const defaultDataWith6Colors = [
-  "#B0604D",
-  "#899F9C",
-  "#B3C680",
-  "#5C6265",
-  "#F5D399",
-  "#F1F1F1",
-];
-
-
 const SliderLanding = () => {
   const progress = useSharedValue<number>(0);
   const carouselRef = React.useRef<any>(null);
@@ -32,7 +22,7 @@ const SliderLanding = () => {
       per_page: 500,
     },
   });
-(banner);
+
 
   return (
     <View style={tw`w-full relative`}>

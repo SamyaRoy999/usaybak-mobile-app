@@ -1,0 +1,140 @@
+import { IconErowred, IconPrmt } from "@/icons/Icon";
+import tw from "@/lib/tailwind";
+import { _Width } from "@/utils/utils";
+import { Image } from "expo-image";
+import { router } from "expo-router";
+import React from "react";
+import SkeletonPlaceholder from "react-loading-skeleton";
+import 'react-loading-skeleton/dist/skeleton.css';
+import { FlatList, Text, TouchableOpacity, View } from "react-native";
+import { SvgXml } from "react-native-svg";
+
+const CategoryCard = ({ data, isLoading }: { data: any, isLoading?: boolean }) => {
+
+  const { id: categoryId, name: categoryName, videos = [] } = data || {};
+
+  if (isLoading) {
+    return (
+      <View style={tw`bg-primary mb-4 overflow-hidden p-4`}>
+        {/* Loading skeleton for category header */}
+        <View style={tw`flex-row w-full justify-between items-center mb-4`}>
+          <SkeletonPlaceholder width={120} height={40} borderRadius={8} />
+          <SkeletonPlaceholder width={80} height={40} borderRadius={20} />
+        </View>
+
+        {/* Loading skeleton for video cards */}
+        {[1, 2, 3].map((item) => (
+          <View key={item} style={tw`mb-6`}>
+            <SkeletonPlaceholder width="100%" height={180} borderRadius={8} />
+            <View style={tw`flex-row mt-3`}>
+              <SkeletonPlaceholder width={40} height={40} borderRadius={20} />
+              <View style={tw`ml-3 flex-1`}>
+                <SkeletonPlaceholder width="80%" height={20} />
+                <View style={tw`flex-row mt-2`}>
+                  <SkeletonPlaceholder width={80} height={16} />
+                  <SkeletonPlaceholder width={60} height={16} style={tw`ml-2`} />
+                  <SkeletonPlaceholder width={80} height={16} style={tw`ml-2`} />
+                </View>
+              </View>
+            </View>
+          </View>
+        ))}
+      </View>
+    );
+  }
+
+  if (!videos || videos.length === 0) {
+    return null;
+  }
+
+  return (
+    <View style={tw`bg-primary mb-4 overflow-hidden`}>
+      {/* Category header with "See all" button */}
+      <View style={tw`flex-row w-full justify-between items-center px-5 py-6`}>
+        <View style={tw`bg-secondaryRed100 py-3 px-4 rounded-lg`}>
+          <Text style={tw`font-poppinsMedium text-base text-secondaryBlack`}>
+            {categoryName}
+          </Text>
+        </View>
+        <View>
+          <TouchableOpacity
+            style={tw`py-3 flex-row gap-4 items-center px-5 rounded-full border border-secondary`}
+            onPress={() => router.push({
+              pathname: "/details/catagoryVideoDetails/[id]",
+              params: { id: String(categoryId) },
+            })}
+          >
+            <Text style={tw`font-poppinsMedium text-base text-secondary`}>
+              See all
+            </Text>
+            <SvgXml xml={IconErowred} />
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      {/* Videos list */}
+      <FlatList
+        data={videos}
+        keyExtractor={(item) => item?.id?.toString()}
+        renderItem={({ item }) => {
+          // if (!item) return null;
+          return (
+            <TouchableOpacity
+              onPress={() => router.push(`/details/video/${item?.id}`)}
+              style={tw`mb-4`}
+            >
+              {/* Thumbnail with promoted badge */}
+              <View style={tw`relative`}>
+                <Image
+                  source={{ uri: item?.thumbnail }}
+                  style={tw`w-full h-48`}
+                />
+                {item?.is_promoted && (
+                  <View style={tw`absolute top-2 flex-row items-center gap-2 right-2 bg-secondary px-4 py-1 rounded-full`}>
+                    <SvgXml xml={IconPrmt} />
+                    <Text style={tw`text-primaryText text-base font-poppinsBold`}>
+                      Promoted
+                    </Text>
+                  </View>
+                )}
+              </View>
+
+              {/* Video details */}
+              <View style={tw`flex-row px-4 py-3 items-start`}>
+                {/* Channel profile image */}
+                <TouchableOpacity onPress={() => router.push("/allPages/channelProfile")}>
+                  <Image
+                    source={{ uri: item.user?.avatar }}
+                    style={tw`w-10 h-10 rounded-full mr-3`}
+                  />
+                </TouchableOpacity>
+
+                {/* Text info */}
+                <View>
+                  <Text style={[tw`font-poppinsMedium text-lg text-secondaryBlack`, { width: _Width * 0.8 }]}>
+                    {item?.title}
+                  </Text>
+                  <View style={tw`flex-row items-center gap-2 flex-wrap`}>
+                    <Text style={tw`text-secondaryBlack text-base font-poppinsMedium`}>
+                      {item?.user?.channel_name}
+                    </Text>
+                    <View style={tw`bg-primaryGray rounded-full h-2 w-2`} />
+                    <Text style={tw`text-secondaryBlack text-base font-poppinsLight`}>
+                      {item?.views_count_formated} views
+                    </Text>
+                    <View style={tw`bg-primaryGray rounded-full h-2 w-2`} />
+                    <Text style={tw`text-secondaryBlack text-base font-poppinsLight`}>
+                      {item?.created_at_format}
+                    </Text>
+                  </View>
+                </View>
+              </View>
+            </TouchableOpacity>
+          )
+        }}
+      />
+    </View>
+  );
+};
+
+export default CategoryCard;

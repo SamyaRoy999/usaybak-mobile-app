@@ -1,15 +1,15 @@
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet, FlatList } from 'react-native'
-import React from 'react'
-import HeaderBar from '@/components/shear/HeaderBar'
-import tw from '@/lib/tailwind'
-import { router } from 'expo-router'
-import { IconBackLeft, IconCansel, IconErowred, IconPlay } from '@/icons/Icon'
-import { SvgXml } from 'react-native-svg'
-import { Image } from 'expo-image'
 import { historypage } from '@/assets/images/images'
+import HeaderBar from '@/components/shear/HeaderBar'
+import { IconBackLeft, IconCansel, IconPlay } from '@/icons/Icon'
+import data from "@/lib/data.json"
+import tw from '@/lib/tailwind'
 import { _HIGHT, _Width } from '@/utils/utils'
+import { Image } from 'expo-image'
 import { LinearGradient } from 'expo-linear-gradient'
-import data from "@/lib/data.json";
+import { router } from 'expo-router'
+import React from 'react'
+import { FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { SvgXml } from 'react-native-svg'
 
 const likeds = () => {
     return (
@@ -18,13 +18,13 @@ const likeds = () => {
 
                 <HeaderBar />
                 <View style={tw`flex-row justify-between items-center gap-5 px-5 mb-8`}>
-                    <View
-                        style={tw`bg-primaryText w-13 h-13 p-4 rounded-full flex-row items-center justify-center border border-primaryGray`}
-                    >
-                        <TouchableOpacity onPress={() => router.back()}>
+                    <TouchableOpacity onPress={() => router.back()}>
+                        <View
+                            style={tw`bg-primaryText w-13 h-13 p-4 rounded-full flex-row items-center justify-center border border-primaryGray`}
+                        >
                             <SvgXml xml={IconBackLeft} />
-                        </TouchableOpacity>
-                    </View>
+                        </View>
+                    </TouchableOpacity>
                     <Text style={tw`font-poppinsMedium text-xl `}>
                         Liked videos
                     </Text>

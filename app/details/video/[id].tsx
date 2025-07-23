@@ -7,10 +7,10 @@ import {
   IconLike,
   IconMessage,
   IconReport,
-  IconShare,
+  IconShare
 } from "@/icons/Icon";
 import tw from "@/lib/tailwind";
-import { useVideodetailQuery } from "@/redux/apiSlices/Home/homeApiSlices";
+import { useLikeVideoMutation, useVideodetailQuery } from "@/redux/apiSlices/videoDetails/videoDetailsSlice";
 import { _Width } from "@/utils/utils";
 import { useLocalSearchParams } from "expo-router";
 import { useVideoPlayer, VideoView } from "expo-video";
@@ -38,14 +38,27 @@ const SingleVideo = () => {
   const [feedbackText, setFeedbackText] = useState("");
   const [descriptionVisible, setDescriptionVisible] = useState(false);
   const [replyVisible, setReplyVisible] = useState(false);
-  
+  const [likeDislike, setLikeDislike] = useState<"like" | "dislike" | null>(null);
+
   const { data, isLoading, error } = useVideodetailQuery({ id });
   const videoDetails = data?.data;
-
+  
   const player = useVideoPlayer(videoDetails?.video || "", (player) => {
     player.loop = true;
     player.play();
   });
+
+  const [likeVideo] = useLikeVideoMutation();
+
+  const handlePress = async (action: "like" | "dislike") => {
+    setLikeDislike(action);
+    try {
+      await likeVideo({ action, video_id: id }).unwrap();
+    } catch (err: any) {
+      console.error("Failed to send action:", err);
+
+    }
+  };
 
   const reportOptions = [
     "Sexual content",
@@ -60,14 +73,17 @@ const SingleVideo = () => {
     "Legal issue",
     "Captions issue",
   ];
+  if (isLoading) {
+    <View>
+      <Text>Loading...</Text>
+    </View>
+  }
 
-  if (isLoading) return <Text>Loading...</Text>;
-  if (error || !videoDetails) return <Text>Error loading video</Text>;
 
   return (
-    <KeyboardAvoidingView 
+    <KeyboardAvoidingView
       enabled={true}
-      behavior={"padding"} 
+      behavior={"padding"}
       style={tw`flex-1 bg-primary`}
     >
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -84,25 +100,25 @@ const SingleVideo = () => {
           {/* Video Info */}
           <View style={tw`p-5`}>
             <Text style={tw`font-poppinsMedium text-xl`}>
-              {videoDetails.title}
+              {videoDetails?.title}
             </Text>
             <View style={tw`flex-row items-center gap-2`}>
               <Text style={tw`font-poppins text-sm text-primaryGrayDeep py-2`}>
-                {videoDetails.views_count_formated} views · {videoDetails.publish_time_formated}
+                {videoDetails?.views_count_formated} views · {videoDetails?.publish_time_formated}
               </Text>
               <TouchableOpacity onPress={() => setDescriptionVisible(true)}>
                 <Text style={tw`text-primaryBlue`}>...more</Text>
               </TouchableOpacity>
             </View>
-            
+
             {/* Channel Info */}
             <View style={tw`flex-row items-center gap-3`}>
               <Image
-                source={{ uri: videoDetails.user.avatar }}
+                source={{ uri: videoDetails?.user.avatar }}
                 style={tw`w-10 h-10 rounded-full`}
               />
               <Text style={tw`font-poppinsMedium text-base text-secondaryBlack`}>
-                {videoDetails.user.channel_name}
+                {videoDetails?.user.channel_name}
               </Text>
             </View>
 
@@ -113,16 +129,18 @@ const SingleVideo = () => {
             >
               <TouchableOpacity
                 style={tw`flex-row items-center gap-4 py-2 px-6 border justify-center border-primaryGray rounded-full`}
+                onPress={() => handlePress("like")}
               >
                 <SvgXml xml={IconLike} />
-                <Text>{videoDetails.likes_count_formated}</Text>
+                <Text>{videoDetails?.likes_count}</Text>
               </TouchableOpacity>
 
               <TouchableOpacity
                 style={tw`flex-row items-center gap-4 py-2 px-6 border justify-center border-primaryGray rounded-full`}
+                onPress={() => handlePress("dislike")}
               >
                 <SvgXml xml={IconDislike} />
-                <Text>{videoDetails.dislikes_count_formated}</Text>
+                <Text>{videoDetails?.dislikes_count_formated}</Text>
               </TouchableOpacity>
 
               <TouchableOpacity
@@ -142,41 +160,29 @@ const SingleVideo = () => {
               </TouchableOpacity>
             </ScrollView>
           </View>
-          
-          {/* Tags */}
-          <View style={tw`px-5 flex-row flex-wrap gap-2 mb-4`}>
-            {videoDetails.tags.map((tag, index) => (
-              <Text 
-                key={index} 
-                style={tw`bg-primaryBlue px-3 py-1 rounded-full text-white`}
-              >
-                #{tag}
-              </Text>
-            ))}
-          </View>
-          
+
           {/* Comments Preview */}
           <TouchableOpacity onPress={() => setIsVisible(true)}>
             <View style={tw`px-5 border border-primaryGray bg-primaryText mx-5 mb-6 py-3 rounded-lg`}>
               <View style={tw`flex-row items-center gap-3`}>
                 <Text style={tw`font-poppinsMedium text-lg`}>Comments</Text>
                 <Text style={tw`font-poppins text-sm text-primaryGrayDeep`}>
-                  {videoDetails.comment_replies_count_formated}
+                  {videoDetails?.comment_replies_count_formated}
                 </Text>
               </View>
               <View style={tw`flex-row items-center gap-2 py-4`}>
                 <Image
-                  source={{ uri: videoDetails.user.avatar }}
+                  source={{ uri: videoDetails?.user.avatar }}
                   style={tw`w-7 h-7 rounded-full`}
                 />
                 <Text style={tw`px-2 font-poppins text-sm`} numberOfLines={2}>
-                  {videoDetails.description || "No comments yet"}
+                  {videoDetails?.description || "No comments yet"}
                 </Text>
               </View>
             </View>
           </TouchableOpacity>
         </View>
-        
+
         {/* Share Modal */}
         <Modal
           visible={shareVisible}
@@ -201,7 +207,7 @@ const SingleVideo = () => {
                   </Text>
                 </View>
                 <View style={tw`bg-primaryText py-4 px-7 rounded-full mx-5`}>
-                  <Text numberOfLines={1}>{videoDetails.link || "https://example.com/video"}</Text>
+                  <Text numberOfLines={1}>{videoDetails?.link || "https://example.com/video"}</Text>
                 </View>
                 <TouchableOpacity
                   style={tw`flex-row items-center bg-primaryText justify-center my-3 mx-auto gap-4 py-4 px-9 border border-primaryGray rounded-full w-40`}
@@ -213,7 +219,7 @@ const SingleVideo = () => {
             </View>
           </View>
         </Modal>
-        
+
         {/* Comments Modal */}
         <Modal
           visible={isVisible}
@@ -235,24 +241,24 @@ const SingleVideo = () => {
                 {[...Array(5)].map((_, i) => (
                   <View key={i} style={tw`flex-row gap-4 pt-4 px-7`}>
                     <Image
-                      source={{ uri: videoDetails.user.avatar }}
+                      source={{ uri: videoDetails?.user.avatar }}
                       style={tw`w-10 h-10 rounded-full`}
                     />
                     <View style={tw`flex-1`}>
                       <View style={tw`flex-row items-center gap-2`}>
-                        <Text style={tw`font-poppinsMedium text-lg`}>User {i+1}</Text>
+                        <Text style={tw`font-poppinsMedium text-lg`}>User {i + 1}</Text>
                         <View style={tw`bg-primaryGray rounded-full h-2 w-2`} />
                         <Text>10 hours ago</Text>
                       </View>
                       <Text style={tw`font-poppins text-sm`}>
-                        This is a sample comment #{i+1} on the video
+                        This is a sample comment #{i + 1} on the video
                       </Text>
                       <View style={tw`flex-row gap-4 py-5`}>
                         <View style={tw`flex-row gap-4`}>
                           <SvgXml xml={Iconfevarite} />
                           <Text>2.6k</Text>
                         </View>
-                        <TouchableOpacity 
+                        <TouchableOpacity
                           onPress={() => setReplyVisible(true)}
                           style={tw`flex-row gap-4`}
                         >
@@ -266,7 +272,7 @@ const SingleVideo = () => {
               </ScrollView>
               <View style={tw`absolute bottom-0 w-full bg-primary py-3 px-5 flex-row items-center`}>
                 <Image
-                  source={{ uri: videoDetails.user.avatar }}
+                  source={{ uri: videoDetails?.user.avatar }}
                   style={tw`w-10 h-10 rounded-full`}
                 />
                 <TextInput
@@ -277,7 +283,7 @@ const SingleVideo = () => {
             </View>
           </View>
         </Modal>
-        
+
         {/* Report Modal */}
         <Modal
           visible={reportVisible}
@@ -326,7 +332,7 @@ const SingleVideo = () => {
             </View>
           </View>
         </Modal>
-        
+
         {/* Feedback Modal */}
         <Modal
           visible={feedbackVisible}
@@ -349,6 +355,7 @@ const SingleVideo = () => {
                   numberOfLines={6}
                   maxLength={1000}
                   value={feedbackText}
+                  textAlignVertical="top"
                   onChangeText={setFeedbackText}
                   placeholder="Describe your issue..."
                   placeholderTextColor="#888"
@@ -364,7 +371,6 @@ const SingleVideo = () => {
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={() => {
-                    console.log("Reported:", selectedReason, feedbackText);
                     setFeedbackVisible(false);
                   }}
                 >
@@ -374,7 +380,7 @@ const SingleVideo = () => {
             </View>
           </View>
         </Modal>
-        
+
         {/* Description Modal */}
         <Modal
           visible={descriptionVisible}
@@ -393,38 +399,37 @@ const SingleVideo = () => {
               </View>
               <ScrollView contentContainerStyle={tw`p-6`}>
                 <Text style={tw`text-lg font-poppinsMedium py-4`}>
-                  {videoDetails.title}
+                  {videoDetails?.title}
                 </Text>
                 <View style={tw`flex-row justify-between mb-6`}>
                   <View style={tw`items-center`}>
                     <Text style={tw`font-poppinsSemiBold text-3xl`}>
-                      {videoDetails.likes_count_formated}
+                      {videoDetails?.likes_count_formated}
                     </Text>
                     <Text style={tw`text-base font-poppins text-gray-600`}>Likes</Text>
                   </View>
                   <View style={tw`items-center`}>
                     <Text style={tw`font-poppinsSemiBold text-3xl`}>
-                      {videoDetails.views_count_formated}
+                      {videoDetails?.views_count_formated}
                     </Text>
                     <Text style={tw`text-base font-poppins text-gray-600`}>Views</Text>
                   </View>
                   <View style={tw`items-center`}>
                     <Text style={tw`font-poppinsSemiBold text-3xl`}>
-                      {videoDetails.publish_date.split('-')[0]}
+                      {videoDetails?.publish_date.split('-')[0]}
                     </Text>
                     <Text style={tw`text-base font-poppins text-gray-600`}>
-                      {videoDetails.publish_date.split('-').slice(1).join('-')}
+                      {videoDetails?.publish_date.split('-').slice(1).join('-')}
                     </Text>
                   </View>
                 </View>
                 <Text style={tw`font-poppins text-base text-black leading-6`}>
-                  {videoDetails.description || "No description available"}
+                  {videoDetails?.description || "No description available"}
                 </Text>
               </ScrollView>
             </View>
           </View>
         </Modal>
-        
         {/* Replies Modal */}
         <Modal
           visible={replyVisible}
@@ -445,17 +450,17 @@ const SingleVideo = () => {
                 {[...Array(5)].map((_, i) => (
                   <View key={i} style={tw`flex-row gap-4 pt-4 px-7`}>
                     <Image
-                      source={{ uri: videoDetails.user.avatar }}
+                      source={{ uri: videoDetails?.user?.avatar }}
                       style={tw`w-10 h-10 rounded-full`}
                     />
                     <View style={tw`flex-1`}>
                       <View style={tw`flex-row items-center gap-2`}>
-                        <Text style={tw`font-poppinsMedium text-lg`}>User {i+1}</Text>
+                        <Text style={tw`font-poppinsMedium text-lg`}>User {i + 1}</Text>
                         <View style={tw`bg-primaryGray rounded-full h-2 w-2`} />
                         <Text>10 hours ago</Text>
                       </View>
                       <Text style={tw`font-poppins text-sm`}>
-                        This is a sample reply #{i+1} to the comment
+                        This is a sample reply #{i + 1} to the comment
                       </Text>
                       <View style={tw`flex-row gap-4 py-5`}>
                         <View style={tw`flex-row gap-4`}>
@@ -469,7 +474,7 @@ const SingleVideo = () => {
               </ScrollView>
               <View style={tw`absolute bottom-0 w-full bg-primary py-3 px-5 flex-row items-center`}>
                 <Image
-                  source={{ uri: videoDetails.user.avatar }}
+                  source={{ uri: videoDetails?.user?.avatar }}
                   style={tw`w-10 h-10 rounded-full`}
                 />
                 <TextInput
