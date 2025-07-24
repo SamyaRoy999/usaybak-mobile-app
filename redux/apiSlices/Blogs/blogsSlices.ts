@@ -2,7 +2,7 @@
 import { api } from "../../api/baseApi";
 
 // authApiSlices.ts
-const homeApiSlices = api.injectEndpoints({
+const blogsSlices = api.injectEndpoints({
     endpoints: (builder) => ({
         blogs: builder.query<any, any>({
             query: () => ({
@@ -11,8 +11,15 @@ const homeApiSlices = api.injectEndpoints({
             }),
             providesTags: ["blogs"],
         }),
+        blogsDetail: builder.query<any, { id: any }>({
+            query: ({ id }) => ({
+                url: `/blogs/${id}`,
+                method: "GET",
+            }),
+            providesTags: ["blogs"],
+        }),
     }),
 
 });
 
-export const { useBlogsQuery } = homeApiSlices;
+export const { useBlogsQuery, useBlogsDetailQuery } = blogsSlices;

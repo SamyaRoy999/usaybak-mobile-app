@@ -4,8 +4,6 @@ import { _Width } from "@/utils/utils";
 import { Image } from "expo-image";
 import { router } from "expo-router";
 import React from "react";
-import SkeletonPlaceholder from "react-loading-skeleton";
-import 'react-loading-skeleton/dist/skeleton.css';
 import { FlatList, Text, TouchableOpacity, View } from "react-native";
 import { SvgXml } from "react-native-svg";
 
@@ -16,29 +14,9 @@ const CategoryCard = ({ data, isLoading }: { data: any, isLoading?: boolean }) =
   if (isLoading) {
     return (
       <View style={tw`bg-primary mb-4 overflow-hidden p-4`}>
-        {/* Loading skeleton for category header */}
         <View style={tw`flex-row w-full justify-between items-center mb-4`}>
-          <SkeletonPlaceholder width={120} height={40} borderRadius={8} />
-          <SkeletonPlaceholder width={80} height={40} borderRadius={20} />
+         <Text>Loading...</Text>
         </View>
-
-        {/* Loading skeleton for video cards */}
-        {[1, 2, 3].map((item) => (
-          <View key={item} style={tw`mb-6`}>
-            <SkeletonPlaceholder width="100%" height={180} borderRadius={8} />
-            <View style={tw`flex-row mt-3`}>
-              <SkeletonPlaceholder width={40} height={40} borderRadius={20} />
-              <View style={tw`ml-3 flex-1`}>
-                <SkeletonPlaceholder width="80%" height={20} />
-                <View style={tw`flex-row mt-2`}>
-                  <SkeletonPlaceholder width={80} height={16} />
-                  <SkeletonPlaceholder width={60} height={16} style={tw`ml-2`} />
-                  <SkeletonPlaceholder width={80} height={16} style={tw`ml-2`} />
-                </View>
-              </View>
-            </View>
-          </View>
-        ))}
       </View>
     );
   }
