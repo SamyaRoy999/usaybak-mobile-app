@@ -1,4 +1,3 @@
-import { blogeImg } from "@/assets/images/images";
 import HeaderBar from "@/components/shear/HeaderBar";
 import { IconBackLeft } from "@/icons/Icon";
 import tw from "@/lib/tailwind";
@@ -42,7 +41,6 @@ if (!blog?.data) {
 // Now safely destructure after all checks
 const { title, description, image } = blog.data;
 
-console.log(title); 
   const htmlContent = `
       <html>
         <head>
@@ -77,7 +75,7 @@ console.log(title);
             Blog Details
           </Text>
         </View>
-        <Image source={blogeImg} style={tw`w-full h-72`} />
+        <Image source={image} style={tw`w-full h-72`} />
         <Text style={tw`font-poppinsMedium text-lg px-4 py-5`}>
           {title}
         </Text>

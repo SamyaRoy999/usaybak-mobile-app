@@ -19,7 +19,6 @@ const catagoryVideoDetails = () => {
     });
 
     const promotedVideo = promoted?.data?.data;
-    console.log(promotedVideo, "promotedVideo promotedVideo",id);
 
     // spasific caragory api
     const { data, isLoading, error } = useCatagoryDetailsQuery({ id });

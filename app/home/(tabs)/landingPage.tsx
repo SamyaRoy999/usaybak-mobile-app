@@ -20,9 +20,7 @@ const landingPage = () => {
   // caragoryVideo
   const {
     data: caragoryVideos,
-    isFetching,
     isLoading,
-    refetch,
   } = useCaragoryVideosQuery({
     params: {
       per_page: 500,
