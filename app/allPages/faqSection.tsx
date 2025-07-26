@@ -30,7 +30,7 @@ const FaqSection = () => {
     if (error) {
         return (
             <View style={tw`flex-1 justify-center items-center`}>
-                <Text>Error loading Promoted post</Text>
+                <Text>loading failed faqs data</Text>
             </View>
         );
     }

@@ -12,9 +12,16 @@ const accountSlice = api.injectEndpoints({
             }),
             providesTags: ["account"],
         }),
+        about_us: builder.query<any, any>({
+            query: () => ({
+                url: `/about-us`,
+                method: "GET",
+            }),
+            providesTags: ["account"],
+        }),
 
     }),
 
 });
 
-export const {useFaqsQuery } = accountSlice;
+export const { useFaqsQuery, useAbout_usQuery } = accountSlice;
