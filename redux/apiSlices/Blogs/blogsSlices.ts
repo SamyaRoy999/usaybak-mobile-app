@@ -4,9 +4,9 @@ import { api } from "../../api/baseApi";
 // authApiSlices.ts
 const blogsSlices = api.injectEndpoints({
     endpoints: (builder) => ({
-        blogs: builder.query<any, any>({
-            query: () => ({
-                url: `/blogs?per_page=10`,
+        blogs: builder.query<any, { page?: number }>({
+            query: ({ page = 1 }) => ({
+                url: `/blogs?per_page=10&page=${page}`,
                 method: "GET",
             }),
             providesTags: ["blogs"],
