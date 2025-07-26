@@ -37,14 +37,14 @@ const contactUs = () => {
     const [contact_send_message] = useContact_send_messageMutation();
 
     return (
-        <AlertNotificationRoot>
-            <KeyboardAvoidingView
-                enabled={true}
-                behavior={"padding"}
-                style={tw`bg-primary`}>
-                <ScrollView contentContainerStyle={tw`p-4`}
-                    showsVerticalScrollIndicator={false}
-                >
+        <KeyboardAvoidingView
+            enabled={true}
+            behavior={"padding"}
+            style={tw`bg-primary`}>
+            <ScrollView contentContainerStyle={tw`p-4`}
+                showsVerticalScrollIndicator={false}
+            >
+                <AlertNotificationRoot>
                     <HeaderBar />
                     <TouchableOpacity style={tw``} onPress={() => router.back()}>
                         <SvgXml xml={IconbackRight} />
@@ -98,10 +98,8 @@ const contactUs = () => {
 
                         })}
                         onSubmit={async (values) => {
-                            console.log(values);
                             try {
                                 const res = await contact_send_message(values).unwrap();
-                                console.log(res);
 
                                 if (res.status) {
                                     Toast.show({
@@ -220,9 +218,9 @@ const contactUs = () => {
                             );
                         }}
                     </Formik>
-                </ScrollView>
-            </KeyboardAvoidingView >
-        </AlertNotificationRoot>
+                </AlertNotificationRoot>
+            </ScrollView>
+        </KeyboardAvoidingView >
     )
 }
 

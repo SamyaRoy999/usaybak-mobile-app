@@ -1,40 +1,72 @@
-import { profileBanner, profleImg } from '@/assets/images/images'
 import HeaderBar from '@/components/shear/HeaderBar'
 import { IconBackLeft, IconErow, IconLikes, IconLoction, IconPhoto, IconVideo } from '@/icons/Icon'
 import tw from '@/lib/tailwind'
+import { useDashboardQuery } from '@/redux/apiSlices/Account/dashboardSlice'
 import { _HIGHT, _Width } from '@/utils/utils'
 import { Image } from 'expo-image'
 import { router } from 'expo-router'
 import React from 'react'
-import { Dimensions, ScrollView, Text, TouchableOpacity, View } from 'react-native'
+import { ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import { BarChart } from 'react-native-gifted-charts'
 import { SvgXml } from 'react-native-svg'
-const screenWidth = Dimensions.get("window").width;
+
 
 
 const dashboard = () => {
+    // const barData = [
+    //     { value: 2720, label: '01' },
+    //     { value: 2528, label: '02' },
+    //     { value: 1041, label: '03' },
+    //     { value: 6400, label: '04' },
+    //     { value: 1371, label: '05' },
+    //     { value: 1201, label: '06' },
+    //     { value: 1727, label: '07' },
+    //     { value: 6230, label: '08' },
+    //     { value: 4604, label: '09' },
+    //     { value: 2040, label: '10' },
+    //     { value: 6797, label: '11' },
+    //     { value: 0, label: '12' }
+    // ];
 
-    const barData = [
-        { value: 2720, label: '01' },
-        { value: 2528, label: '02' },
-        { value: 1041, label: '03' },
-        { value: 6400, label: '04' },
-        { value: 1371, label: '05' },
-        { value: 1201, label: '06' },
-        { value: 1727, label: '07' },
-        { value: 6230, label: '08' },
-        { value: 4604, label: '09' },
-        { value: 2040, label: '10' },
-        { value: 6797, label: '11' },
-        { value: 0, label: '12' }
-    ];
+    // ........... dashboard api ..........//
+
+    const { data: dashboardData, isLoading, error } = useDashboardQuery({})
+    if (isLoading) {
+        return (
+            <View style={tw`flex-1 justify-center items-center`}>
+                <Text>Loading...</Text>
+            </View>
+        );
+    }
+
+    if (error) {
+        return (
+            <View style={tw`flex-1 justify-center items-center`}>
+                <Text>Error loading Promoted post</Text>
+            </View>
+        );
+    }
+    const {
+        user: { bio, avatar, cover_image, channel_name, locations, services },
+        videos,
+        views,
+        likes,
+        analytics
+    } = dashboardData?.data;
+
+    console.log("console.log", videos, "console.log");
+
+    const barData = analytics?.views?.map((item: any) => ({
+        label: item.day.toString().padStart(2, '0'),
+        value: item.total_watch,
+    }));
 
     return (
         <View>
             <ScrollView showsVerticalScrollIndicator={false}>
 
                 <HeaderBar />
-                <View style={tw`flex-row items-center gap-5 px-5 mb-8`}>
+                <View style={tw`flex-row justify-between items-center gap-5 px-5 mb-8`}>
                     <View
                         style={tw`bg-primaryText w-13 h-13 p-4 rounded-full flex-row items-center justify-center border border-primaryGray`}
                     >
@@ -43,14 +75,15 @@ const dashboard = () => {
                         </TouchableOpacity>
                     </View>
                     <Text style={tw`font-poppinsMedium text-xl `}>
-                        Blog post title goes here
+                        Dashboard
                     </Text>
+                    <View></View>
                 </View>
 
-                <View style={tw`px-5 pt-5`}>
+                <View style={tw`px-8 pt-5 flex-row justify-center items-center`}>
                     {/* Profile banner */}
                     <Image
-                        source={profileBanner}
+                        source={cover_image}
                         style={[
                             tw`w-full rounded-2xl relative`,
                             {
@@ -62,23 +95,28 @@ const dashboard = () => {
                     <View
                         style={tw`bg-primary rounded-full h-28 w-28 flex-row items-center justify-center  right-[45%] -bottom-10 absolute`}
                     >
-                        <Image source={profleImg} style={tw`rounded-full h-24 w-24 `} />
+                        <Image source={avatar} style={tw`rounded-full h-24 w-24 `} />
                     </View>
                 </View>
                 <View style={tw`mt-14 flex-row justify-center  `}>
                     <View style={tw`flex-1 items-center justify-center`}>
-                        <Text style={tw`font-poppinsMedium text-xl pb-4`}>Haircut Pro</Text>
-                        <View style={tw`flex-row gap-3 p-1`}>
-                            <SvgXml xml={IconLoction} />
-                            <Text style={tw` text-base font-poppins `}>New work, USA</Text>
-                        </View>
+                        <Text style={tw`font-poppinsMedium text-xl pb-4`}>{channel_name}</Text>
+                        {locations?.find((loc: any) => loc.type === 'head-office') && (
+                            <View style={tw`flex-row gap-3 p-1 items-center`}>
+                                <SvgXml xml={IconLoction} />
+                                <Text style={tw`text-base font-poppins`}>
+                                    {locations.find((loc: any) => loc.type === 'head-office')?.location} (Head Office)
+                                </Text>
+                            </View>
+                        )}
+
                     </View>
                 </View>
                 <View style={tw`mt-10 mx-5 p-5 flex-row justify-between items-center border border-primaryGray rounded-xl`}>
                     <SvgXml xml={IconVideo} />
                     <View style={tw`flex-col justify-center items-center`}>
                         <Text style={tw`text-base font-poppins`}>Videos</Text>
-                        <Text style={tw`text-3xl font-poppinsSemiBold py-5`}>40</Text>
+                        <Text style={tw`text-3xl font-poppinsSemiBold py-5`}>{videos}</Text>
                     </View>
                 </View>
                 <View style={tw`flex-row items-center gap-4 pt-2 w-full px-5`}>
@@ -87,8 +125,8 @@ const dashboard = () => {
                     }]}>
                         <SvgXml xml={IconPhoto} />
                         <View style={tw`flex-col justify-center items-center`}>
-                            <Text style={tw`text-base font-poppins pt-4`}>Videos</Text>
-                            <Text style={tw`text-3xl font-poppinsSemiBold py-5`}>22,568</Text>
+                            <Text style={tw`text-base font-poppins pt-4`}>Views</Text>
+                            <Text style={tw`text-3xl font-poppinsSemiBold py-5`}>{views}</Text>
                         </View>
                     </View>
                     <View style={[tw` items-center  p-5 pt-4 border border-primaryGray rounded-xl`, {
@@ -97,29 +135,28 @@ const dashboard = () => {
                         <SvgXml xml={IconLikes} />
                         <View style={tw`flex-col justify-center items-center`}>
                             <Text style={tw`text-base font-poppins pt-4`}>Likes</Text>
-                            <Text style={tw`text-3xl font-poppinsSemiBold py-5`}>17,256</Text>
+                            <Text style={tw`text-3xl font-poppinsSemiBold py-5`}>{likes}</Text>
                         </View>
                     </View>
 
                 </View>
-                <TouchableOpacity onPress={()=> router.push("/allPages/analytics")} style={tw`border rounded-full w-3/6 justify-center  border-primaryGray flex-row items-center mx-5 mt-3 gap-2 px-3 py-2`}>
+                <TouchableOpacity onPress={() => router.push("/allPages/analytics")} style={tw`border rounded-full w-3/6 justify-center  border-primaryGray flex-row items-center mx-5 mt-3 gap-2 px-3 py-2`}>
                     <Text style={tw`font-poppins text-base`}>See full analytics</Text>
                     <SvgXml xml={IconErow} />
                 </TouchableOpacity>
                 {/* About section */}
                 <View style={tw`mt-10 mx-5 p-5  border border-primaryGray rounded-xl`}>
                     <Text style={tw`font-poppinsMedium text-xl pb-3`}>About</Text>
-                    <Text style={tw`font-poppins text-sm `}>Lorem ipsum dolor sit amet consectetur. Nibh sagittis ligula sem pulvinar elementum rhoncus lacus. Dignissim pretium vitae neque vulputate velit libero suscipit amet. Felis proin in tortor amet. Sit imperdiet ac aliquam leo est egestas. Sit id vitae tempus nulla ut consectetur mi lobortis nec. Convallis velit lectus aliquam elementum dignissim. Est risus adipiscing ornare et lorem </Text>
+                    <Text style={tw`font-poppins text-sm `}>{bio}</Text>
                 </View>
                 {/* Services */}
                 <View style={tw`mt-10 mx-5 p-5 flex-col justify-start  border border-primaryGray rounded-xl`}>
                     <Text style={tw`font-poppinsMedium text-xl pb-3`}>Services</Text>
-                    <Text style={tw`font-poppins text-base pb-2 `}>1. Haircuts & Trims </Text>
-                    <Text style={tw`font-poppins text-base pb-2 `}>2. Hair Styling</Text>
-                    <Text style={tw`font-poppins text-base pb-2 `}>3. Hair Coloring</Text>
-                    <Text style={tw`font-poppins text-base pb-2 `}>4. Hair Treatments</Text>
-                    <Text style={tw`font-poppins text-base pb-2 `}>5. Chemical Services </Text>
+                    {services.map((item: any) => (
+                        <Text key={item.id} style={tw`font-poppins text-base pb-2 `}> {item}</Text>
+                    ))}
                 </View>
+
                 <Text style={tw`font-poppins text-xl mx-5 pt-7 pb-3`}>Views analytics</Text>
                 {/* Bar Chart */}
                 <View style={tw`px-4 pb-3`}>
