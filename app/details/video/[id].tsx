@@ -10,11 +10,11 @@ import {
   IconShare
 } from "@/icons/Icon";
 import tw from "@/lib/tailwind";
-import { useLikeVideoMutation, useVideodetailQuery } from "@/redux/apiSlices/videoDetails/videoDetailsSlice";
+import { useLikeVideoMutation, useVideodetailQuery, useWatchVideoMutation } from "@/redux/apiSlices/videoDetails/videoDetailsSlice";
 import { _Width } from "@/utils/utils";
 import { useLocalSearchParams } from "expo-router";
 import { useVideoPlayer, VideoView } from "expo-video";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Image,
   KeyboardAvoidingView,
@@ -42,7 +42,7 @@ const SingleVideo = () => {
 
   const { data, isLoading, error } = useVideodetailQuery({ id });
   const videoDetails = data?.data;
-  
+   const [watchedVidew] = useWatchVideoMutation()
   const player = useVideoPlayer(videoDetails?.video || "", (player) => {
     player.loop = true;
     player.play();
@@ -59,6 +59,17 @@ const SingleVideo = () => {
 
     }
   };
+
+  useEffect(()=>{
+    setTimeout(async()=>{
+     try {
+      const res =await watchedVidew(id as any).unwrap()
+
+     } catch (error) {  
+      console.log(error)
+     }
+    },2000)
+  },[])
 
   const reportOptions = [
     "Sexual content",
@@ -79,7 +90,6 @@ const SingleVideo = () => {
     </View>
   }
 
-
   return (
     <KeyboardAvoidingView
       enabled={true}
@@ -93,6 +103,7 @@ const SingleVideo = () => {
           <VideoView
             style={styles.video}
             player={player}
+          
             allowsFullscreen
             allowsPictureInPicture
           />

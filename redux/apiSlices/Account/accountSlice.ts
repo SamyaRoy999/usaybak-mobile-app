@@ -19,9 +19,24 @@ const accountSlice = api.injectEndpoints({
             }),
             providesTags: ["account"],
         }),
+        contact_us: builder.query<any, any>({
+            query: () => ({
+                url: `/contact`,
+                method: "GET",
+            }),
+            providesTags: ["account"],
+        }),
+        contact_send_message: builder.mutation<any, any>({
+            query: (data) => ({
+                url: `/send-message`,
+                method: "POST",
+                body: data,
+            }),
+            invalidatesTags: ["account"],
+        }),
 
     }),
 
 });
 
-export const { useFaqsQuery, useAbout_usQuery } = accountSlice;
+export const { useFaqsQuery, useAbout_usQuery, useContact_usQuery , useContact_send_messageMutation} = accountSlice;

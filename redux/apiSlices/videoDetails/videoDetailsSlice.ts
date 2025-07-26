@@ -11,6 +11,14 @@ const videoDetailsSlice = api.injectEndpoints({
             }),
             providesTags: ["singleVideo"],
         }),
+        watchVideo: builder.mutation<any, { id: any }>({
+            query: (id) => ({
+                url: `/watch-history`,
+                method: "POST",
+                body : {video_id :id}
+            }),
+            invalidatesTags: ["singleVideo"],
+        }),
         likeVideo: builder.mutation<any, { action: string; video_id: any }>({
             query: (data) => ({
                 url: `/add_like_dislike`,
@@ -25,4 +33,4 @@ const videoDetailsSlice = api.injectEndpoints({
 
 });
 
-export const { useVideodetailQuery, useLikeVideoMutation } = videoDetailsSlice;
+export const { useVideodetailQuery, useLikeVideoMutation, useWatchVideoMutation } = videoDetailsSlice;

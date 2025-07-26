@@ -21,18 +21,18 @@ const landingPage = () => {
   const {
     data: caragoryVideos,
     isLoading,
+    refetch
   } = useCaragoryVideosQuery({
     params: {
       per_page: 500,
     },
   });
-
   return (
     <View>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={tw`pb-6`}>
         <HeaderBar />
         <SliderLanding />
-        <CarouselCard promotedVideo={promotedVideo}/>
+        <CarouselCard promotedVideo={promotedVideo} />
         <FlatList
           data={caragoryVideos?.data}
           keyExtractor={(item) => item.id.toString()}
