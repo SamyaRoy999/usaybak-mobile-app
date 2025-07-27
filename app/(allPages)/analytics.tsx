@@ -10,21 +10,6 @@ import { SvgXml } from 'react-native-svg'
 
 const Analytics = () => {
 
-    // const barData = [
-    //     { value: 2720, label: '01' },
-    //     { value: 2528, label: '02' },
-    //     { value: 1041, label: '03' },
-    //     { value: 6400, label: '04' },
-    //     { value: 1371, label: '05' },
-    //     { value: 1201, label: '06' },
-    //     { value: 1727, label: '07' },
-    //     { value: 6230, label: '08' },
-    //     { value: 4604, label: '09' },
-    //     { value: 2040, label: '10' },
-    //     { value: 6797, label: '11' },
-    //     { value: 0, label: '12' }
-    // ];
-
     const { data: analyticsData, isLoading, error } = useAnalyticsQuery({})
     if (isLoading) {
         return (
@@ -48,16 +33,15 @@ const Analytics = () => {
         value: item.total_watch,
     }));
 
-
     return (
         <View style={tw`flex-1 bg-white`}>
             <HeaderBar />
             <View style={tw`flex-row justify-between items-center gap-5 px-5 mb-8`}>
-                <View style={tw`bg-primaryText w-13 h-13 p-4 rounded-full flex-row items-center justify-center border border-primaryGray`}>
-                    <TouchableOpacity onPress={() => router.back()}>
+                <TouchableOpacity onPress={() => router.back()}>
+                    <View style={tw`bg-primaryText w-13 h-13 p-4 rounded-full flex-row items-center justify-center border border-primaryGray`}>
                         <SvgXml xml={IconBackLeft} />
-                    </TouchableOpacity>
-                </View>
+                    </View>
+                </TouchableOpacity>
                 <Text style={tw`font-poppinsMedium text-xl`}>Analytics</Text>
                 <View style={tw`w-13`}></View>
             </View>

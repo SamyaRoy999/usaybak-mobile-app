@@ -46,9 +46,16 @@ const accountSlice = api.injectEndpoints({
             }),
             invalidatesTags: ["account"],
         }),
+        terms_conditions: builder.query<any, any>({
+            query: () => ({
+                url: `/page?type=Terms %26 Conditions`,
+                method: "GET",
+            }),
+            providesTags: ["account"],
+        }),
 
     }),
 
 });
 
-export const { useFaqsQuery, useAbout_usQuery, useContact_usQuery, useContact_send_messageMutation, useAnalyticsQuery } = accountSlice;
+export const { useFaqsQuery, useAbout_usQuery, useContact_usQuery, useContact_send_messageMutation, useAnalyticsQuery, useTerms_conditionsQuery } = accountSlice;

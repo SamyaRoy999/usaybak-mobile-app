@@ -108,14 +108,14 @@ const my_videos = () => {
                             </View>
                             <ScrollView contentContainerStyle={tw`px-4  flex-1 items-center justify-center`} showsVerticalScrollIndicator={false}>
                                 <View style={tw`flex-col justify-center gap-3`}>
-                                    <TouchableOpacity onPress={()=>router.push("/allPages/uploadVideo")} style={tw` py-5 bg-primaryText flex-row rounded-2xl justify-between px-4 items-center gap-3 `}>
+                                    <TouchableOpacity onPress={()=>router.push("/(allPages)/uploadVideo")} style={tw` py-5 bg-primaryText flex-row rounded-2xl justify-between px-4 items-center gap-3 `}>
                                         <View style={tw`flex-row items-center gap-3`}>
                                             <SvgXml xml={IconUpload} />
                                             <Text style={tw`text-lg font-poppins`}>Upload video <Text style={tw`text-sm`}>($9.99 / month)</Text> </Text>
                                         </View>
                                         <SvgXml xml={IconErowBack} />
                                     </TouchableOpacity>
-                                    <TouchableOpacity onPress={()=> router.push("/allPages/youTubeLink")} style={tw` py-5 bg-primaryText flex-row rounded-2xl justify-between px-4 items-center gap-3 `}>
+                                    <TouchableOpacity onPress={()=> router.push("/(allPages)/youTubeLink")} style={tw` py-5 bg-primaryText flex-row rounded-2xl justify-between px-4 items-center gap-3 `}>
                                         <View style={tw`flex-row items-center gap-3`}>
                                             <SvgXml xml={IconYoutub} />
                                             <Text style={tw`text-lg font-poppins`}>YouTube Link  <Text style={tw`text-sm`}>(Free)</Text> </Text>
