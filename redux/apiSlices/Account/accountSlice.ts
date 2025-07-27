@@ -3,8 +3,20 @@ import { api } from "../../api/baseApi";
 
 // .........authApiSlices.ts..........//
 const accountSlice = api.injectEndpoints({
+
     endpoints: (builder) => ({
+        // .............. Dashboard...........//
+
+        analytics: builder.query<any, any>({
+            query: () => ({
+                url: `/analytics?type=monthly`,
+                method: "GET",
+            }),
+            providesTags: ["account"],
+        }),
+
         // .................. faq.................//
+
         faqs: builder.query<any, any>({
             query: () => ({
                 url: `/faqs`,
@@ -39,4 +51,4 @@ const accountSlice = api.injectEndpoints({
 
 });
 
-export const { useFaqsQuery, useAbout_usQuery, useContact_usQuery , useContact_send_messageMutation} = accountSlice;
+export const { useFaqsQuery, useAbout_usQuery, useContact_usQuery, useContact_send_messageMutation, useAnalyticsQuery } = accountSlice;

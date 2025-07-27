@@ -54,8 +54,6 @@ const dashboard = () => {
         analytics
     } = dashboardData?.data;
 
-    console.log("console.log", videos, "console.log");
-
     const barData = analytics?.views?.map((item: any) => ({
         label: item.day.toString().padStart(2, '0'),
         value: item.total_watch,
@@ -67,13 +65,13 @@ const dashboard = () => {
 
                 <HeaderBar />
                 <View style={tw`flex-row justify-between items-center gap-5 px-5 mb-8`}>
-                    <View
-                        style={tw`bg-primaryText w-13 h-13 p-4 rounded-full flex-row items-center justify-center border border-primaryGray`}
-                    >
-                        <TouchableOpacity onPress={() => router.back()}>
+                    <TouchableOpacity onPress={() => router.back()}>
+                        <View
+                            style={tw`bg-primaryText w-13 h-13 p-4 rounded-full flex-row items-center justify-center border border-primaryGray`}
+                        >
                             <SvgXml xml={IconBackLeft} />
-                        </TouchableOpacity>
-                    </View>
+                        </View>
+                    </TouchableOpacity>
                     <Text style={tw`font-poppinsMedium text-xl `}>
                         Dashboard
                     </Text>
@@ -152,8 +150,8 @@ const dashboard = () => {
                 {/* Services */}
                 <View style={tw`mt-10 mx-5 p-5 flex-col justify-start  border border-primaryGray rounded-xl`}>
                     <Text style={tw`font-poppinsMedium text-xl pb-3`}>Services</Text>
-                    {services.map((item: any) => (
-                        <Text key={item.id} style={tw`font-poppins text-base pb-2 `}> {item}</Text>
+                    {services.map((item: any, index: any) => (
+                        <Text key={index} style={tw`font-poppins text-base pb-2 `}> {item}</Text>
                     ))}
                 </View>
 

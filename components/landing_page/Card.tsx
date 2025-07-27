@@ -7,11 +7,12 @@ import { Image, Text, TouchableOpacity, View } from "react-native";
 import { SvgXml } from "react-native-svg";
 
 const Card = ({ data }: any) => {
- 
+
   if (!data) return null;
   const { thumbnail, title, views_count_formated, created_at_format, is_promoted, id, user } =
     data;
-       const isPromoted = is_promoted === 1;
+  const isPromoted = is_promoted === 1;
+
   return (
     <View style={tw`bg-primary mb-4 overflow-hidden`}>
       {/* Thumbnail with Promoted badge */}

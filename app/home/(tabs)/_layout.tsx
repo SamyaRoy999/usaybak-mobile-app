@@ -171,7 +171,7 @@ function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
                   <TouchableOpacity
                     onPress={() => {
                       setUploadModalVisible(false);
-                      router.push("/allPages/uploadVideo");
+                      router.push("/(allPages)/uploadVideo");
                     }}
                     style={tw`py-5 bg-primaryText flex-row rounded-2xl justify-between px-4 items-center gap-3`}
                   >
@@ -186,7 +186,7 @@ function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
                   <TouchableOpacity
                     onPress={() => {
                       setUploadModalVisible(false);
-                      router.push("/allPages/youTubeLink");
+                      router.push("/(allPages)/youTubeLink");
                     }}
                     style={tw`py-5 bg-primaryText flex-row rounded-2xl justify-between px-4 items-center gap-3`}
                   >

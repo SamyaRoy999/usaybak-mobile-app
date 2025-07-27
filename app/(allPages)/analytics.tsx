@@ -1,6 +1,7 @@
 import HeaderBar from '@/components/shear/HeaderBar'
 import { IconBackLeft } from '@/icons/Icon'
 import tw from '@/lib/tailwind'
+import { useAnalyticsQuery } from '@/redux/apiSlices/Account/accountSlice'
 import { router } from 'expo-router'
 import React from 'react'
 import { Text, TouchableOpacity, View } from 'react-native'
@@ -8,20 +9,45 @@ import { BarChart } from "react-native-gifted-charts"
 import { SvgXml } from 'react-native-svg'
 
 const Analytics = () => {
-    const barData = [
-        { value: 2720, label: '01' },
-        { value: 2528, label: '02' },
-        { value: 1041, label: '03' },
-        { value: 6400, label: '04' },
-        { value: 1371, label: '05' },
-        { value: 1201, label: '06' },
-        { value: 1727, label: '07' },
-        { value: 6230, label: '08' },
-        { value: 4604, label: '09' },
-        { value: 2040, label: '10' },
-        { value: 6797, label: '11' },
-        { value: 0, label: '12' }
-    ];
+
+    // const barData = [
+    //     { value: 2720, label: '01' },
+    //     { value: 2528, label: '02' },
+    //     { value: 1041, label: '03' },
+    //     { value: 6400, label: '04' },
+    //     { value: 1371, label: '05' },
+    //     { value: 1201, label: '06' },
+    //     { value: 1727, label: '07' },
+    //     { value: 6230, label: '08' },
+    //     { value: 4604, label: '09' },
+    //     { value: 2040, label: '10' },
+    //     { value: 6797, label: '11' },
+    //     { value: 0, label: '12' }
+    // ];
+
+    const { data: analyticsData, isLoading, error } = useAnalyticsQuery({})
+    if (isLoading) {
+        return (
+            <View style={tw`flex-1 justify-center items-center`}>
+                <Text>Loading...</Text>
+            </View>
+        );
+    }
+
+    if (error) {
+        return (
+            <View style={tw`flex-1 justify-center items-center`}>
+                <Text>Error loading analytics post</Text>
+            </View>
+        );
+    }
+    const { analytics, total_dislikes, total_likes, total_views } = analyticsData?.data;
+
+    const barData = analytics.map((item: any) => ({
+        label: item.day.toString().padStart(2, '0'),
+        value: item.total_watch,
+    }));
+
 
     return (
         <View style={tw`flex-1 bg-white`}>
@@ -40,20 +66,22 @@ const Analytics = () => {
             <View style={tw`flex-row w-full justify-center items-center mb-8`}>
                 <View style={tw`border w-32 h-32 flex-col items-center justify-center border-gray-200 rounded-lg`}>
                     <Text style={tw`font-poppins text-sm text-black`}>Views</Text>
-                    <Text style={tw`font-poppinsSemiBold text-xl`}>10,256</Text>
+                    <Text style={tw`font-poppinsSemiBold text-xl`}>{total_views}</Text>
                 </View>
                 <View style={tw`border w-32 h-32 flex-col items-center justify-center border-gray-200 rounded-lg`}>
                     <Text style={tw`font-poppins text-sm text-black`}>Likes</Text>
-                    <Text style={tw`font-poppinsSemiBold text-xl`}>1,256</Text>
+                    <Text style={tw`font-poppinsSemiBold text-xl`}>
+                        {total_likes}
+                    </Text>
                 </View>
                 <View style={tw`border w-32 h-32 flex-col items-center justify-center border-gray-200 rounded-lg`}>
                     <Text style={tw`font-poppins text-sm text-black`}>Dislikes</Text>
-                    <Text style={tw`font-poppinsSemiBold text-xl`}>256</Text>
+                    <Text style={tw`font-poppinsSemiBold text-xl`}>{total_dislikes}</Text>
                 </View>
             </View>
 
             <Text style={tw`text-xl font-poppins px-12 py-6 text-center`}>
-                Your channel got 10,256 views in this month
+                Your channel got {total_views} views in this month
             </Text>
             {/* Bar Chart */}
             <View style={tw`px-4`}>

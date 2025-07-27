@@ -65,14 +65,14 @@ const videodetails = () => {
                     </View>
                     {history && (
                         <View style={tw`absolute bg-primaryText right-5 w-56 top-14 z-20 b shadow-lg rounded-lg`}>
-                            <TouchableOpacity onPress={() => router.push("/allPages/editvideo")}>
+                            <TouchableOpacity onPress={() => router.push("/(allPages)/editvideo")}>
                                 <View style={tw`flex-row items-start gap-3 px-5 py-4`}>
                                     <SvgXml xml={IconEdit} />
                                     <Text style={tw`font-poppinsMedium text-base `} >Edit video</Text>
                                 </View>
                             </TouchableOpacity>
 
-                            <TouchableOpacity onPress={() => router.push("/allPages/analytics")} style={tw`border border-y border-primaryGray`}>
+                            <TouchableOpacity onPress={() => router.push("/(allPages)/analytics")} style={tw`border border-y border-primaryGray`}>
                                 <View style={tw`flex-row items-start gap-3 px-5 py-4`}>
                                     <SvgXml xml={IconAnalytics} />
                                     <Text style={tw`font-poppinsMedium text-base `} >Analytics</Text>

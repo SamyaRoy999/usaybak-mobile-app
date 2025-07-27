@@ -47,7 +47,7 @@ const Account = () => {
           </TouchableOpacity>
           <View style={tw``}>
             <TouchableOpacity
-              onPress={() => router.push("/allPages/history")}
+              onPress={() => router.push("/(allPages)/history")}
               style={tw`py-3 px-5 rounded-full border border-primaryGray`}
             >
               <Text style={tw`font-poppinsMedium text-base text-black`}>
@@ -103,7 +103,7 @@ const Account = () => {
           <View style={tw``}>
             <TouchableOpacity
               style={tw`py-3 px-5 rounded-full border border-primaryGray`}
-              onPress={() => router.push("/allPages/likeds")}
+              onPress={() => router.push("/(allPages)/likeds")}
             >
               <Text style={tw`font-poppinsMedium text-base text-black`}>
                 View all
@@ -150,7 +150,7 @@ const Account = () => {
           {/* dashboard */}
           <TouchableOpacity
             style={tw`flex-row w-full justify-between items-center px-8 pt-6`}
-            onPress={() => router.push("/allPages/dashboard")}
+            onPress={() => router.push("/(allPages)/dashboard")}
           >
             <View style={tw` flex-row gap-2 py-3 rounded-lg`}>
               <SvgXml xml={IconDeshboard} />
@@ -169,7 +169,7 @@ const Account = () => {
           {/* My videos */}
           <TouchableOpacity
             style={tw`flex-row w-full justify-between items-center px-8 py-2`}
-            onPress={() => router.push("/allPages/my_videos")}>
+            onPress={() => router.push("/(allPages)/my_videos")}>
 
             <View style={tw` flex-row gap-2 py-3 rounded-lg`}>
               <SvgXml xml={IconMyvideos} />
@@ -189,7 +189,7 @@ const Account = () => {
           {/* Analytics */}
           <TouchableOpacity
             style={tw`flex-row w-full justify-between items-center px-8 py-2`}
-            onPress={() => router.push("/allPages/analytics")}
+            onPress={() => router.push("/(allPages)/analytics")}
           >
             <View style={tw` flex-row gap-2 py-3 rounded-lg`}>
               <SvgXml xml={IconAnalytics} />
@@ -209,7 +209,7 @@ const Account = () => {
           {/*  Settings */}
           <TouchableOpacity
             style={tw`flex-row w-full justify-between items-center px-8 py-2`}
-            onPress={() => router.push('/allPages/settings')}
+            onPress={() => router.push('/(allPages)/settings')}
 
           >
             <View style={tw` flex-row gap-2 py-3 rounded-lg`}>
@@ -231,7 +231,7 @@ const Account = () => {
         {/* Reports */}
         <TouchableOpacity
           style={tw`flex-row w-full justify-between items-center px-8 py-2`}
-          onPress={() => router.push("/allPages/report")}
+          onPress={() => router.push("/(allPages)/report")}
         >
           <View style={tw` flex-row gap-2 py-3 rounded-lg`} >
             <SvgXml xml={IconReports} />
@@ -254,7 +254,7 @@ const Account = () => {
         {/* Reports */}
         <TouchableOpacity
           style={tw`flex-row w-full justify-between items-center px-8 py-2`}
-          onPress={() => router.push("/allPages/faqSection")}
+          onPress={() => router.push("/(allPages)/faqSection")}
         >
           <View style={tw` flex-row gap-2 py-3 rounded-lg`}>
             <SvgXml xml={IconFAQ} />
@@ -272,7 +272,7 @@ const Account = () => {
         {/* Aboutus */}
         <TouchableOpacity
           style={tw`flex-row w-full justify-between items-center px-8 py-2`}
-          onPress={() => router.push("/allPages/aboutUs")}
+          onPress={() => router.push("/(allPages)/aboutUs")}
         >
           <View style={tw` flex-row gap-2 py-3 rounded-lg`}>
             <SvgXml xml={IconAboutus} />
@@ -289,7 +289,7 @@ const Account = () => {
         </TouchableOpacity>
         {/* Reports */}
         <TouchableOpacity
-          onPress={() => router.push("/allPages/contactUs")}
+          onPress={() => router.push("/(allPages)/contactUs")}
           style={tw`flex-row w-full justify-between items-center px-8 py-2`}
         >
           <View style={tw` flex-row gap-2 py-3 rounded-lg`}>
@@ -308,7 +308,7 @@ const Account = () => {
         {/* Reports */}
         <TouchableOpacity
           style={tw`flex-row w-full justify-between items-center px-8 py-2`}
-          onPress={() => router.push("/allPages/termsConditions")}
+          onPress={() => router.push("/(allPages)/termsConditions")}
         >
           <View style={tw` flex-row gap-2 py-3 rounded-lg`}>
             <SvgXml xml={IconTerms} />
@@ -324,7 +324,7 @@ const Account = () => {
         </TouchableOpacity>
         <TouchableOpacity
           style={tw`flex-row w-full justify-between items-center px-8 py-2`}
-          onPress={() => router.push("/allPages/onsiteAccount")}
+          onPress={() => router.push("/(allPages)/onsiteAccount")}
         >
           <View style={tw` flex-row gap-2 py-3 rounded-lg`}>
             <SvgXml xml={IconOnsite} />
