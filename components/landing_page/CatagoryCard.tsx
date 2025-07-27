@@ -15,7 +15,7 @@ const CategoryCard = ({ data, isLoading }: { data: any, isLoading?: boolean }) =
     return (
       <View style={tw`bg-primary mb-4 overflow-hidden p-4`}>
         <View style={tw`flex-row w-full justify-between items-center mb-4`}>
-         <Text>Loading...</Text>
+          <Text>Loading...</Text>
         </View>
       </View>
     );
@@ -53,9 +53,9 @@ const CategoryCard = ({ data, isLoading }: { data: any, isLoading?: boolean }) =
       {/* Videos list */}
       <FlatList
         data={videos}
-        keyExtractor={(item) => item?.id?.toString()}
+        keyExtractor={(item) => item?.id}
         renderItem={({ item }) => {
-          // if (!item) return null;
+          const isPromoted = item?.is_promoted === 1;
           return (
             <TouchableOpacity
               onPress={() => router.push(`/details/video/${item?.id}`)}
@@ -67,7 +67,7 @@ const CategoryCard = ({ data, isLoading }: { data: any, isLoading?: boolean }) =
                   source={{ uri: item?.thumbnail }}
                   style={tw`w-full h-48`}
                 />
-                {item?.is_promoted && (
+                {isPromoted && (
                   <View style={tw`absolute top-2 flex-row items-center gap-2 right-2 bg-secondary px-4 py-1 rounded-full`}>
                     <SvgXml xml={IconPrmt} />
                     <Text style={tw`text-primaryText text-base font-poppinsBold`}>
@@ -75,12 +75,13 @@ const CategoryCard = ({ data, isLoading }: { data: any, isLoading?: boolean }) =
                     </Text>
                   </View>
                 )}
+
               </View>
 
               {/* Video details */}
               <View style={tw`flex-row px-4 py-3 items-start`}>
                 {/* Channel profile image */}
-                <TouchableOpacity onPress={() => router.push("/allPages/channelProfile")}>
+                <TouchableOpacity onPress={() => router.push("/(allPages)/channelProfile")}>
                   <Image
                     source={{ uri: item.user?.avatar }}
                     style={tw`w-10 h-10 rounded-full mr-3`}

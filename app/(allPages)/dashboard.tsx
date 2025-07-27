@@ -140,7 +140,7 @@ const dashboard = () => {
                     </View>
 
                 </View>
-                <TouchableOpacity onPress={() => router.push("/allPages/analytics")} style={tw`border rounded-full w-3/6 justify-center  border-primaryGray flex-row items-center mx-5 mt-3 gap-2 px-3 py-2`}>
+                <TouchableOpacity onPress={() => router.push("/(allPages)/analytics")} style={tw`border rounded-full w-3/6 justify-center  border-primaryGray flex-row items-center mx-5 mt-3 gap-2 px-3 py-2`}>
                     <Text style={tw`font-poppins text-base`}>See full analytics</Text>
                     <SvgXml xml={IconErow} />
                 </TouchableOpacity>

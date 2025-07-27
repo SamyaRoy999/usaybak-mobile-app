@@ -11,7 +11,7 @@ const Card = ({ data }: any) => {
   if (!data) return null;
   const { thumbnail, title, views_count_formated, created_at_format, is_promoted, id, user } =
     data;
-    
+       const isPromoted = is_promoted === 1;
   return (
     <View style={tw`bg-primary mb-4 overflow-hidden`}>
       {/* Thumbnail with Promoted badge */}
@@ -22,7 +22,7 @@ const Card = ({ data }: any) => {
             style={tw`w-full h-48`}
             resizeMode="cover"
           />
-          {is_promoted && (
+          {isPromoted && (
             <View
               style={tw`absolute top-2 flex-row items-center gap-2 right-2 bg-secondary px-4 py-1 rounded-full`}
             >
@@ -37,7 +37,7 @@ const Card = ({ data }: any) => {
         <View style={tw`flex-row px-4 py-3 items-start`}>
           {/* Channel profile image */}
           <TouchableOpacity
-            onPress={() => router.push("/allPages/channelProfile")}
+            onPress={() => router.push("/(allPages)/channelProfile")}
           >
             <Image
               source={{ uri: user?.avatar }}
