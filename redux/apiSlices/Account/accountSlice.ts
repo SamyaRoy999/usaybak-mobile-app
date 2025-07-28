@@ -5,6 +5,23 @@ import { api } from "../../api/baseApi";
 const accountSlice = api.injectEndpoints({
 
     endpoints: (builder) => ({
+
+        // .............. History...........//
+        historyVideo: builder.query<any, any>({
+            query: () => ({
+                url: `/watch-history?per_page=5`,
+                method: "GET",
+            }),
+            providesTags: ["account"],
+        }),
+        // .............. Like...........//
+        likeVideo: builder.query<any, any>({
+            query: () => ({
+                url: `/like_videos?per_page=5`,
+                method: "GET", 
+            }),
+            providesTags: ["account"],
+        }),
         // .............. Dashboard...........//
 
         analytics: builder.query<any, any>({
@@ -15,6 +32,23 @@ const accountSlice = api.injectEndpoints({
             providesTags: ["account"],
         }),
 
+        // ...setting page for get profile ....//
+
+        profile: builder.query<any, any>({
+            query: () => ({
+                url: `/profile`,
+                method: "GET",
+            }),
+            providesTags: ["account"],
+        }),
+        editProfile: builder.mutation<any, any>({
+            query: (data) => ({
+                url: `/edit-profile`,
+                method: "POST",
+                body: data,
+            }),
+            invalidatesTags: ["user"],
+        }),
         // .................. faq.................//
 
         faqs: builder.query<any, any>({
@@ -53,9 +87,31 @@ const accountSlice = api.injectEndpoints({
             }),
             providesTags: ["account"],
         }),
+        onsiteAccountReg: builder.mutation<any, any>({
+            query: (data) => ({
+                url: `/auth/register`,
+                method: "POST",
+                body: data,
+
+            }),
+            invalidatesTags: ["user"],
+        }),
 
     }),
 
 });
 
-export const { useFaqsQuery, useAbout_usQuery, useContact_usQuery, useContact_send_messageMutation, useAnalyticsQuery, useTerms_conditionsQuery } = accountSlice;
+export const {
+    useFaqsQuery,
+    useAbout_usQuery,
+    useContact_usQuery,
+    useContact_send_messageMutation,
+    useAnalyticsQuery,
+    useTerms_conditionsQuery,
+    useProfileQuery,
+    useEditProfileMutation,
+    useOnsiteAccountRegMutation,
+    useHistoryVideoQuery,
+    useLikeVideoQuery
+    
+} = accountSlice;

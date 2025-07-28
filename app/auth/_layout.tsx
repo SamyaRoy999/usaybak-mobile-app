@@ -1,6 +1,5 @@
-import { View, Text } from "react-native";
-import React from "react";
 import { Stack } from "expo-router";
+import React from "react";
 
 const authLayout = () => {
   return (
@@ -15,6 +14,7 @@ const authLayout = () => {
       <Stack.Screen name="forgotPass" />
       <Stack.Screen name="verify" />
       <Stack.Screen name="newPass" />
+      <Stack.Screen name="onSiteOtp" />
     </Stack>
   );
 };

@@ -13,8 +13,7 @@ import * as Yup from "yup"
 const contactUs = () => {
 
     const { data: contact_us, isLoading, error } = useContact_usQuery({})
-
-
+    const [contact_send_message] = useContact_send_messageMutation();
 
     if (isLoading) {
         return (
@@ -34,14 +33,13 @@ const contactUs = () => {
     const { email, phone, address } = contact_us?.data
 
     //  ..........api call send message........
-    const [contact_send_message] = useContact_send_messageMutation();
 
     return (
         <KeyboardAvoidingView
             enabled={true}
             behavior={"padding"}
             style={tw`bg-primary`}>
-            <ScrollView contentContainerStyle={tw`p-4`}
+            <ScrollView contentContainerStyle={tw`p-4 mb-6`}
                 showsVerticalScrollIndicator={false}
             >
                 <AlertNotificationRoot>

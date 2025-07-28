@@ -17,6 +17,7 @@ import {
   IconTime
 } from "@/icons/Icon";
 import tw from "@/lib/tailwind";
+import { useHistoryVideoQuery } from "@/redux/apiSlices/Account/accountSlice";
 import { _HIGHT, _Width } from "@/utils/utils";
 import { Image } from "expo-image";
 import { router } from "expo-router";
@@ -29,9 +30,35 @@ import {
   View,
 } from "react-native";
 import { SvgXml } from "react-native-svg";
-import data from "../../../lib/data.json";
 
 const Account = () => {
+
+  // ................... History ........................//
+  const { data: historyVideo, isLoading, error } = useHistoryVideoQuery({})
+  const { data: likeVideo } = useHistoryVideoQuery({})
+
+  if (isLoading) {
+    return (
+      <View style={tw`flex-1 justify-center items-center`}>
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={tw`flex-1 justify-center items-center`}>
+        <Text>Error loading TermsCond Data </Text>
+      </View>
+    );
+  }
+  const historyData = historyVideo?.data?.data?.map((item: any) => item.video);
+
+  // ................... Like video ........................//
+  const LikeVideoData = likeVideo?.data?.data?.map((item: any) => item.video);
+
+  console.log(historyData);
+
   return (
     <View style={tw`flex-1 bg-primary`}>
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -59,7 +86,7 @@ const Account = () => {
         <View style={tw`px-2 mx-4`}>
           {/* History  */}
           <FlatList
-            data={data}
+            data={historyData}
             keyExtractor={(item) => item.id.toString()}
             showsHorizontalScrollIndicator={false}
             // scrollEnabled={false}
@@ -76,11 +103,11 @@ const Account = () => {
                 <Text
                   style={tw`text-base font-poppinsMedium py-1 text-secondaryBlack `}
                 >
-                  {item.title}
+                  {item.title?.split(" ").slice(0, 4).join(" ")}...
                 </Text>
                 <View style={tw`flex-row justify-between w-full items-center`}>
                   <Text style={tw`text-sm font-poppins  text-secondaryBlack `}>
-                    {item.channelName}
+                    {item.user.channel_name}
                   </Text>
                   <TouchableOpacity>
                     <SvgXml xml={IconCansel} />
@@ -115,7 +142,7 @@ const Account = () => {
         <View style={tw`px-2 mx-4`}>
           {/* History  */}
           <FlatList
-            data={data}
+            data={LikeVideoData}
             keyExtractor={(item) => item.id.toString()}
             showsHorizontalScrollIndicator={false}
             // scrollEnabled={false}
@@ -132,11 +159,11 @@ const Account = () => {
                 <Text
                   style={tw`text-base font-poppinsMedium py-1 text-secondaryBlack `}
                 >
-                  {item.title}
+                  {item.title?.split(" ").slice(0, 4).join(" ")}...
                 </Text>
                 <View style={tw`flex-row justify-between w-full items-center`}>
                   <Text style={tw`text-sm font-poppins  text-secondaryBlack `}>
-                    {item.channelName}
+                   {item.user.channel_name}
                   </Text>
                   <TouchableOpacity>
                     <SvgXml xml={IconCansel} />

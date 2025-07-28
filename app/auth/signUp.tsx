@@ -106,8 +106,6 @@ const signUp = () => {
 
               return (
                 <View>
-
-
                   <View style={tw`flex-row justify-end`}>
                     <SvgXml xml={IconSignUpNest} />
                   </View>

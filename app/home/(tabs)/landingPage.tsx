@@ -1,5 +1,4 @@
 // import CarouselCard from "@/components/landing_page/CarouselCard";
-import { CarouselCard } from "@/components/landing_page/CarouselCard";
 import CatagoryCard from "@/components/landing_page/CatagoryCard";
 import SliderLanding from "@/components/landing_page/SliderLanding";
 import HeaderBar from "@/components/shear/HeaderBar";
@@ -32,7 +31,7 @@ const landingPage = () => {
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={tw`pb-6`}>
         <HeaderBar />
         <SliderLanding />
-        <CarouselCard promotedVideo={promotedVideo} />
+        {/* <CarouselCard promotedVideo={promotedVideo} /> */}
         <FlatList
           data={caragoryVideos?.data}
           keyExtractor={(item) => item.id.toString()}

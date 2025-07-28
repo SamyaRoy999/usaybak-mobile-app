@@ -68,7 +68,7 @@ const verify = () => {
                         Toast.show({
                           type: ALERT_TYPE.SUCCESS,
                           title: 'Success',
-                          textBody: res?.message || 'OTP verified successfully!',
+                          textBody: res?.message ,
                           autoClose: 2000,
                         });
                         setTimeout(() => {
@@ -78,7 +78,7 @@ const verify = () => {
                         Toast.show({
                           type: ALERT_TYPE.DANGER,
                           title: 'Error',
-                          textBody: res?.message || "Something went wrong!",
+                          textBody: res?.message ,
                           autoClose: 2000,
                         });
                       }
