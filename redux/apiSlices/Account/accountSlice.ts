@@ -8,8 +8,8 @@ const accountSlice = api.injectEndpoints({
 
         // .............. History...........//
         historyVideo: builder.query<any, any>({
-            query: () => ({
-                url: `/watch-history?per_page=10`,
+            query: ({ page = 1 }) => ({
+                url: `/watch-history?per_page=10&page=${page}`,
                 method: "GET",
             }),
             providesTags: ["account"],
@@ -125,6 +125,7 @@ export const {
     useProfileQuery,
     useEditProfileMutation,
     useOnsiteAccountRegMutation,
+    useLazyHistoryVideoQuery,
     useHistoryVideoQuery,
     useLikeVideosQuery,
     useHistoryVideoDeleteMutation,

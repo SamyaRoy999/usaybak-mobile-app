@@ -9,7 +9,7 @@ const index = () => {
     setTimeout(() => {
       // router.replace("/auth/login");
       router.replace("/home/(tabs)/landingPage");
-      // router.replace("/(allPages)/onsiteAccount");
+      // router.replace("/(allPages)/history");
       // router.replace("/allPages/youTubeLink");
 
     }, 1000);

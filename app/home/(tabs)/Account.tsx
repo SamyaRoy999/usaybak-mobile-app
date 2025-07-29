@@ -53,16 +53,17 @@ const Account = () => {
       </View>
     );
   }
+
   // .............. DELETE ......... 
   const handleDeleteVideo = async (type: "history" | "like", id: number) => {
     try {
       let res;
       if (type === "history") {
         res = await deleteHistoryVideo(id).unwrap();
-        refetch(); 
+        refetch();
       } else if (type === "like") {
         res = await likeVideosDelete(id).unwrap();
-       
+
       }
 
       if (res?.status) {
@@ -85,10 +86,8 @@ const Account = () => {
     }
   };
 
-
   return (
-    <View style={tw`flex-1 bg-primary`}>
-
+    <View style={tw`flex-1 bg-primary `}>
       <AlertNotificationRoot>
         <ScrollView showsVerticalScrollIndicator={false}>
           <HeaderBar />
@@ -114,41 +113,46 @@ const Account = () => {
           </View>
           <View style={tw`px-2 mx-4`}>
             {/* History  */}
-            <FlatList
-              data={historyVideo?.data?.data}
-              keyExtractor={(item) => item.id.toString()}
-              showsHorizontalScrollIndicator={false}
-              // scrollEnabled={false}
-              horizontal
-              renderItem={({ item }) => {
-                console.log("historyvideo", item, "historyvideo");
-                return (
-                  <View style={[tw` mr-4`, { width: _Width * 0.4 }]}>
-                    <Image
-                      style={[
-                        tw`rounded-xl`,
-                        { width: _Width * 0.4, height: _HIGHT * 0.1 },
-                      ]}
-                      source={{ uri: item?.video?.thumbnail }}
-                    />
-                    <Text
-                      style={tw`text-base font-poppinsMedium py-1 text-secondaryBlack `}
-                    >
-                      {item.video?.title?.split(" ").slice(0, 4).join(" ")}...
-                    </Text>
-                    <View style={tw`flex-row justify-between w-full items-center`}>
-                      <Text style={tw`text-sm font-poppins  text-secondaryBlack `}>
-                        {item.video?.user?.channel_name}
+            {historyVideo?.data?.data.length === 0 ? (
+              <View style={tw`flex-1 justify-center items-center mt-10`}>
+                <Text style={tw`font-poppins text-lg`}>No watch history found</Text>
+              </View>
+            ) : (
+              <FlatList
+                data={historyVideo?.data?.data}
+                keyExtractor={(item) => item.id.toString()}
+                showsHorizontalScrollIndicator={false}
+                // scrollEnabled={false}
+                horizontal
+                renderItem={({ item }) => {
+                  console.log("historyvideo", item, "historyvideo");
+                  return (
+                    <View style={[tw` mr-4`, { width: _Width * 0.4 }]}>
+                      <Image
+                        style={[
+                          tw`rounded-xl`,
+                          { width: _Width * 0.4, height: _HIGHT * 0.1 },
+                        ]}
+                        source={{ uri: item?.video?.thumbnail }}
+                      />
+                      <Text
+                        style={tw`text-base font-poppinsMedium py-1 text-secondaryBlack `}
+                      >
+                        {item.video?.title?.split(" ").slice(0, 4).join(" ")}...
                       </Text>
-                      {/* Delete Button */}
-                      <TouchableOpacity onPress={() => handleDeleteVideo("history", item?.id)}>
-                        <SvgXml xml={IconCansel} width={20} height={20} />
-                      </TouchableOpacity>
+                      <View style={tw`flex-row justify-between w-full items-center`}>
+                        <Text style={tw`text-sm font-poppins  text-secondaryBlack `}>
+                          {item.video?.user?.channel_name}
+                        </Text>
+                        {/* Delete Button */}
+                        <TouchableOpacity onPress={() => handleDeleteVideo("history", item?.id)}>
+                          <SvgXml xml={IconCansel} width={20} height={20} />
+                        </TouchableOpacity>
+                      </View>
                     </View>
-                  </View>
-                )
-              }}
-            />
+                  )
+                }}
+              />)}
           </View>
           {/* liked video */}
           <View
@@ -174,6 +178,11 @@ const Account = () => {
           {/* like co.. */}
           <View style={tw`px-2 mx-4`}>
             {/* like  */}
+            {/* {likeVideo?.data?.data.length === 0 ? (
+              <View style={tw`flex-1 justify-center items-center mt-10`}>
+                <Text style={tw`font-poppins text-lg`}>No Like Video found</Text>
+              </View>
+            ) : ( */}
             <FlatList
               data={likeVideo?.data?.data}
               keyExtractor={(item) => item.id.toString()}
@@ -205,6 +214,7 @@ const Account = () => {
                 </View>
               )}
             />
+            {/* )} */}
           </View>
           <View>
             {/* dashboard */}
@@ -383,7 +393,7 @@ const Account = () => {
             </View>
           </TouchableOpacity>
           <TouchableOpacity
-            style={tw`flex-row w-full justify-between items-center px-8 py-2`}
+            style={tw`flex-row w-full justify-between items-center px-8 py-2 pb-9`}
             onPress={() => router.push("/(allPages)/onsiteAccount")}
           >
             <View style={tw` flex-row gap-2 py-3 rounded-lg`}>
