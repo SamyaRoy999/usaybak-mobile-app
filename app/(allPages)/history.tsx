@@ -1,18 +1,39 @@
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet, FlatList, TextInput } from 'react-native'
-import React from 'react'
 import HeaderBar from '@/components/shear/HeaderBar'
+import { IconBackLeft, IconCansel, IconDelete, IconPouse, IconSearchBlack, IconSettingDot } from '@/icons/Icon'
+import data from "@/lib/data2.json"
 import tw from '@/lib/tailwind'
-import { router } from 'expo-router'
-import { IconBackLeft, IconCansel, IconDelete, IconErowred, IconPlay, IconPouse, IconSearch, IconSearchBlack, IconSettingDot } from '@/icons/Icon'
-import { SvgXml } from 'react-native-svg'
-import { Image } from 'expo-image'
-import { historypage } from '@/assets/images/images'
+import { useHistoryVideoQuery } from '@/redux/apiSlices/Account/accountSlice'
 import { _HIGHT, _Width } from '@/utils/utils'
-import { LinearGradient } from 'expo-linear-gradient'
-import data from "@/lib/data2.json";
+import { Image } from 'expo-image'
+import { router } from 'expo-router'
+import React from 'react'
+import { FlatList, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { SvgXml } from 'react-native-svg'
 
 const history = () => {
+
     const [history, setHistory] = React.useState(false)
+
+    //............... API CALL ...................//
+    const {
+        data: historyVideo,
+        isLoading,
+        refetch
+    } = useHistoryVideoQuery({
+        params: {
+            per_page: 500,
+        },
+    });
+
+    if (isLoading) {
+        return (
+            <View style={tw`flex-1 justify-center items-center`}>
+                <Text>Loading...</Text>
+            </View>
+        );
+    }
+  
+
     return (
         <View>
             <ScrollView showsVerticalScrollIndicator={false}>

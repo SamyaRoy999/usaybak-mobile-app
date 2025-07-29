@@ -9,18 +9,32 @@ const accountSlice = api.injectEndpoints({
         // .............. History...........//
         historyVideo: builder.query<any, any>({
             query: () => ({
-                url: `/watch-history?per_page=5`,
+                url: `/watch-history?per_page=10`,
                 method: "GET",
             }),
             providesTags: ["account"],
         }),
+        historyVideoDelete: builder.mutation<any, string>({
+            query: (videoId) => ({
+                url: `/watch-history/${videoId}`,
+                method: "DELETE",
+            }),
+            invalidatesTags: ["account"],
+        }),
         // .............. Like...........//
-        likeVideo: builder.query<any, any>({
+        likeVideos: builder.query<any, any>({
             query: () => ({
                 url: `/like_videos?per_page=5`,
-                method: "GET", 
+                method: "GET",
             }),
             providesTags: ["account"],
+        }),
+        likeVideosDelete: builder.mutation<any, string>({
+            query: (videoId) => ({
+                url: `/like_videos/${videoId}`,
+                method: "DELETE",
+            }),
+            invalidatesTags: ["account"],
         }),
         // .............. Dashboard...........//
 
@@ -112,6 +126,7 @@ export const {
     useEditProfileMutation,
     useOnsiteAccountRegMutation,
     useHistoryVideoQuery,
-    useLikeVideoQuery
-    
+    useLikeVideosQuery,
+    useHistoryVideoDeleteMutation,
+    useLikeVideosDeleteMutation
 } = accountSlice;
