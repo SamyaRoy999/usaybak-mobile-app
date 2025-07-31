@@ -7,15 +7,17 @@ import {
   IconLike,
   IconMessage,
   IconReport,
+  IconSendMassage,
   IconShare
 } from "@/icons/Icon";
 import tw from "@/lib/tailwind";
-import { useLikeVideoMutation, useVideodetailQuery, useWatchVideoMutation } from "@/redux/apiSlices/videoDetails/videoDetailsSlice";
+import { useCommentsQuery, useLikeVideoMutation, useVideodetailQuery, useWatchVideoMutation } from "@/redux/apiSlices/videoDetails/videoDetailsSlice";
 import { _Width } from "@/utils/utils";
 import { useLocalSearchParams } from "expo-router";
 import { useVideoPlayer, VideoView } from "expo-video";
 import React, { useEffect, useState } from "react";
 import {
+  ActivityIndicator,
   Image,
   KeyboardAvoidingView,
   Modal,
@@ -39,16 +41,40 @@ const SingleVideo = () => {
   const [descriptionVisible, setDescriptionVisible] = useState(false);
   const [replyVisible, setReplyVisible] = useState(false);
   const [likeDislike, setLikeDislike] = useState<"like" | "dislike" | null>(null);
+  const [comment, setComment] = useState('');
+
+  // Pagination state
+  const [page, setPage] = useState(1);
+  const [comments, setComments] = useState<any[]>([]);
+  const [hasMore, setHasMore] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const handleSubmit = () => {
+    console.log('Submitted comment:', comment);
+    // Submit logic here
+    console.log(id, "Submitted");
+  };
 
   const { data, isLoading, error } = useVideodetailQuery({ id });
+
+  // Comments query with pagination
+  const {
+    data: commentsData,
+  } = useCommentsQuery({
+    video_id: id,
+    page,
+    per_page: 10
+  });
+
+
+  const [watchedVidew] = useWatchVideoMutation()
+  const [likeVideo] = useLikeVideoMutation();
+
   const videoDetails = data?.data;
-   const [watchedVidew] = useWatchVideoMutation()
   const player = useVideoPlayer(videoDetails?.video || "", (player) => {
     player.loop = true;
     player.play();
   });
-
-  const [likeVideo] = useLikeVideoMutation();
 
   const handlePress = async (action: "like" | "dislike") => {
     setLikeDislike(action);
@@ -56,20 +82,18 @@ const SingleVideo = () => {
       await likeVideo({ action, video_id: id }).unwrap();
     } catch (err: any) {
       console.error("Failed to send action:", err);
-
     }
   };
 
-  useEffect(()=>{
-    setTimeout(async()=>{
-     try {
-      const res =await watchedVidew(id as any).unwrap()
-
-     } catch (error) {  
-      console.log(error)
-     }
-    },2000)
-  },[])
+  useEffect(() => {
+    setTimeout(async () => {
+      try {
+        const res = await watchedVidew(id as any).unwrap()
+      } catch (error) {
+        console.log(error)
+      }
+    }, 2000)
+  }, [])
 
   const reportOptions = [
     "Sexual content",
@@ -84,11 +108,18 @@ const SingleVideo = () => {
     "Legal issue",
     "Captions issue",
   ];
+
   if (isLoading) {
-    <View>
-      <Text>Loading...</Text>
-    </View>
+    return (
+      <View style={tw`flex-1 justify-center items-center bg-primary`}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
   }
+
+  console.log("........................................");
+  // console.log(commentsData.data.comments.data,"commentsData", id);
+  console.log(comments, "commentsData2", id);
 
   return (
     <KeyboardAvoidingView
@@ -103,7 +134,7 @@ const SingleVideo = () => {
           <VideoView
             style={styles.video}
             player={player}
-          
+
             allowsFullscreen
             allowsPictureInPicture
           />
@@ -247,49 +278,76 @@ const SingleVideo = () => {
                   <SvgXml xml={IconClose} />
                 </TouchableOpacity>
               </View>
-              <ScrollView showsVerticalScrollIndicator={false} style={tw`pb-20`}>
-                {/* Sample comments - replace with actual API data */}
-                {[...Array(5)].map((_, i) => (
-                  <View key={i} style={tw`flex-row gap-4 pt-4 px-7`}>
+
+              <ScrollView showsVerticalScrollIndicator={false} style={tw`pb-24`}>
+                {commentsData?.data?.comments?.data?.map((comment: any) => (
+                  <View key={comment.id} style={tw`flex-row gap-4 pt-4 px-7 mb-5`}>
+                    {/* User Avatar */}
                     <Image
-                      source={{ uri: videoDetails?.user.avatar }}
+                      source={{ uri: comment?.user?.avatar }}
                       style={tw`w-10 h-10 rounded-full`}
                     />
+
+                    {/* Comment Content */}
                     <View style={tw`flex-1`}>
-                      <View style={tw`flex-row items-center gap-2`}>
-                        <Text style={tw`font-poppinsMedium text-lg`}>User {i + 1}</Text>
-                        <View style={tw`bg-primaryGray rounded-full h-2 w-2`} />
-                        <Text>10 hours ago</Text>
+                      {/* User Info and Timestamp */}
+                      <View style={tw`flex-row items-center gap-2 mb-1`}>
+                        <Text style={tw`font-poppinsMedium text-base text-gray-800`}>
+                          {comment?.user?.name}
+                        </Text>
+                        <View style={tw`bg-gray-400 rounded-full h-1 w-1`} />
+                        <Text style={tw`font-poppins text-xs text-gray-500`}>
+                          {comment?.created_at_format}
+                        </Text>
                       </View>
-                      <Text style={tw`font-poppins text-sm`}>
-                        This is a sample comment #{i + 1} on the video
+
+                      {/* Comment Text */}
+                      <Text style={tw`font-poppins text-sm text-gray-800`}>
+                        {comment?.comment}
                       </Text>
-                      <View style={tw`flex-row gap-4 py-5`}>
-                        <View style={tw`flex-row gap-4`}>
-                          <SvgXml xml={Iconfevarite} />
-                          <Text>2.6k</Text>
+
+                      {/* Reactions and Actions */}
+                      <View style={tw`flex-row gap-6 mt-3`}>
+                        <View style={tw`flex-row gap-2 items-center`}>
+                          <TouchableOpacity>
+                            <SvgXml xml={Iconfevarite} width={16} height={16} />
+                          </TouchableOpacity>
+                          <Text style={tw`font-poppins text-xs text-gray-500`}>
+                            {comment?.reactions_count_format}
+                          </Text>
                         </View>
+
                         <TouchableOpacity
                           onPress={() => setReplyVisible(true)}
-                          style={tw`flex-row gap-4`}
+                          style={tw`flex-row gap-2 items-center`}
                         >
-                          <SvgXml xml={IconMessage} />
-                          <Text>10</Text>
+                          <SvgXml xml={IconMessage} width={16} height={16} />
+                          <Text style={tw`font-poppins text-xs text-gray-500`}>
+                            Reply
+                          </Text>
                         </TouchableOpacity>
                       </View>
                     </View>
                   </View>
                 ))}
               </ScrollView>
+
               <View style={tw`absolute bottom-0 w-full bg-primary py-3 px-5 flex-row items-center`}>
                 <Image
                   source={{ uri: videoDetails?.user.avatar }}
                   style={tw`w-10 h-10 rounded-full`}
                 />
-                <TextInput
-                  style={tw`flex-1 bg-primaryOff rounded-full font-poppins px-4 text-sm h-12 ml-3`}
-                  placeholder="Add your comment..."
-                />
+                <View style={tw`flex-row items-center justify-center gap-3`}>
+                  <TextInput
+                    value={comment}
+                    onChangeText={setComment}
+                    style={tw`flex-1 bg-primaryOff w-11 rounded-full font-poppins px-4 text-sm h-12 ml-3`}
+                    placeholder="Add your comment..."
+                  />
+                  <TouchableOpacity style={tw`w-16`} onPress={handleSubmit}>
+                    <SvgXml xml={IconSendMassage} />
+                  </TouchableOpacity>
+                </View>
               </View>
             </View>
           </View>
@@ -514,3 +572,8 @@ const styles = StyleSheet.create({
     height: 250,
   },
 });
+// 1 comment added from
+// 2 reply video
+// 3 report video
+// 4 button show releted video
+// 5 post comment  

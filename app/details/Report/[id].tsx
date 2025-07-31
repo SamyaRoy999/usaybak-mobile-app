@@ -41,7 +41,7 @@ const ReportDetails = () => {
                                     </TouchableOpacity>
                                 </View>
                                 <Text style={tw`font-poppinsMedium text-xl `}>
-                                    Liked videos
+                                    Report details
                                 </Text>
                                 <View></View>
                             </View>

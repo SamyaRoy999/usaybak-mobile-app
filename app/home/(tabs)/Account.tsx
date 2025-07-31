@@ -49,15 +49,18 @@ const Account = () => {
   if (error) {
     return (
       <View style={tw`flex-1 justify-center items-center`}>
-        <Text>Error loading TermsCond Data </Text>
+        <Text>Error loading Account Data </Text>
       </View>
     );
   }
+  console.log(historyVideo, "historyVideo", likeVideo, "likeVideo");
 
-  // .............. DELETE ......... 
-  const handleDeleteVideo = async (type: "history" | "like", id: number) => {
+  // .............. DELETE ......... //
+  const handleDeleteVideo = async (type: "history" | "like", id: any) => {
     try {
       let res;
+      console.log(res, "padding");
+
       if (type === "history") {
         res = await deleteHistoryVideo(id).unwrap();
         refetch();

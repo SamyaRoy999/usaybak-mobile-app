@@ -11,7 +11,7 @@ import {
 import tw from '@/lib/tailwind';
 import { useHistoryVideoDeleteMutation, useLazyHistoryVideoQuery } from '@/redux/apiSlices/Account/accountSlice';
 import { _HIGHT, _Width } from '@/utils/utils';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import React, { useCallback, useEffect, useState } from 'react';
@@ -30,8 +30,6 @@ import { ALERT_TYPE, Toast } from 'react-native-alert-notification';
 import { ScrollView } from 'react-native-gesture-handler';
 import { SvgXml } from 'react-native-svg';
 
-// AsyncStorage key for persisting history data
-const HISTORY_STORAGE_KEY = '@history_data';
 
 const HistoryScreen = () => {
     const [page, setPage] = useState(1);
@@ -43,36 +41,6 @@ const HistoryScreen = () => {
     const [fetchHistory, { isLoading, isFetching }] = useLazyHistoryVideoQuery();
     const [historyVideoDelete] = useHistoryVideoDeleteMutation();
 
-    // Load history from AsyncStorage on component mount
-    useEffect(() => {
-        const loadPersistedHistory = async () => {
-            try {
-                const savedHistory = await AsyncStorage.getItem(HISTORY_STORAGE_KEY);
-                if (savedHistory) {
-                    setHistory(JSON.parse(savedHistory));
-                }
-            } catch (error) {
-                console.error('Failed to load history from storage', error);
-            }
-        };
-        
-        loadPersistedHistory();
-    }, []);
-
-    // Save history to AsyncStorage whenever it changes
-    useEffect(() => {
-        const saveHistory = async () => {
-            try {
-                await AsyncStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(history));
-            } catch (error) {
-                console.error('Failed to save history to storage', error);
-            }
-        };
-        
-        if (history.length > 0) {
-            saveHistory();
-        }
-    }, [history]);
 
     const loadHistory = useCallback(async () => {
         if (loadingMore || isFetching) return;
@@ -120,26 +88,17 @@ const HistoryScreen = () => {
 
     // Clear all history
     const handleClearAllHistory = async () => {
-        try {
-            await AsyncStorage.removeItem(HISTORY_STORAGE_KEY);
-            setHistory([]);
-            setPage(1);
-            Toast.show({
-                type: ALERT_TYPE.SUCCESS,
-                title: "Success",
-                textBody: "All history cleared",
-                autoClose: 2000,
-            });
-            setSettingsVisible(false);
-        } catch (error) {
-            console.error("Failed to clear history", error);
-        }
+        
     };
 
     // Delete single video
     const handleDeleteVideo = async (id: any) => {
+        console.log(id);
+        
         try {
             const res = await historyVideoDelete(id).unwrap();
+            console.log("id",res);
+            
             if (res?.status) {
                 // Remove from local state
                 setHistory(prev => prev.filter(item => item.id !== id));
@@ -195,7 +154,6 @@ const HistoryScreen = () => {
         <KeyboardAvoidingView style={tw`flex-1 bg-white`} behavior={Platform.OS === "ios" ? "padding" : "height"}>
             <ScrollView showsVerticalScrollIndicator={false}>
                 <HeaderBar />
-
                 {/* Top Bar */}
                 <View style={tw`flex-row justify-between items-center gap-5 px-5 mb-6`}>
                     <TouchableOpacity

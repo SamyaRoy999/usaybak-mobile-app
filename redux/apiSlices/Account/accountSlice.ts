@@ -5,15 +5,15 @@ import { api } from "../../api/baseApi";
 const accountSlice = api.injectEndpoints({
 
     endpoints: (builder) => ({
-
         // .............. History...........//
         historyVideo: builder.query<any, any>({
-            query: ({ page = 1 }) => ({
-                url: `/watch-history?per_page=10&page=${page}`,
+            query: ({ page , per_page = 5 }) => ({
+                url: `/watch-history?page=${page}&per_page=${per_page}`,
                 method: "GET",
             }),
             providesTags: ["account"],
         }),
+
         historyVideoDelete: builder.mutation<any, string>({
             query: (videoId) => ({
                 url: `/watch-history/${videoId}`,
@@ -45,8 +45,8 @@ const accountSlice = api.injectEndpoints({
             }),
             providesTags: ["account"],
         }),
-
-        // ...setting page for get profile ....//
+        
+        //....setting page for get profile .....//
 
         profile: builder.query<any, any>({
             query: () => ({
@@ -63,6 +63,17 @@ const accountSlice = api.injectEndpoints({
             }),
             invalidatesTags: ["user"],
         }),
+
+        // .................. faq.................//
+
+        reportVideo: builder.query<any, any> ({
+            query: ()=>({
+                url: "/get-reports",
+                method: "GET"
+            }) ,
+            providesTags: ["report"],
+        }),
+
         // .................. faq.................//
 
         faqs: builder.query<any, any>({
@@ -129,5 +140,6 @@ export const {
     useHistoryVideoQuery,
     useLikeVideosQuery,
     useHistoryVideoDeleteMutation,
-    useLikeVideosDeleteMutation
+    useLikeVideosDeleteMutation,
+    useReportVideoQuery
 } = accountSlice;

@@ -2,6 +2,7 @@ import HeaderBar from '@/components/shear/HeaderBar'
 import { IconBackLeft, IconWornoing } from '@/icons/Icon'
 import data from "@/lib/data2.json"
 import tw from '@/lib/tailwind'
+import { useReportVideoQuery } from '@/redux/apiSlices/Account/accountSlice'
 import { _HIGHT, _Width } from '@/utils/utils'
 import { router } from 'expo-router'
 import React from 'react'
@@ -9,21 +10,37 @@ import { FlatList, Image, ScrollView, Text, TouchableOpacity, View } from 'react
 import { SvgXml } from 'react-native-svg'
 
 const report = () => {
+     const { data: reportVideo, isLoading, error } = useReportVideoQuery({})
+    if (isLoading) {
+        return (
+            <View style={tw`flex-1 justify-center items-center`}>
+                <Text>Loading...</Text>
+            </View>
+        );
+    }
+
+    if (error) {
+        return (
+            <View style={tw`flex-1 justify-center items-center`}>
+                <Text>Error loading TermsCond Data </Text>
+            </View>
+        );
+    }
+    
     return (
         <View>
             <ScrollView showsVerticalScrollIndicator={false}>
-
                 <HeaderBar />
                 <View style={tw`relative`}>
 
                     <View style={tw`flex-row justify-between items-center gap-5 px-5 mb-8`}>
-                        <View
-                            style={tw`bg-primaryText w-13 h-13 p-4 rounded-full flex-row items-center justify-center border border-primaryGray`}
-                        >
-                            <TouchableOpacity onPress={() => router.back()}>
+                        <TouchableOpacity onPress={() => router.back()}>
+                            <View
+                                style={tw`bg-primaryText w-13 h-13 p-4 rounded-full flex-row items-center justify-center border border-primaryGray`}
+                            >
                                 <SvgXml xml={IconBackLeft} />
-                            </TouchableOpacity>
-                        </View>
+                            </View>
+                        </TouchableOpacity>
                         <Text style={tw`font-poppinsMedium text-xl `}>
                             Reports
                         </Text>

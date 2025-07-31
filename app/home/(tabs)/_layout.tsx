@@ -64,7 +64,7 @@ function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
 
   return (
     <View
-      style={tw`flex-row relative  bottom-0 left-0 right-0 justify-around items-center bg-secondary dark:bg-black px-4 pt-10 pb-3`}
+      style={tw`flex-row relative  bottom-0 left-0 right-0 justify-around items-center bg-secondary px-4 pt-10 pb-3`}
     >
       {/* Animated underline */}
       <Animated.View

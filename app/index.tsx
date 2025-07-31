@@ -8,8 +8,10 @@ const index = () => {
   useEffect(() => {
     setTimeout(() => {
       // router.replace("/auth/login");
-      router.replace("/home/(tabs)/landingPage");
-      // router.replace("/(allPages)/history");
+      // router.replace("/details/video/[id]");
+      // router.replace("/(allPages)/report");
+      router.replace("/home/(tabs)/landingPage")
+      // router.replace("/(allPages)/aboutUs")
       // router.replace("/allPages/youTubeLink");
 
     }, 1000);

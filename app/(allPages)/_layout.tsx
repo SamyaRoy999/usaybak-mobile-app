@@ -26,7 +26,6 @@ const AllPagelayout = () => {
       <Stack.Screen name="uploadVideo" />
       <Stack.Screen name="youTubeLink" />
       <Stack.Screen name="dontHaveAccount" />
-      <Stack.Screen name="beautyEsthetics" />
       <Stack.Screen name="restaurantCatering" />
     </Stack>
   );
