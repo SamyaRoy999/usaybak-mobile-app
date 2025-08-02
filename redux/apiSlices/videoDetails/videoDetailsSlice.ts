@@ -2,7 +2,8 @@
 import { api } from "../../api/baseApi";
 
 // authApiSlices.ts
-const videoDetailsSlice = api.injectEndpoints({
+export const videoDetailsSlice = api.injectEndpoints({
+
     endpoints: (builder) => ({
         videodetail: builder.query<any, { id: any }>({
             query: ({ id }) => ({
@@ -27,19 +28,64 @@ const videoDetailsSlice = api.injectEndpoints({
             }),
             invalidatesTags: ["singleVideo"]
         }),
-        // In your API slice
-        comments: builder.query<any, any>({
-            query: ({ video_id, page = 1, per_page = 10 }) => ({
+
+        //............. comment .................//
+
+        comments: builder.query<any[], { video_id: any; page?: number; per_page?: number }>({
+            query: ({ video_id }) => ({
                 url: '/comments',
-                params: { video_id, page, per_page },
+                params: { video_id },
             }),
             providesTags: ["singleVideo"],
         }),
-        commentsPost: builder.mutation<any, { id: any }>({
-            query: (id) => ({
-                url: `/watch-history`,
+
+        commentsPost: builder.mutation<any, { video_id: number, comment: string }>({
+            query: (data) => ({
+                url: `/comments`,
                 method: "POST",
-                body: { video_id: id }
+                body: data,
+            }),
+            invalidatesTags: ["singleVideo"],
+        }),
+        comment_reaction: builder.mutation<any, any>({
+            query: (data) => ({
+                url: `/add-remove-comment-reaction`,
+                method: "POST",
+                body: data,
+            }),
+            invalidatesTags: ["singleVideo"],
+        }),
+
+        //............. replies .................//
+
+        replies: builder.query<any, any>({
+            query: ({ comment_id }) => ({
+                url: '/replies',
+                params: { comment_id },
+            }),
+            providesTags: ["singleVideo"],
+        }),
+        replies_reaction: builder.mutation<any, any>({
+            query: (data) => ({
+                url: `/add-remove-reply-reaction`,
+                method: "POST",
+                body: data,
+            }),
+            invalidatesTags: ["singleVideo"],
+        }),
+        repliesPost: builder.mutation<any, { video_id: number, comment: string }>({
+            query: (data) => ({
+                url: `/replies`,
+                method: "POST",
+                body: data,
+            }),
+            invalidatesTags: ["singleVideo"],
+        }),
+        reportPost: builder.mutation<any, any>({
+            query: (data) => ({
+                url: `/add-report`,
+                method: "POST",
+                body: data,
             }),
             invalidatesTags: ["singleVideo"],
         }),
@@ -48,13 +94,15 @@ const videoDetailsSlice = api.injectEndpoints({
 
 });
 
-export const { useVideodetailQuery, useLikeVideoMutation, useWatchVideoMutation, useCommentsQuery, useCommentsPostMutation } = videoDetailsSlice;
-
-//    comments: builder.query<any, any>({
-//             query: ({ page, per_page = 5, video_id }) => ({
-//                 url: `/comments?video_id=${video_id}page=${page}&per_page=${per_page}`,
-//                 method: "GET",
-//             }),
-//             providesTags: ["singleVideo"],
-//         }),
-
+export const {
+    useVideodetailQuery,
+    useLikeVideoMutation,
+    useWatchVideoMutation,
+    useCommentsQuery,
+    useCommentsPostMutation,
+    useComment_reactionMutation,
+    useRepliesQuery,
+    useReplies_reactionMutation,
+    useRepliesPostMutation,
+    useReportPostMutation
+} = videoDetailsSlice;

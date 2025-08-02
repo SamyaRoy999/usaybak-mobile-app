@@ -63,8 +63,6 @@ const login = () => {
                   title: 'Waring',
                   textBody: error?.message,
                 });
-
-              
               }
             }}
 
