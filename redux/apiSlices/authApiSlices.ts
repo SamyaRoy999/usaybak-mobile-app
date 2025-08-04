@@ -1,7 +1,7 @@
 import { api } from "../api/baseApi";
 
 // authApiSlices.ts
-const authSlice = api.injectEndpoints({
+export const authSlice = api.injectEndpoints({
     endpoints: (builder) => ({
         registerUser: builder.mutation<any, any>({
             query: (data) => ({

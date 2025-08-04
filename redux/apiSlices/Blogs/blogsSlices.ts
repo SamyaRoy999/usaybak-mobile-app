@@ -2,7 +2,7 @@
 import { api } from "../../api/baseApi";
 
 // authApiSlices.ts
-const blogsSlices = api.injectEndpoints({
+export const blogsSlices = api.injectEndpoints({
     endpoints: (builder) => ({
         blogs: builder.query<any, { page?: number }>({
             query: ({ page = 1 }) => ({

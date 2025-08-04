@@ -2,7 +2,7 @@
 import { api } from "../../api/baseApi";
 
 // authApiSlices.ts
-const homeApiSlices = api.injectEndpoints({
+export const homeApiSlices = api.injectEndpoints({
     endpoints: (builder) => ({
         banner: builder.query<any, any>({
             query: () => ({

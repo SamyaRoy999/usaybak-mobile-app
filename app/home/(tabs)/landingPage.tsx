@@ -8,6 +8,7 @@ import React from "react";
 import {
   FlatList,
   ScrollView,
+  Text,
   View
 } from "react-native";
 
@@ -26,6 +27,15 @@ const landingPage = () => {
       per_page: 500,
     },
   });
+  
+   if (isLoading) {
+        return (
+            <View style={tw`flex-1 justify-center items-center`}>
+                <Text>Loading...</Text>
+            </View>
+        );
+    }
+
   return (
     <View>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={tw`pb-6`}>

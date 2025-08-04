@@ -2,12 +2,12 @@
 import { api } from "../../api/baseApi";
 
 // .........authApiSlices.ts..........//
-const accountSlice = api.injectEndpoints({
+export const accountSlice = api.injectEndpoints({
 
     endpoints: (builder) => ({
         // .............. History...........//
         historyVideo: builder.query<any, any>({
-            query: ({ page , per_page = 5 }) => ({
+            query: ({ page, per_page = 5 }) => ({
                 url: `/watch-history?page=${page}&per_page=${per_page}`,
                 method: "GET",
             }),
@@ -45,7 +45,7 @@ const accountSlice = api.injectEndpoints({
             }),
             providesTags: ["account"],
         }),
-        
+
         //....setting page for get profile .....//
 
         profile: builder.query<any, any>({
@@ -66,14 +66,30 @@ const accountSlice = api.injectEndpoints({
 
         // .................. faq.................//
 
-        reportVideo: builder.query<any, any> ({
-            query: ()=>({
+        reportVideo: builder.query<any, any>({
+            query: () => ({
                 url: "/get-reports",
                 method: "GET"
-            }) ,
+            }),
             providesTags: ["report"],
         }),
 
+        reportDetail: builder.query<any, { id: any }>({
+            query: ({ id }) => ({
+                url: `/get-report-detail/${id}`,
+                method: "GET",
+            }),
+            providesTags: ["blogs"],
+        }),
+
+        appealPost: builder.mutation<any, any>({
+            query: (data) => ({
+                url: `/add-appeal`,
+                method: "POST",
+                body: data,
+            }),
+            invalidatesTags: ["user"],
+        }),
         // .................. faq.................//
 
         faqs: builder.query<any, any>({
@@ -141,5 +157,7 @@ export const {
     useLikeVideosQuery,
     useHistoryVideoDeleteMutation,
     useLikeVideosDeleteMutation,
-    useReportVideoQuery
+    useReportVideoQuery,
+    useReportDetailQuery,
+    useAppealPostMutation
 } = accountSlice;

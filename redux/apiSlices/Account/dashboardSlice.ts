@@ -2,7 +2,7 @@
 import { api } from "../../api/baseApi";
 
 // .........authApiSlices.ts..........//
-const dashboardSlice = api.injectEndpoints({
+export const dashboardSlice = api.injectEndpoints({
     endpoints: (builder) => ({
         // .................. dashboard................//
          dashboard: builder.query<any, any>({

@@ -1,6 +1,5 @@
 import HeaderBar from '@/components/shear/HeaderBar'
 import { IconBackLeft, IconWornoing } from '@/icons/Icon'
-import data from "@/lib/data2.json"
 import tw from '@/lib/tailwind'
 import { useReportVideoQuery } from '@/redux/apiSlices/Account/accountSlice'
 import { _HIGHT, _Width } from '@/utils/utils'
@@ -10,7 +9,7 @@ import { FlatList, Image, ScrollView, Text, TouchableOpacity, View } from 'react
 import { SvgXml } from 'react-native-svg'
 
 const report = () => {
-     const { data: reportVideo, isLoading, error } = useReportVideoQuery({})
+    const { data: reportVideo, isLoading, error } = useReportVideoQuery({})
     if (isLoading) {
         return (
             <View style={tw`flex-1 justify-center items-center`}>
@@ -26,7 +25,9 @@ const report = () => {
             </View>
         );
     }
-    
+
+    console.log("reportVideo", reportVideo.data.data, "reportVideo");
+
     return (
         <View>
             <ScrollView showsVerticalScrollIndicator={false}>
@@ -50,31 +51,31 @@ const report = () => {
                 <View style={tw`px-2 mx-5`}>
                     {/* History  */}
                     <FlatList
-                        data={data}
+                        data={reportVideo?.data?.data}
                         keyExtractor={(item) => item.id.toString()}
                         showsHorizontalScrollIndicator={false}
                         scrollEnabled={false}
                         renderItem={({ item }) => (
                             <TouchableOpacity onPress={() => router.push({
                                 pathname: "/details/Report/[id]",
-                                params: { id: item.id.toString() },
+                                params: { id: item.video_id },
                             })} style={[tw` mr-4 flex-row gap-3 pb-5`, { width: _Width * 0.4 }]}>
                                 <Image
                                     style={[
                                         tw`rounded-xl`,
                                         { width: _Width * 0.42, height: _HIGHT * 0.13 },
                                     ]}
-                                    source={{ uri: item?.thumbnail }}
+                                    source={{ uri: item?.video?.thumbnail }}
                                 />
                                 <View >
                                     <View style={tw`flex-row items-center gap-2`}>
                                         <SvgXml xml={IconWornoing} />
                                         <Text
-                                            style={[tw`text-base  font-poppinsMedium py-1 text-secondaryBlack `, {
+                                            style={[tw`text-base font-poppinsMedium py-1 text-secondaryBlack`, {
                                                 width: _Width * 0.39,
                                             }]}
                                         >
-                                            Video title goes here
+                                            {item?.video?.title?.split(" ").slice(0, 4).join(" ")}
                                         </Text>
                                     </View>
                                     <Text

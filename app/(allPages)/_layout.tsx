@@ -21,7 +21,7 @@ const AllPagelayout = () => {
       <Stack.Screen name="contactUs" />
       <Stack.Screen name="termsConditions" />
       <Stack.Screen name="onsiteAccount" />
-      <Stack.Screen name="FaqSection" />
+      <Stack.Screen name="faqSection" />
       <Stack.Screen name="editvideo" />
       <Stack.Screen name="uploadVideo" />
       <Stack.Screen name="youTubeLink" />

@@ -34,8 +34,7 @@ const baseQueryWithRath: BaseQueryFn<BaseQueryArgs, unknown, unknown> = async (
         Authorization: token ? `Bearer ${token}` : "",
       },
     });
-
-console.log(token);
+    console.log(token);
 
     // (result.data);
     // Check if response data is a string and malformed
@@ -83,7 +82,7 @@ export const api = createApi({
   reducerPath: "api",
   baseQuery: baseQueryWithRath,
   endpoints: () => ({}),
-  tagTypes: ["user", "home", "singleVideo", "catagoryDetails", "blogs", "promotion", "account", "video", "dashboard", "report"],
+  tagTypes: ["user", "home", "singleVideo", "catagoryDetails", "blogs", "promotion", "account", "video", "dashboard", "report", "uploadVideo"],
 });
 
 export const imageUrl = "http://157.245.63.191/";

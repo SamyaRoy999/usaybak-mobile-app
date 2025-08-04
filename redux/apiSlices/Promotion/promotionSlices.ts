@@ -2,7 +2,7 @@
 import { api } from "../../api/baseApi";
 
 // authApiSlices.ts
-const promotedApiSlices = api.injectEndpoints({
+export const promotedApiSlices = api.injectEndpoints({
     endpoints: (builder) => ({
         promotionalCatagory: builder.query<any, any>({
             query: () => ({
