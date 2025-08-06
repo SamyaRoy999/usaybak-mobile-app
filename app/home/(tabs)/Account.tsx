@@ -21,7 +21,7 @@ import { useHistoryVideoDeleteMutation, useHistoryVideoQuery, useLikeVideosDelet
 import { _HIGHT, _Width } from "@/utils/utils";
 import { Image } from "expo-image";
 import { router } from "expo-router";
-import React, { useEffect } from "react";
+import React from "react";
 import {
   FlatList,
   ScrollView,
@@ -87,10 +87,10 @@ const Account = () => {
     }
   };
 
-  useEffect(() => {
-    refetch()
-    islikeVideoRef()
-  }, [])
+  // React.useEffect(() => {
+  //   refetch()
+  //   islikeVideoRef()
+  // }, [])
 
   return (
     <View style={tw`flex-1 bg-primary `}>

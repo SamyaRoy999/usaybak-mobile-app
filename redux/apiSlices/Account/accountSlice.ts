@@ -45,6 +45,14 @@ export const accountSlice = api.injectEndpoints({
             invalidatesTags: ["account"],
         }),
 
+        pause_play_watch: builder.query<any, any>({
+            query: () => ({
+                url: `/pause-play-watch-history`,
+                method: "GET",
+            }),
+            providesTags: ["account"],
+        }),
+
         // .............. Dashboard...........//
 
         analytics: builder.query<any, any>({
@@ -175,5 +183,6 @@ export const {
     useReportVideoQuery,
     useReportDetailQuery,
     useAppealPostMutation,
-    useAll_delete_watch_historyMutation
+    useAll_delete_watch_historyMutation,
+    usePause_play_watchQuery
 } = accountSlice;
