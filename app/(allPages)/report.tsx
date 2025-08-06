@@ -26,8 +26,6 @@ const report = () => {
         );
     }
 
-    console.log("reportVideo", reportVideo.data.data, "reportVideo");
-
     return (
         <View>
             <ScrollView showsVerticalScrollIndicator={false}>

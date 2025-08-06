@@ -93,11 +93,9 @@ const HistoryScreen = () => {
 
     // Delete single video
     const handleDeleteVideo = async (id: any) => {
-        console.log(id);
         
         try {
             const res = await historyVideoDelete(id).unwrap();
-            console.log("id",res);
             
             if (res?.status) {
                 // Remove from local state
@@ -118,7 +116,6 @@ const HistoryScreen = () => {
                 });
             }
         } catch (err) {
-            console.log("Delete error:", err);
         }
     };
 

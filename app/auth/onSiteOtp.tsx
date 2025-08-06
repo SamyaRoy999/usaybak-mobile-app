@@ -64,7 +64,6 @@ const onSiteOtp = () => {
                                                 otp,
                                             }
                                             const res = await verifyOtp(data).unwrap();
-                                            console.log(res);
                                             router.push("/(allPages)/onsiteAccount")
 
                                         } catch (error: any) {

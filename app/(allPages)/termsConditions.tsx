@@ -29,7 +29,6 @@ const TermsConditions = () => {
 
     const termsData = termsCondData?.data?.[0]
     const { text, type } = termsData || {}
-    console.log(text, type, "data");
     const htmlContent = `
       <html>
         <head>

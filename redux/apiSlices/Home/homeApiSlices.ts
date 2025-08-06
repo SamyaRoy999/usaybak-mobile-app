@@ -34,9 +34,18 @@ export const homeApiSlices = api.injectEndpoints({
             providesTags: ["home"],
         }),
 
+        //  shear price
+
+         priceGetAll: builder.query<any, any>({
+            query: () => ({
+                url: `/get-price`,
+                method: "GET",
+            }),
+            providesTags: ["uploadVideo"],
+        }),
 
     }),
 
 });
 
-export const { useBannerQuery, usePromotedVideoQuery, useCaragoryVideosQuery, usePromotedVideoHomeQuery } = homeApiSlices;
+export const { useBannerQuery, usePromotedVideoQuery, useCaragoryVideosQuery, usePromotedVideoHomeQuery, usePriceGetAllQuery } = homeApiSlices;

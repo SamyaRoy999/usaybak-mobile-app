@@ -130,7 +130,6 @@ const UploadVideo = () => {
 
         // Make API call
         const res = await upload_video(form).unwrap();
-        console.log(res);
         
         if (res.status) {
             Toast.show({

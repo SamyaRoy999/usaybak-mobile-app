@@ -33,12 +33,9 @@ const onsiteAccount = () => {
             password: values.password,
             c_password: values.c_password,
         }
-        // console.log(values, "data");
         try {
 
             const res = await onsiteAccountReg(data).unwrap();
-            console.log(res);
-
             if (res.status) {
                 Toast.show({
                     type: ALERT_TYPE.SUCCESS,

@@ -1,8 +1,9 @@
 import HeaderBar from '@/components/shear/HeaderBar'
 import { IconAddsm, IconBackLeft, IconButtonBack, IconClose, IconCloseBlack, IconDeleteRed, IconErowBackRight, IconSavechanges, IconUpload, IconUploadCover, profileChang } from '@/icons/Icon'
 import tw from '@/lib/tailwind'
-import { useEditProfileMutation, useProfileQuery } from '@/redux/apiSlices/Account/accountSlice'
+import { useProfileQuery, useSettingPostMutation } from '@/redux/apiSlices/Account/accountSlice'
 import { _HIGHT } from '@/utils/utils'
+import axios from 'axios'
 import { Image } from 'expo-image'
 import * as ImagePicker from 'expo-image-picker'
 import { router } from 'expo-router'
@@ -15,9 +16,16 @@ import * as Yup from "yup"
 
 // Define types
 interface BusinessLocation {
-    address: string;
+    location: string;
     officeType: string;
     showOfficeType: boolean;
+    showSuggestions?: boolean;
+}
+
+interface LocationSuggestion {
+    place_id: string;
+    formatted_address: string;
+    name: string;
 }
 
 interface FormValues {
@@ -33,12 +41,13 @@ interface FormValues {
 const Settings = () => {
     const [isVisible, setIsVisible] = React.useState(false);
     const [profilePicure, setProfilePicure] = React.useState(false);
-    const [profileImage, setProfileImage] = React.useState<string | null>(null);
-    const [coverImage, setCoverImage] = React.useState<string | null>(null);
+    const [profileImage, setProfileImage] = React.useState<ImagePicker.ImagePickerAsset | null>(null);
+    const [coverImage, setCoverImage] = React.useState<ImagePicker.ImagePickerAsset | null>(null);
+    const [locationSuggestions, setLocationSuggestions] = React.useState<LocationSuggestion[]>([]);
+    const [searchTimeout, setSearchTimeout] = React.useState<NodeJS.Timeout | null>(null);
 
     // ............. post api ............//
-    const [editProfile] = useEditProfileMutation()
-
+    const [settingPost] = useSettingPostMutation()
 
     // .............Fetch profile data...............//
     const { data: defouldData, isLoading } = useProfileQuery({})
@@ -62,9 +71,10 @@ const Settings = () => {
         services: services || ["Hair cutting", "Hair cutting", "Hair cutting", "Hair cutting"],
         locations: [
             {
-                address: "Location 1",
+                location: "",
                 officeType: "",
-                showOfficeType: false
+                showOfficeType: false,
+                showSuggestions: false
             }
         ]
     };
@@ -78,43 +88,92 @@ const Settings = () => {
         services: Yup.array().of(Yup.string()),
         locations: Yup.array().of(
             Yup.object().shape({
-                address: Yup.string().required("Address is required"),
+                location: Yup.string().required("Address is required"),
                 officeType: Yup.string()
             })
         )
     });
 
+    // Function to search locations using Google Places API
+    const searchLocations = async (query: string) => {
+        if (!query || query.length < 3) {
+            setLocationSuggestions([]);
+            return;
+        }
+
+        try {
+            const response = await axios.get(
+                `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${query}&key=AIzaSyAocOxnI1fKkcZPIDH-ir2iw8y2kBqk-H4`
+            );
+            setLocationSuggestions(response?.data?.results || []);
+        } catch (error) {
+            setLocationSuggestions([]);
+        }
+    };
+
+    // Debounced search function
+    const handleLocationSearch = (query: string, index: number, setFieldValue: any, values: FormValues) => {
+        // Update the address field immediately
+        const newLocations = [...values.locations];
+        newLocations[index].location = query;
+        newLocations[index].showSuggestions = query.length >= 3;
+        setFieldValue("locations", newLocations);
+
+        // Clear previous timeout
+        if (searchTimeout) {
+            clearTimeout(searchTimeout);
+        }
+
+        // Set new timeout for API call
+        const timeout = setTimeout(() => {
+            searchLocations(query);
+        }, 300); // 500ms delay
+
+        setSearchTimeout(timeout);
+    };
+
+    // Function to select a location from suggestions
+    const selectLocation = (suggestion: LocationSuggestion, index: number, setFieldValue: any, values: FormValues) => {
+        const newLocations = [...values.locations];
+        newLocations[index].location = suggestion.formatted_address;
+        newLocations[index].showSuggestions = false;
+        setFieldValue("locations", newLocations);
+        setLocationSuggestions([]);
+    };
+
     const pickCoverImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            mediaTypes: ['images'],
             allowsEditing: true,
-            aspect: [4, 3],
-            quality: 0.8,
+            aspect: [16, 9],
+            quality: 1,
         });
-
         if (!result.canceled) {
-            setCoverImage(result.assets[0].uri);
+            setCoverImage(result.assets[0]);
         }
     };
 
     const pickProfileImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            mediaTypes: ['images'],
             allowsEditing: true,
-            aspect: [1, 1],
-            quality: 0.8,
+            aspect: [16, 9],
+            quality: 1,
         });
 
         if (!result.canceled) {
-            setProfileImage(result.assets[0].uri);
+            setProfileImage(result.assets[0]);
         }
         setProfilePicure(false);
     };
 
     const handleSubmit = async (values: FormValues) => {
-        try {
-            console.log('Submitting:', values);
 
+        console.log(values.locations, "bangla write and english write");
+
+        try {
+            // .................... setting post ...........//
+            // const res = settingPost().unwrap()
             Toast.show({
                 type: ALERT_TYPE.SUCCESS,
                 title: 'Success',
@@ -126,10 +185,14 @@ const Settings = () => {
                 type: ALERT_TYPE.WARNING,
                 title: 'Error',
                 textBody: error?.message || 'Failed to save settings',
+
             });
             console.error(error);
         }
     };
+
+
+
 
     return (
         <KeyboardAvoidingView enabled={true} behavior={"padding"} style={tw`flex-1 bg-primary`}>
@@ -137,11 +200,11 @@ const Settings = () => {
                 <ScrollView contentContainerStyle={tw``} showsVerticalScrollIndicator={false}>
                     <HeaderBar />
                     <View style={tw`flex-row items-center justify-between px-5`}>
-                        <View style={tw`bg-primaryText w-13 h-13 p-4 rounded-full flex-row items-center justify-center border border-primaryGray`}>
-                            <TouchableOpacity onPress={() => router.back()}>
+                        <TouchableOpacity onPress={() => router.back()}>
+                            <View style={tw`bg-primaryText w-13 h-13 p-4 rounded-full flex-row items-center justify-center border border-primaryGray`}>
                                 <SvgXml xml={IconBackLeft} />
-                            </TouchableOpacity>
-                        </View>
+                            </View>
+                        </TouchableOpacity>
                         <Text style={tw`font-poppinsMedium text-xl`}>Settings</Text>
                         <View></View>
                     </View>
@@ -169,7 +232,6 @@ const Settings = () => {
                                             <View style={[tw`w-full rounded-2xl bg-gray-200`, { height: _HIGHT * 0.19 }]} />
                                         )}
                                     </View>
-
                                     {/* Profile Image Section */}
                                     <View style={tw`bg-primary rounded-full h-28 w-28 flex-row items-center justify-center right-[45%] -bottom-10 absolute`}>
                                         {profileImage || avatar ? (
@@ -297,28 +359,78 @@ const Settings = () => {
                                         </View>
                                     </View>
 
-                                    {/* Business locations */}
+                                    {/* Business locations with suggestions */}
                                     <View style={tw`py-3 px-6`}>
                                         <View style={tw`border border-primaryGray flex-col justify-center pl-7 relative rounded-2xl p-4`}>
                                             <Text style={tw`bg-primary w-40 absolute -top-2 left-7`}>Business locations</Text>
-
                                             {values.locations.map((location, index) => (
                                                 <View key={index} style={tw`py-4 relative `}>
-                                                    <TextInput
-                                                        value={location.address}
-                                                        onChangeText={(txt) => {
-                                                            const newLocations = [...values.locations];
-                                                            newLocations[index].address = txt;
-                                                            setFieldValue("locations", newLocations);
-                                                        }}
-                                                        style={tw`py-4 px-4 border border-primaryGray rounded-full`}
-                                                        placeholder="Enter location address"
-                                                    />
+                                                    <View style={tw` border border-primaryGray rounded-full`}>
+
+                                                        <TextInput
+                                                            value={location.location}
+                                                            onChangeText={(txt) => handleLocationSearch(txt, index, setFieldValue, values)}
+                                                            onFocus={() => {
+                                                                if (location.location.length >= 3) {
+                                                                    const newLocations = [...values.locations];
+                                                                    newLocations[index].showSuggestions = true;
+                                                                    setFieldValue("locations", newLocations);
+                                                                }
+                                                            }}
+                                                            style={tw`py-4 px-4 w-48 rounded-full`}
+                                                            placeholder="Enter location address"
+                                                        />
+                                                    </View>
+
+                                                    {/* Location Suggestions */}
+                                                    {/* {location.showSuggestions && locationSuggestions.length > 0 && (
+                                                        <View style={tw`absolute top-16 left-0 right-0 bg-primary border border-primaryGray rounded-lg shadow-lg z-50 max-h-48`}>
+                                                            <FlatList
+                                                                data={locationSuggestions}
+                                                                keyExtractor={(item) => item.place_id}
+                                                                renderItem={({ item }) => (
+                                                                    <TouchableOpacity
+                                                                        onPress={() => selectLocation(item, index, setFieldValue, values)}
+                                                                        style={tw`p-3 border-b border-primaryGray`}
+                                                                    >
+                                                                        <Text style={tw`font-poppinsMedium text-base`}>{item.name}</Text>
+                                                                        <Text style={tw`font-poppins text-sm text-gray-600 mt-1`}>{item.formatted_address}</Text>
+                                                                    </TouchableOpacity>
+                                                                )}
+                                                                nestedScrollEnabled={true}
+                                                            />
+                                                        </View>
+                                                    )} */}
+                                                    <View style={tw`absolute top-16 left-0 right-0 bg-primary  rounded-lg shadow-lg z-50 max-h-48`}>
+                                                        <ScrollView
+                                                            showsVerticalScrollIndicator={true}
+                                                            nestedScrollEnabled={true}
+                                                            // scrollEnabled={true}
+                                                            style={tw`max-h-48`}
+                                                        >
+                                                            {locationSuggestions.map((item: any, suggestionIndex: number) => {
+                                                                return (
+                                                                    <TouchableOpacity
+                                                                        key={item.place_id || suggestionIndex}
+                                                                        onPress={() => selectLocation(item, index, setFieldValue, values)}
+                                                                        style={tw`p-3  border-primaryGray`}
+                                                                    >
+                                                                        <Text style={tw`font-poppinsMedium text-base`}>{item.name}</Text>
+                                                                        <Text style={tw`font-poppins text-sm text-gray-600 mt-1`}>{item.formatted_address}</Text>
+                                                                    </TouchableOpacity>
+                                                                )
+                                                            })}
+                                                        </ScrollView>
+                                                    </View>
+
+
+
                                                     <View>
                                                         <TouchableOpacity
                                                             onPress={() => {
                                                                 const newLocations = [...values.locations];
                                                                 newLocations[index].showOfficeType = true;
+                                                                newLocations[index].showSuggestions = false;
                                                                 setFieldValue("locations", newLocations);
                                                             }}
                                                             style={tw`absolute -top-12 right-2 border border-primaryGray w-2/5 rounded-full p-2 px-3 flex-row items-center gap-3`}
@@ -342,7 +454,7 @@ const Settings = () => {
                                                                 setFieldValue("locations", newLocations);
                                                             }}
                                                         >
-                                                            <View style={styles.modalContainer}>
+                                                            <View style={[tw``, styles.modalContainer]}>
                                                                 <View style={tw`bg-primary rounded-t-3xl w-full absolute bottom-0`}>
                                                                     <View style={tw`bg-secondary w-full h-16 rounded-t-3xl flex-row items-center justify-between p-5`}>
                                                                         <View></View>
@@ -357,14 +469,14 @@ const Settings = () => {
                                                                             <SvgXml xml={IconClose} />
                                                                         </TouchableOpacity>
                                                                     </View>
-                                                                    <View style={tw`py-9`}>
+                                                                    <View style={tw`py-9 `}>
                                                                         <TouchableOpacity onPress={() => {
                                                                             const newLocations = [...values.locations];
                                                                             newLocations[index].officeType = "Branch";
                                                                             newLocations[index].showOfficeType = false;
                                                                             setFieldValue("locations", newLocations);
                                                                         }}>
-                                                                            <View style={tw`mx-5 flex-row justify-center mb-4 rounded-lg bg-primaryText`}>
+                                                                            <View style={tw`mx-5 flex-row  justify-center mb-4 rounded-lg bg-primaryText`}>
                                                                                 <Text style={tw`py-5 font-poppins text-lg`}>Branch</Text>
                                                                             </View>
                                                                         </TouchableOpacity>
@@ -392,9 +504,10 @@ const Settings = () => {
                                                     setFieldValue("locations", [
                                                         ...values.locations,
                                                         {
-                                                            address: "",
+                                                            location: "",
                                                             officeType: "",
-                                                            showOfficeType: false
+                                                            showOfficeType: false,
+                                                            showSuggestions: false
                                                         }
                                                     ]);
                                                 }}

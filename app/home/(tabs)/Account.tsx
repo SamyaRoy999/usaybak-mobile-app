@@ -53,14 +53,12 @@ const Account = () => {
       </View>
     );
   }
-  console.log(historyVideo, "historyVideo", likeVideo, "likeVideo");
+
 
   // .............. DELETE ......... //
   const handleDeleteVideo = async (type: "history" | "like", id: any) => {
     try {
       let res;
-      console.log(res, "padding");
-
       if (type === "history") {
         res = await deleteHistoryVideo(id).unwrap();
         refetch();
@@ -85,7 +83,7 @@ const Account = () => {
         });
       }
     } catch (err) {
-      console.log("Delete error:", err);
+
     }
   };
 
@@ -128,7 +126,6 @@ const Account = () => {
                 // scrollEnabled={false}
                 horizontal
                 renderItem={({ item }) => {
-                  console.log("historyvideo", item, "historyvideo");
                   return (
                     <View style={[tw` mr-4`, { width: _Width * 0.4 }]}>
                       <Image

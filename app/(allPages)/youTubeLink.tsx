@@ -1,10 +1,14 @@
 import { IconBackLeft, IconClose, IconCloseBlack, IconErowBack, IconLock, IconPromoted, IconSucssMsg, IconUploadBlue, IconWorld, IconWorningGary } from '@/icons/Icon'
 import tw from '@/lib/tailwind'
+import { usePriceGetAllQuery } from '@/redux/apiSlices/Home/homeApiSlices'
+import { usePaymentMutation } from '@/redux/apiSlices/payment/paymentSlice'
 import { useCategoriesQuery, useUpload_videoMutation } from '@/redux/apiSlices/UploadVideo/uploadVideoSices'
+import { CardField, useStripe } from '@stripe/stripe-react-native'
 import * as ImagePicker from 'expo-image-picker'
 import { router } from 'expo-router'
 import React from 'react'
-import { ActivityIndicator, FlatList, Image, KeyboardAvoidingView, Modal, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { ActivityIndicator, Button, FlatList, Image, KeyboardAvoidingView, Modal, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { ALERT_TYPE, Toast } from "react-native-alert-notification"
 import { SvgXml } from 'react-native-svg'
 
 const youTubeLink = () => {
@@ -36,8 +40,13 @@ const youTubeLink = () => {
         isLoading,
         refetch
     } = useCategoriesQuery({});
-
     const categoryData = categories?.data?.data
+
+    const {
+        data: priceYoutubLink,
+    } = usePriceGetAllQuery({});
+    const [payment] = usePaymentMutation()
+
 
     setTimeout(() => {
         setSucssMassage(false)
@@ -60,13 +69,11 @@ const youTubeLink = () => {
     const pickImage = async () => {
         // No permissions request is necessary for launching the image library
         let result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ['images', 'videos'],
+            mediaTypes: ['images'],
             allowsEditing: true,
             aspect: [16, 9],
             quality: 1,
         });
-
-        console.log(result);
 
         if (!result.canceled) {
             setImage(result.assets[0]);
@@ -93,10 +100,6 @@ const youTubeLink = () => {
         formData.append("tags", JSON.stringify(tags));
 
         if (image?.uri) {
-            // const fileName = image.split("/").pop();
-            // const ext = fileName?.split(".").pop();
-            // const mimeType = ext === "jpg" ? "image/jpeg" : `image/${ext}`;
-
             formData.append("thumbnail", {
                 uri: image.uri,
                 name: image.fileName,
@@ -104,19 +107,103 @@ const youTubeLink = () => {
             } as any);
         }
 
-        // Debug log
-        //   console.log(formData)
-
         try {
-            const response = await upload_video(formData).unwrap();
-            console.log("Video uploaded:", response);
-            alert("Video Uploaded Successfully!");
+            const res = await upload_video(formData).unwrap();
+            if (res.status) {
+                Toast.show({
+                    type: ALERT_TYPE.SUCCESS,
+                    title: 'Success',
+                    textBody: res?.message,
+                    autoClose: 2000,
+                });
+                setTimeout(() => {
+                    router?.push(`/home/(tabs)/landingPage`);
+                }, 1000);
+            } else {
+                Toast.show({
+                    type: ALERT_TYPE.DANGER,
+                    title: 'Waring',
+                    textBody: res?.message?.email?.[0] || "Something went wrong!",
+                    autoClose: 2000,
+                });
+            }
         } catch (err: any) {
             console.error("Upload error:", err);
             alert("Failed to upload video");
         }
     };
 
+    // PAYMENT STRIPE CODE 
+    const { initPaymentSheet, presentPaymentSheet } = useStripe();
+    const [loading, setLoading] = React.useState(false);
+    const initializePaymentSheet = async () => {
+        try {
+            setLoading(true);
+            const data = {
+                reason: "Promoting YouTube Link",
+                amount: priceYoutubLink?.data?.uploading_youTube_link,
+                payment_method: "pm_card_visa",
+            }
+            // 1. Create a payment intent on your server
+            const res = await payment(data).unwrap()
+
+            const { paymentIntent, ephemeralKey, customer } = await res.json();
+
+            // 2. Initialize the payment sheet
+            const { error } = await initPaymentSheet({
+                merchantDisplayName: "MyTSV",
+                customerId: customer,
+                customerEphemeralKeySecret: ephemeralKey,
+                paymentIntentClientSecret: paymentIntent,
+                allowsDelayedPaymentMethods: true,
+                defaultBillingDetails: {
+                    name: 'Customer Name',
+                },
+            });
+
+            if (!error) {
+                setLoading(false);
+                return true;
+            } else {
+                console.error(error);
+                setLoading(false);
+                return false;
+            }
+        } catch (error) {
+            console.error(error);
+            setLoading(false);
+            return false;
+        }
+    };
+
+    const openPaymentSheet = async () => {
+        const initialized = await initializePaymentSheet();
+        if (!initialized) {
+            Toast.show({
+                type: ALERT_TYPE.DANGER,
+                title: 'Error',
+                textBody: 'Failed to initialize payment',
+                autoClose: 2000,
+            });
+            return;
+        }
+
+        const { error } = await presentPaymentSheet();
+
+        if (error) {
+            Toast.show({
+                type: ALERT_TYPE.DANGER,
+                title: 'Error',
+                textBody: error.message,
+                autoClose: 2000,
+            });
+        } else {
+            // Payment was successful
+            setPaymentVisible(false);
+            setSucssMassage(true);
+            handlePublish();
+        }
+    };
     return (
         <KeyboardAvoidingView
             enabled={true}
@@ -124,13 +211,13 @@ const youTubeLink = () => {
             <ScrollView contentContainerStyle={tw`pb-10`} showsVerticalScrollIndicator={false}>
                 <View style={tw`relative`}>
                     <View style={tw`flex-row justify-between items-center gap-5 px-5 pb-8`}>
-                        <View
-                            style={tw`bg-primaryText w-13 h-13 p-4 rounded-full flex-row items-center justify-center border border-primaryGray`}
-                        >
-                            <TouchableOpacity onPress={() => router.back()}>
+                        <TouchableOpacity onPress={() => router.back()}>
+                            <View
+                                style={tw`bg-primaryText w-13 h-13 p-4 rounded-full flex-row items-center justify-center border border-primaryGray`}
+                            >
                                 <SvgXml xml={IconBackLeft} />
-                            </TouchableOpacity>
-                        </View>
+                            </View>
+                        </TouchableOpacity>
                         <Text style={tw`font-poppinsMedium text-xl `}>
                             Upload YouTube Link
                         </Text>
@@ -176,7 +263,11 @@ const youTubeLink = () => {
                         onPress={() => setCategoryModalVisible(true)}
                         style={tw`flex-row items-center justify-between border border-primaryGray px-6 py-3 rounded-full `}
                     >
-                        <Text style={tw`font-poppins text-base`}>{selectedCategory || 'Category'}</Text>
+                        {isLoading ? (
+                            <Text style={tw`flex-1 justify-center items-center`}>loading...</Text>
+                        )
+                            : (<Text style={tw`font-poppins text-base`}>{selectedCategory || 'Category'}</Text>)
+                        }
                         <SvgXml xml={IconErowBack} />
                     </TouchableOpacity>
                 </View>
@@ -254,7 +345,7 @@ const youTubeLink = () => {
                                     <Image style={tw`w-full aspect-video rounded-lg`} source={{
                                         uri: image.uri
                                     }} />   </TouchableOpacity>
-                                <TouchableOpacity onPress={()=> setImage(null)} style={tw`bg-primary h-8 w-8 rounded-full flex-row items-center justify-center absolute top-3 right-3`}>
+                                <TouchableOpacity onPress={() => setImage(null)} style={tw`bg-primary h-8 w-8 rounded-full flex-row items-center justify-center absolute top-3 right-3`}>
                                     <SvgXml xml={IconCloseBlack} />
                                 </TouchableOpacity>
                             </View>
@@ -279,7 +370,7 @@ const youTubeLink = () => {
                         style={tw`flex-row items-center gap-3 ${promotedOn ? "bg-secondary" : "bg-[#EFEFEF]"}  w-5/6  px-6 py-3 rounded-full `}
                     >
                         <SvgXml xml={IconPromoted} />
-                        <Text style={tw`font-poppins text-base ${promotedOn ? "text-primary" : ""}`}>Promote for $99 / Month</Text>
+                        <Text style={tw`font-poppins text-base ${promotedOn ? "text-primary" : ""}`}>Promote for ${priceYoutubLink?.data?.uploading_youTube_link} / Month</Text>
                     </TouchableOpacity>
                 </View>
 
@@ -288,7 +379,7 @@ const youTubeLink = () => {
                         {/* Footer */}
                         <View style={tw`flex-row justify-end gap-3 px-6 py-4  `}>
                             <TouchableOpacity style={tw`border flex-row items-center border-primaryGray rounded-md`}>
-                                <Text style={tw`text-2xl font-poppinsMedium py-2 px-7`}>$99.00</Text>
+                                <Text style={tw`text-2xl font-poppinsMedium py-2 px-7`}>{priceYoutubLink?.data?.uploading_youTube_link}</Text>
                             </TouchableOpacity>
                             <TouchableOpacity
                                 onPress={() => setPaymentVisible(true)}
@@ -334,42 +425,43 @@ const youTubeLink = () => {
                                 {/* Amount Section */}
                                 <View style={tw`items-center mb-5`}>
                                     <Text style={tw`text-gray-500 font-poppins`}>Required amount</Text>
-                                    <Text style={tw`text-3xl font-poppinsBold text-black`}>$99.99</Text>
+                                    <Text style={tw`text-3xl font-poppinsBold text-black`}>${priceYoutubLink?.data?.uploading_youTube_link}</Text>
                                 </View>
-
-                                {/* Card Info Section */}
-                                <Text style={tw`text-base font-poppinsMedium mb-2`}>Card information</Text>
-                                <View style={tw`border border-gray-300 rounded-lg p-3 mb-3`}>
-                                    <TextInput
-                                        placeholder="Card number"
-                                        keyboardType="number-pad"
-                                        style={tw`font-poppins text-base mb-2`}
-                                    />
-                                    <View style={tw`flex-row justify-between`}>
-                                        <TextInput
-                                            placeholder="MM/YY"
-                                            keyboardType="number-pad"
-                                            style={tw`w-[48%] font-poppins text-base`}
-                                        />
-                                        <TextInput
-                                            placeholder="CVC"
-                                            keyboardType="number-pad"
-                                            style={tw`w-[48%] font-poppins text-base`}
-                                        />
-                                    </View>
-                                </View>
-                                {/* Billing Address */}
-                                <Text style={tw`text-base font-poppinsMedium mb-2`}>Billing address</Text>
-                                <View style={tw`border border-gray-300 rounded-lg mb-3`}>
-                                    <TouchableOpacity style={tw`p-3`}>
-                                        <Text style={tw`font-poppins text-base text-gray-600`}>United States</Text>
-                                    </TouchableOpacity>
-                                </View>
-                                <TextInput
-                                    placeholder="ZIP"
-                                    keyboardType="number-pad"
-                                    style={tw`border border-gray-300 rounded-lg p-3 font-poppins text-base mb-5`}
+                                <CardField
+                                    postalCodeEnabled={true}
+                                    placeholders={{
+                                        number: '4242 4242 4242 4242',
+                                    }}
+                                    cardStyle={{
+                                        backgroundColor: '#FFFFFF',
+                                        textColor: '#000000',
+                                    }}
+                                    style={{
+                                        width: '100%',
+                                        height: 50,
+                                        marginVertical: 30,
+                                    }}
+                                    onCardChange={cardDetails => {
+                                      
+                                    }}
+                                    onFocus={focusedField => {
+                                      
+                                    }}
                                 />
+                                <Button onPress={openPaymentSheet} title="Pay" disabled={loading} />
+
+                                {/* <TouchableOpacity
+                                    onPress={openPaymentSheet}
+                                    disabled={loading}
+                                    title="Pay" disabled={loading}
+                                    style={tw`bg-blue-500 py-3 px-6 rounded-md ${loading ? 'opacity-50' : ''}`}
+                                >
+                                    {loading ? (
+                                        <ActivityIndicator color="white" />
+                                    ) : (
+                                        <Text style={tw`text-white text-center font-poppinsMedium`}>Checkout</Text>
+                                    )}
+                                </TouchableOpacity> */}
 
                                 {/* Buttons */}
                                 <View style={tw`flex-row justify-between`}>
@@ -580,47 +672,3 @@ const youTubeLink = () => {
 }
 
 export default youTubeLink
-
-
-//   const handlePublish = async () => {
-//         if (!youtubeLink || !videoTitle || !selectedCategory) {
-//             alert("Please fill all required fields");
-//             return;
-//         }
-
-//         let formData = new FormData();
-
-//         // Append required fields
-//         formData.append("category_id", categoryID.toString());
-//         formData.append("type", "link");
-//         formData.append("title", videoTitle);
-//         formData.append("description", description);
-//         formData.append("link", youtubeLink);
-//         formData.append("states", selectedState);
-//         formData.append("city", selectedCity);
-//         formData.append("is_promoted", promotedOn ? "1" : "0");
-//         formData.append("visibility", selectedVisibility || "Everyone");
-//         formData.append("tags", JSON.stringify(tags));
-//         // Thumbnail image append
-//         if (image) {
-//             const fileName = image.split("/").pop();
-//             const fileType = fileName?.split(".").pop();
-//             formData.append("thumbnail", {
-//                 uri: image,
-//                 name: fileName,
-//                 type: `image/${fileType}`,
-//             });
-//         }
-//         for (let pair of (formData as any)._parts) {
-//             console.log(pair[0] + ':', pair[1]);
-//         }
-
-//         try {
-//             const response = await upload_video(formData).unwrap();
-//             console.log("Video uploaded:", response);
-//             alert("Video Uploaded Successfully!");
-//         } catch (err) {
-//             console.error("Upload error:", err);
-//             alert("Failed to upload video");
-//         }
-//     };

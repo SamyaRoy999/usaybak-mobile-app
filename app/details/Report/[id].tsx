@@ -82,9 +82,6 @@ const ReportDetails = () => {
         );
     }
 
-    console.log(appeal);
-
-
     return (
         <View style={tw`flex-1  bg-primary`}>
             <AlertNotificationRoot>

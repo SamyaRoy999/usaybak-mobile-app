@@ -55,7 +55,7 @@ export const accountSlice = api.injectEndpoints({
             }),
             providesTags: ["account"],
         }),
-        editProfile: builder.mutation<any, any>({
+        settingPost: builder.mutation<any, any>({
             query: (data) => ({
                 url: `/edit-profile`,
                 method: "POST",
@@ -128,6 +128,7 @@ export const accountSlice = api.injectEndpoints({
             }),
             providesTags: ["account"],
         }),
+
         onsiteAccountReg: builder.mutation<any, any>({
             query: (data) => ({
                 url: `/auth/register`,
@@ -150,7 +151,7 @@ export const {
     useAnalyticsQuery,
     useTerms_conditionsQuery,
     useProfileQuery,
-    useEditProfileMutation,
+    useSettingPostMutation,
     useOnsiteAccountRegMutation,
     useLazyHistoryVideoQuery,
     useHistoryVideoQuery,

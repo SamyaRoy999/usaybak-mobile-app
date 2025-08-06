@@ -99,7 +99,7 @@ const SingleVideo = () => {
       try {
         const res = await watchedVidew(id as any).unwrap()
       } catch (error) {
-        console.log(error)
+
       }
     }, 2000)
   }, [])
@@ -147,11 +147,9 @@ const SingleVideo = () => {
       video_id: Number(id),
       comment: comment,
     };
-    console.log(payload);
 
     try {
       const res = await commentsPost(payload as any).unwrap();
-      console.log(res, "data add comment");
 
       if (res.status) {
         Toast.show({
@@ -171,7 +169,7 @@ const SingleVideo = () => {
         });
       }
     } catch (error: any) {
-      console.log(error);
+
       Toast.show({
         type: ALERT_TYPE.DANGER,
         title: 'Error',
@@ -190,7 +188,6 @@ const SingleVideo = () => {
       comment_id: commentID,
       reply,
     };
-    console.log(payload);
 
     try {
       const res = await repliesPost(payload as any).unwrap();
@@ -213,7 +210,7 @@ const SingleVideo = () => {
         });
       }
     } catch (error: any) {
-      console.log(error);
+
       Toast.show({
         type: ALERT_TYPE.DANGER,
         title: 'Error',
@@ -244,7 +241,6 @@ const SingleVideo = () => {
     }
     try {
       const res = await reportPost(data as any).unwrap();
-      console.log(".............", res);
       if (res.status) {
         Toast.show({
           type: ALERT_TYPE.SUCCESS,
@@ -263,7 +259,7 @@ const SingleVideo = () => {
         });
       }
     } catch (error: any) {
-      console.log(error);
+
       Toast.show({
         type: ALERT_TYPE.DANGER,
         title: 'Error',
@@ -273,8 +269,6 @@ const SingleVideo = () => {
     }
 
   }
-
-  console.log(apiResponseVideo, id);
 
 
   return (
@@ -306,7 +300,7 @@ const SingleVideo = () => {
                   {videoDetails?.views_count_formated} views · {videoDetails?.publish_time_formated}
                 </Text>
                 <TouchableOpacity onPress={() => setDescriptionVisible(true)}>
-                  <Text style={tw`text-primaryBlue`}>...more</Text>
+                  <Text style={tw``}>...more</Text>
                 </TouchableOpacity>
               </View>
 
