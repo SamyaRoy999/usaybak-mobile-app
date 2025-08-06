@@ -21,7 +21,7 @@ import { useHistoryVideoDeleteMutation, useHistoryVideoQuery, useLikeVideosDelet
 import { _HIGHT, _Width } from "@/utils/utils";
 import { Image } from "expo-image";
 import { router } from "expo-router";
-import React from "react";
+import React, { useEffect } from "react";
 import {
   FlatList,
   ScrollView,
@@ -35,11 +35,11 @@ import { SvgXml } from "react-native-svg";
 const Account = () => {
   // ................... History ........................//
   const { data: historyVideo, isLoading, error, refetch } = useHistoryVideoQuery({})
-  const { data: likeVideo } = useLikeVideosQuery({})
+  const { data: likeVideo, isLoading: islikeVideoLoading, refetch: islikeVideoRef} = useLikeVideosQuery({})
   const [deleteHistoryVideo] = useHistoryVideoDeleteMutation();
   const [likeVideosDelete] = useLikeVideosDeleteMutation();
 
-  if (isLoading) {
+  if (isLoading || islikeVideoLoading) {
     return (
       <View style={tw`flex-1 justify-center items-center`}>
         <Text>Loading...</Text>
@@ -86,6 +86,11 @@ const Account = () => {
 
     }
   };
+
+  useEffect(() => {
+    refetch()
+    islikeVideoRef()
+  }, [])
 
   return (
     <View style={tw`flex-1 bg-primary `}>
@@ -178,43 +183,43 @@ const Account = () => {
           {/* like co.. */}
           <View style={tw`px-2 mx-4`}>
             {/* like  */}
-            {/* {likeVideo?.data?.data.length === 0 ? (
+            {likeVideo?.data?.data.length === 0 ? (
               <View style={tw`flex-1 justify-center items-center mt-10`}>
                 <Text style={tw`font-poppins text-lg`}>No Like Video found</Text>
               </View>
-            ) : ( */}
-            <FlatList
-              data={likeVideo?.data?.data}
-              keyExtractor={(item) => item.id.toString()}
-              showsHorizontalScrollIndicator={false}
-              // scrollEnabled={false}
-              horizontal
-              renderItem={({ item }) => (
-                <View style={[tw` mr-4`, { width: _Width * 0.4 }]}>
-                  <Image
-                    style={[
-                      tw`rounded-xl`,
-                      { width: _Width * 0.4, height: _HIGHT * 0.1 },
-                    ]}
-                    source={{ uri: item?.video?.thumbnail }}
-                  />
-                  <Text
-                    style={tw`text-base font-poppinsMedium py-1 text-secondaryBlack `}
-                  >
-                    {item.video?.title?.split(" ").slice(0, 4).join(" ")}...
-                  </Text>
-                  <View style={tw`flex-row justify-between w-full items-center`}>
-                    <Text style={tw`text-sm font-poppins  text-secondaryBlack `}>
-                      {item?.video?.user.channel_name}
+            ) : (
+              <FlatList
+                data={likeVideo?.data?.data}
+                keyExtractor={(item) => item.id.toString()}
+                showsHorizontalScrollIndicator={false}
+                // scrollEnabled={false}
+                horizontal
+                renderItem={({ item }) => (
+                  <View style={[tw` mr-4`, { width: _Width * 0.4 }]}>
+                    <Image
+                      style={[
+                        tw`rounded-xl`,
+                        { width: _Width * 0.4, height: _HIGHT * 0.1 },
+                      ]}
+                      source={{ uri: item?.video?.thumbnail }}
+                    />
+                    <Text
+                      style={tw`text-base font-poppinsMedium py-1 text-secondaryBlack `}
+                    >
+                      {item.video?.title?.split(" ").slice(0, 4).join(" ")}...
                     </Text>
-                    <TouchableOpacity onPress={() => handleDeleteVideo("like", item?.id)}>
-                      <SvgXml xml={IconCansel} width={20} height={20} />
-                    </TouchableOpacity>
+                    <View style={tw`flex-row justify-between w-full items-center`}>
+                      <Text style={tw`text-sm font-poppins  text-secondaryBlack `}>
+                        {item?.video?.user.channel_name}
+                      </Text>
+                      <TouchableOpacity onPress={() => handleDeleteVideo("like", item?.id)}>
+                        <SvgXml xml={IconCansel} width={20} height={20} />
+                      </TouchableOpacity>
+                    </View>
                   </View>
-                </View>
-              )}
-            />
-            {/* )} */}
+                )}
+              />
+            )}
           </View>
           <View>
             {/* dashboard */}

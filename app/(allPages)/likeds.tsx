@@ -27,6 +27,7 @@ const LikedVideosScreen = () => {
 
     const { data, isLoading, isFetching, refetch } = useLikeVideosQuery({ page });
     const [likeVideosDelete] = useLikeVideosDeleteMutation();
+    
 
     // Load initial or paginated data
     useEffect(() => {
@@ -57,7 +58,7 @@ const LikedVideosScreen = () => {
     // Handle Delete
     const handleDelete = async (videoId: number) => {
         try {
-            await likeVideosDelete(videoId).unwrap();
+            await likeVideosDelete(videoId as any).unwrap();
             setVideos((prev) => prev.filter((item) => item.id !== videoId));
         } catch (err) {
             console.error('Delete failed', err);
@@ -123,7 +124,7 @@ const LikedVideosScreen = () => {
                 {/* FlatList for Infinite Scroll */}
                 <FlatList
                     data={videos}
-                    keyExtractor={(item) => item.id}
+                     keyExtractor={(item) => `${item.id}-${item.video?.id || '0'}`}
                     scrollEnabled={false}
                     renderItem={({ item }) => (
                         <View style={[tw`flex-row gap-4 px-5 py-3 items-start border-b border-gray-200`]}>

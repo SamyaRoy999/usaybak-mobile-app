@@ -98,7 +98,11 @@ const youTubeLink = () => {
         formData.append("is_promoted", promotedOn ? "1" : "0");
         formData.append("visibility", selectedVisibility || "Everyone");
         formData.append("tags", JSON.stringify(tags));
-
+        console.log(".///////////////////////");
+        for (let pair of formData.entries()) {
+            console.log(pair[0], pair[1]);
+        }
+        console.log(".///////////////////////");
         if (image?.uri) {
             formData.append("thumbnail", {
                 uri: image.uri,
@@ -109,6 +113,7 @@ const youTubeLink = () => {
 
         try {
             const res = await upload_video(formData).unwrap();
+
             if (res.status) {
                 Toast.show({
                     type: ALERT_TYPE.SUCCESS,
@@ -442,10 +447,10 @@ const youTubeLink = () => {
                                         marginVertical: 30,
                                     }}
                                     onCardChange={cardDetails => {
-                                      
+
                                     }}
                                     onFocus={focusedField => {
-                                      
+
                                     }}
                                 />
                                 <Button onPress={openPaymentSheet} title="Pay" disabled={loading} />

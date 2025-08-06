@@ -9,7 +9,7 @@ import {
     IconSettingDot
 } from '@/icons/Icon';
 import tw from '@/lib/tailwind';
-import { useHistoryVideoDeleteMutation, useLazyHistoryVideoQuery } from '@/redux/apiSlices/Account/accountSlice';
+import { useAll_delete_watch_historyMutation, useHistoryVideoDeleteMutation, useLazyHistoryVideoQuery } from '@/redux/apiSlices/Account/accountSlice';
 import { _HIGHT, _Width } from '@/utils/utils';
 
 import { Image } from 'expo-image';
@@ -40,6 +40,7 @@ const HistoryScreen = () => {
 
     const [fetchHistory, { isLoading, isFetching }] = useLazyHistoryVideoQuery();
     const [historyVideoDelete] = useHistoryVideoDeleteMutation();
+     const [all_delete_watch_history] = useAll_delete_watch_historyMutation()
 
 
     const loadHistory = useCallback(async () => {
@@ -88,8 +89,42 @@ const HistoryScreen = () => {
 
     // Clear all history
     const handleClearAllHistory = async () => {
+    try {
+        const res = await all_delete_watch_history({}).unwrap();
         
-    };
+        if (res?.status) {
+            // Clear the local state immediately
+            setHistory([]);
+            // Reset pagination
+            setPage(1);
+            
+            Toast.show({
+                type: ALERT_TYPE.SUCCESS,
+                title: "Success",
+                textBody: res.message || "All history cleared successfully",
+                autoClose: 2000,
+            });
+            
+            // Optionally refetch to confirm with server
+        
+        } else {
+            Toast.show({
+                type: ALERT_TYPE.DANGER,
+                title: "Error",
+                textBody: res?.message || "Failed to clear history",
+                autoClose: 2000,
+            });
+        }
+    } catch (err) {
+        console.error("Clear all history error:", err);
+        Toast.show({
+            type: ALERT_TYPE.WARNING,
+            title: "Error",
+            textBody: "Failed to clear history",
+            autoClose: 2000,
+        });
+    }
+};
 
     // Delete single video
     const handleDeleteVideo = async (id: any) => {
@@ -119,6 +154,7 @@ const HistoryScreen = () => {
         }
     };
 
+     
     const renderItem = ({ item }: any) => {
         const video = item?.video;
 

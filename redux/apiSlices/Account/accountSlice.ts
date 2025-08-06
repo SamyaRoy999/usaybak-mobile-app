@@ -36,6 +36,15 @@ export const accountSlice = api.injectEndpoints({
             }),
             invalidatesTags: ["account"],
         }),
+
+        all_delete_watch_history: builder.mutation<any, any>({
+            query: () => ({
+                url: `/bulk-delete-watch-history`,
+                method: "DELETE",
+            }),
+            invalidatesTags: ["account"],
+        }),
+
         // .............. Dashboard...........//
 
         analytics: builder.query<any, any>({
@@ -55,13 +64,18 @@ export const accountSlice = api.injectEndpoints({
             }),
             providesTags: ["account"],
         }),
+
+        // In your accountSlice.ts
         settingPost: builder.mutation<any, any>({
             query: (data) => ({
-                url: `/edit-profile`,
+                url: "/edit-profile",
                 method: "POST",
                 body: data,
+                headers: {
+                    "Content-Type": "multipart/form-data"
+                },
             }),
-            invalidatesTags: ["user"],
+            invalidatesTags: ["account"],
         }),
 
         // .................. faq.................//
@@ -160,5 +174,6 @@ export const {
     useLikeVideosDeleteMutation,
     useReportVideoQuery,
     useReportDetailQuery,
-    useAppealPostMutation
+    useAppealPostMutation,
+    useAll_delete_watch_historyMutation
 } = accountSlice;

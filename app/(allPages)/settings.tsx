@@ -20,18 +20,25 @@ interface BusinessLocation {
     officeType: string;
     showOfficeType: boolean;
     showSuggestions?: boolean;
+    lat?: string;
+    long?: string;
 }
 
 interface LocationSuggestion {
     place_id: string;
     formatted_address: string;
     name: string;
+    geometry: {
+        location: {
+            lat: number;
+            lng: number;
+        };
+    };
 }
 
 interface FormValues {
     channel_name: string;
     name: string;
-    email: string;
     contact: string;
     bio: string;
     services: string[];
@@ -60,12 +67,11 @@ const Settings = () => {
         );
     }
 
-    const { bio, contact, email, channel_name, name, cover_image, avatar, services } = defouldData?.data || {};
+    const { bio, contact, channel_name, name, cover_image, avatar, services } = defouldData?.data || {};
 
     const initialValues: FormValues = {
         channel_name: channel_name || "",
         name: name || "",
-        email: email || "",
         contact: contact || "",
         bio: bio || "",
         services: services || ["Hair cutting", "Hair cutting", "Hair cutting", "Hair cutting"],
@@ -82,14 +88,13 @@ const Settings = () => {
     const validationSchema = Yup.object().shape({
         channel_name: Yup.string().required("Channel name is required"),
         name: Yup.string().required("Full name is required"),
-        email: Yup.string().email("Invalid email").required("Email is required"),
         contact: Yup.string().required("Contact is required"),
         bio: Yup.string(),
         services: Yup.array().of(Yup.string()),
         locations: Yup.array().of(
             Yup.object().shape({
                 location: Yup.string().required("Address is required"),
-                officeType: Yup.string()
+                officeType: Yup.string().required("Office type is required")
             })
         )
     });
@@ -100,7 +105,6 @@ const Settings = () => {
             setLocationSuggestions([]);
             return;
         }
-
         try {
             const response = await axios.get(
                 `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${query}&key=AIzaSyAocOxnI1fKkcZPIDH-ir2iw8y2kBqk-H4`
@@ -135,8 +139,13 @@ const Settings = () => {
     // Function to select a location from suggestions
     const selectLocation = (suggestion: LocationSuggestion, index: number, setFieldValue: any, values: FormValues) => {
         const newLocations = [...values.locations];
-        newLocations[index].location = suggestion.formatted_address;
-        newLocations[index].showSuggestions = false;
+        newLocations[index] = {
+            ...newLocations[index],
+            location: suggestion.formatted_address,
+            showSuggestions: false,
+            lat: suggestion.geometry.location.lat.toString(),
+            long: suggestion.geometry.location.lng.toString()
+        };
         setFieldValue("locations", newLocations);
         setLocationSuggestions([]);
     };
@@ -148,7 +157,7 @@ const Settings = () => {
             aspect: [16, 9],
             quality: 1,
         });
-        if (!result.canceled) {
+        if (!result.canceled && result.assets.length > 0) {
             setCoverImage(result.assets[0]);
         }
     };
@@ -157,11 +166,11 @@ const Settings = () => {
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ['images'],
             allowsEditing: true,
-            aspect: [16, 9],
+            aspect: [1, 1],
             quality: 1,
         });
 
-        if (!result.canceled) {
+        if (!result.canceled && result.assets.length > 0) {
             setProfileImage(result.assets[0]);
         }
         setProfilePicure(false);
@@ -169,30 +178,87 @@ const Settings = () => {
 
     const handleSubmit = async (values: FormValues) => {
 
-        console.log(values.locations, "bangla write and english write");
-
         try {
-            // .................... setting post ...........//
-            // const res = settingPost().unwrap()
-            Toast.show({
-                type: ALERT_TYPE.SUCCESS,
-                title: 'Success',
-                textBody: 'Settings saved successfully!',
-                autoClose: 2000,
-            });
+            // Prepare form data for backend
+            let formData = new FormData();
+
+            // Append text fields
+            formData.append('name', values.name);
+            formData.append('channel_name', values.channel_name);
+            formData.append('contact', values.contact);
+            formData.append('bio', values.bio);
+
+
+            // Format locations according to backend requirements
+            const formattedLocations = values.locations
+                .filter(loc => loc.location && loc.officeType)
+                .map(loc => ({
+                    type: loc.officeType === "Head office" ? "head-office" : "branch",
+                    location: loc.location,
+                    lat: loc.lat || "",
+                    long: loc.long || ""
+                }));
+
+            formData.append('locations', JSON.stringify(formattedLocations));
+
+            // Append services as JSON string
+            formData.append('services', JSON.stringify(values.services));
+
+            // Append images if they exist
+            if (profileImage?.uri) {
+                formData.append('image', {
+                    uri: profileImage.uri,
+                    name: profileImage.fileName,
+                    type: profileImage.mimeType
+                } as any);
+            }
+
+            if (coverImage?.uri) {
+                formData.append('cover_image', {
+                    uri: coverImage.uri,
+                    name: coverImage.fileName,
+                    type: coverImage.mimeType
+                } as any);
+            }
+
+            console.log("................foreatch data..................");
+            for (let pair of formData.entries()) {
+                console.log(pair[0], pair[1]);
+            }
+            console.log("................from data..................");
+
+            console.log("dddddddddddd", formData, "ddddddddddddd");
+            // Send data to backend
+            const res = await settingPost(formData).unwrap();
+            console.log(".///////////////////////");
+            console.log(res);
+            console.log(".///////////////////////");
+
+            if (res.status) {
+                Toast.show({
+                    type: ALERT_TYPE.SUCCESS,
+                    title: 'Success',
+                    textBody: res?.message,
+                    autoClose: 2000,
+                });
+
+            } else {
+                Toast.show({
+                    type: ALERT_TYPE.DANGER,
+                    title: 'Waring',
+                    textBody: res?.message,
+                    autoClose: 2000,
+                });
+            }
         } catch (error: any) {
             Toast.show({
                 type: ALERT_TYPE.WARNING,
                 title: 'Error',
-                textBody: error?.message || 'Failed to save settings',
-
+                textBody: error?.data?.message || 'Failed to save settings',
             });
-            console.error(error);
+            console.error("Error saving settings:", error);
         }
     };
-
-
-
 
     return (
         <KeyboardAvoidingView enabled={true} behavior={"padding"} style={tw`flex-1 bg-primary`}>
@@ -224,7 +290,7 @@ const Settings = () => {
                                         </TouchableOpacity>
                                         {coverImage || cover_image ? (
                                             <Image
-                                                source={{ uri: coverImage || cover_image }}
+                                                source={{ uri: coverImage?.uri || cover_image }}
                                                 style={[tw`w-full rounded-2xl`, { height: _HIGHT * 0.19 }]}
                                                 contentFit="cover"
                                             />
@@ -236,7 +302,7 @@ const Settings = () => {
                                     <View style={tw`bg-primary rounded-full h-28 w-28 flex-row items-center justify-center right-[45%] -bottom-10 absolute`}>
                                         {profileImage || avatar ? (
                                             <Image
-                                                source={{ uri: profileImage || avatar }}
+                                                source={{ uri: profileImage?.uri || avatar }}
                                                 style={tw`rounded-full h-24 w-24`}
                                                 contentFit="cover"
                                             />
@@ -281,20 +347,7 @@ const Settings = () => {
                                         )}
                                     </View>
 
-                                    {/* Email */}
-                                    <View style={tw`py-3 px-6`}>
-                                        <View style={tw`border border-primaryGray flex-col justify-center pl-7 relative rounded-full h-14`}>
-                                            <Text style={tw`bg-primary w-28 absolute -top-2 left-7`}>Email</Text>
-                                            <TextInput
-                                                value={values.email}
-                                                onChangeText={(txt) => setFieldValue("email", txt)}
-                                                style={tw`font-poppins text-base px-5`}
-                                            />
-                                        </View>
-                                        {errors.email && touched.email && (
-                                            <Text style={tw`text-red-700 font-poppins text-sm pl-6`}>{errors.email}</Text>
-                                        )}
-                                    </View>
+
 
                                     {/* Contact */}
                                     <View style={tw`py-3 px-6`}>
@@ -366,7 +419,6 @@ const Settings = () => {
                                             {values.locations.map((location, index) => (
                                                 <View key={index} style={tw`py-4 relative `}>
                                                     <View style={tw` border border-primaryGray rounded-full`}>
-
                                                         <TextInput
                                                             value={location.location}
                                                             onChangeText={(txt) => handleLocationSearch(txt, index, setFieldValue, values)}
@@ -383,47 +435,28 @@ const Settings = () => {
                                                     </View>
 
                                                     {/* Location Suggestions */}
-                                                    {/* {location.showSuggestions && locationSuggestions.length > 0 && (
-                                                        <View style={tw`absolute top-16 left-0 right-0 bg-primary border border-primaryGray rounded-lg shadow-lg z-50 max-h-48`}>
-                                                            <FlatList
-                                                                data={locationSuggestions}
-                                                                keyExtractor={(item) => item.place_id}
-                                                                renderItem={({ item }) => (
-                                                                    <TouchableOpacity
-                                                                        onPress={() => selectLocation(item, index, setFieldValue, values)}
-                                                                        style={tw`p-3 border-b border-primaryGray`}
-                                                                    >
-                                                                        <Text style={tw`font-poppinsMedium text-base`}>{item.name}</Text>
-                                                                        <Text style={tw`font-poppins text-sm text-gray-600 mt-1`}>{item.formatted_address}</Text>
-                                                                    </TouchableOpacity>
-                                                                )}
+                                                    {location.showSuggestions && locationSuggestions.length > 0 && (
+                                                        <View style={tw`absolute top-16 left-0 right-0 bg-primary rounded-lg shadow-lg z-50 max-h-48`}>
+                                                            <ScrollView
+                                                                showsVerticalScrollIndicator={true}
                                                                 nestedScrollEnabled={true}
-                                                            />
+                                                                style={tw`max-h-48`}
+                                                            >
+                                                                {locationSuggestions.map((item: any, suggestionIndex: number) => {
+                                                                    return (
+                                                                        <TouchableOpacity
+                                                                            key={item.place_id || suggestionIndex}
+                                                                            onPress={() => selectLocation(item, index, setFieldValue, values)}
+                                                                            style={tw`p-3 border-b border-primaryGray`}
+                                                                        >
+                                                                            <Text style={tw`font-poppinsMedium text-base`}>{item.name}</Text>
+                                                                            <Text style={tw`font-poppins text-sm text-gray-600 mt-1`}>{item.formatted_address}</Text>
+                                                                        </TouchableOpacity>
+                                                                    )
+                                                                })}
+                                                            </ScrollView>
                                                         </View>
-                                                    )} */}
-                                                    <View style={tw`absolute top-16 left-0 right-0 bg-primary  rounded-lg shadow-lg z-50 max-h-48`}>
-                                                        <ScrollView
-                                                            showsVerticalScrollIndicator={true}
-                                                            nestedScrollEnabled={true}
-                                                            // scrollEnabled={true}
-                                                            style={tw`max-h-48`}
-                                                        >
-                                                            {locationSuggestions.map((item: any, suggestionIndex: number) => {
-                                                                return (
-                                                                    <TouchableOpacity
-                                                                        key={item.place_id || suggestionIndex}
-                                                                        onPress={() => selectLocation(item, index, setFieldValue, values)}
-                                                                        style={tw`p-3  border-primaryGray`}
-                                                                    >
-                                                                        <Text style={tw`font-poppinsMedium text-base`}>{item.name}</Text>
-                                                                        <Text style={tw`font-poppins text-sm text-gray-600 mt-1`}>{item.formatted_address}</Text>
-                                                                    </TouchableOpacity>
-                                                                )
-                                                            })}
-                                                        </ScrollView>
-                                                    </View>
-
-
+                                                    )}
 
                                                     <View>
                                                         <TouchableOpacity
@@ -495,6 +528,18 @@ const Settings = () => {
                                                             </View>
                                                         </Modal>
                                                     )}
+
+                                                    {/* Validation errors
+                                                    {errors.locations?.[index]?.location && (
+                                                        <Text style={tw`text-red-700 font-poppins text-sm pl-2 mt-1`}>
+                                                            {errors.locations[index]?.location}
+                                                        </Text>
+                                                    )}
+                                                    {errors.locations?.[index]?.officeType && (
+                                                        <Text style={tw`text-red-700 font-poppins text-sm pl-2 mt-1`}>
+                                                            {errors.locations[index]?.officeType}
+                                                        </Text>
+                                                    )} */}
                                                 </View>
                                             ))}
 
@@ -511,7 +556,7 @@ const Settings = () => {
                                                         }
                                                     ]);
                                                 }}
-                                                style={tw`flex-row items-center gap-2 py-3 bg-secondary px-4 w-36 rounded-full`}
+                                                style={tw`flex-row items-center gap-2 py-3 bg-secondary px-4 w-36 rounded-full mt-4`}
                                             >
                                                 <SvgXml xml={IconAddsm} />
                                                 <Text style={tw`text-primaryText text-base font-poppinsBold`}>
@@ -523,7 +568,7 @@ const Settings = () => {
 
                                     {/* Save Changes Button */}
                                     <TouchableOpacity
-                                        onPress={() => handleSubmit()}
+                                        onPress={()=>handleSubmit()}
                                         style={tw`flex-row items-center gap-2 py-3 bg-secondary px-4 mx-5 mt-14 rounded-full justify-center`}
                                     >
                                         <SvgXml xml={IconSavechanges} />
