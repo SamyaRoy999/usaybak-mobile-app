@@ -35,7 +35,7 @@ import { SvgXml } from "react-native-svg";
 const Account = () => {
   // ................... History ........................//
   const { data: historyVideo, isLoading, error, refetch } = useHistoryVideoQuery({})
-  const { data: likeVideo, isLoading: islikeVideoLoading, refetch: islikeVideoRef} = useLikeVideosQuery({})
+  const { data: likeVideo, isLoading: islikeVideoLoading, refetch: islikeVideoRef } = useLikeVideosQuery({})
   const [deleteHistoryVideo] = useHistoryVideoDeleteMutation();
   const [likeVideosDelete] = useLikeVideosDeleteMutation();
 
@@ -86,11 +86,13 @@ const Account = () => {
 
     }
   };
-
-  // React.useEffect(() => {
-  //   refetch()
-  //   islikeVideoRef()
-  // }, [])
+  React.useEffect(() => {
+    // Only call refetch if the functions are available
+    if (refetch && islikeVideoRef) {
+      refetch();
+      islikeVideoRef();
+    }
+  }, [refetch, islikeVideoRef]);  // Add dependencies to ensure effect runs when these change
 
   return (
     <View style={tw`flex-1 bg-primary `}>

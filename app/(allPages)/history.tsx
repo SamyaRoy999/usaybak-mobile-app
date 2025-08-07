@@ -239,9 +239,29 @@ const HistoryScreen = () => {
                             <SvgXml xml={IconDelete} />
                             <Text style={tw`font-poppinsMedium text-base`}>Clear all history</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={()=>handle_pause_play_watch()} style={tw`flex-row items-start gap-3 pt-3`}>
+                        <TouchableOpacity onPress={async () => {
+                            const res = await pause_play_watch({}).unwrap()
+                            
+                            if (res?.status) {
+                                // Remove from local state
+                                Toast.show({
+                                    type: ALERT_TYPE.SUCCESS,
+                                    title: "Success",
+                                    textBody: res.message,
+                                    autoClose: 2000,
+                                });
+                            } else {
+                                Toast.show({
+                                    type: ALERT_TYPE.DANGER,
+                                    title: "Error",
+                                    textBody: res?.message || "Something went wrong!",
+                                    autoClose: 2000,
+                                });
+                            }
+
+                        }} style={tw`flex-row items-start gap-3 pt-3`}>
                             <SvgXml xml={IconPouse} />
-                            <Text style={tw`font-poppinsMedium text-base`}>{playPause ? "Pause watch history" : "Active watch history"} </Text>
+                            <Text style={tw`font-poppinsMedium text-base`}>Pause watch history</Text>
                         </TouchableOpacity>
                     </View>
                 )}

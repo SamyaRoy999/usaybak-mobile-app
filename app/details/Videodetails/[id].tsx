@@ -44,13 +44,13 @@ const videodetails = () => {
                 <HeaderBar />
                 <View style={tw`relative`}>
                     <View style={tw`flex-row justify-between items-center gap-5 px-5 mb-8`}>
-                        <View
-                            style={tw`bg-primaryText w-13 h-13 p-4 rounded-full flex-row items-center justify-center border border-primaryGray`}
-                        >
-                            <TouchableOpacity onPress={() => router.back()}>
+                        <TouchableOpacity onPress={() => router.back()}>
+                            <View
+                                style={tw`bg-primaryText w-13 h-13 p-4 rounded-full flex-row items-center justify-center border border-primaryGray`}
+                            >
                                 <SvgXml xml={IconBackLeft} />
-                            </TouchableOpacity>
-                        </View>
+                            </View>
+                        </TouchableOpacity>
                         <Text style={tw`font-poppinsMedium text-xl `}>
                             Video details
                         </Text>
@@ -166,7 +166,7 @@ const videodetails = () => {
                                 </View>
                             </View>
                             <TouchableOpacity
-                                style={tw`py-3 flex-row gap-4 items-center border w-3/6 border-primaryGray  px-6 rounded-full  bg-primary`}
+                                style={tw`py-3 flex-row gap-4 justify-center mb-7 items-center border w-3/6 border-primaryGray  px-6 rounded-full  bg-primary`}
                                 onPress={() => setCommentVisible(true)}
                             >
                                 <Text style={tw`font-poppins  text-base text-secondaryBlack`}>
@@ -174,6 +174,7 @@ const videodetails = () => {
                                 </Text>
                                 <SvgXml xml={IconErow} />
                             </TouchableOpacity>
+
                         </View>
                     </View>
                 )}
@@ -184,7 +185,7 @@ const videodetails = () => {
                     onRequestClose={() => setCommentVisible(false)}
                 >
                     <View style={styles.modalContainer}>
-                        <View style={tw`bg-primary rounded-t-3xl  w-full h-4/6 mt-78  `}>
+                        <View style={tw`bg-primary rounded-t-3xl mb-10 w-full h-4/6 mt-78  `}>
                             <View
                                 style={tw`bg-secondary w-full h-16 rounded-t-3xl flex-row items-center justify-between p-5`}
                             >
@@ -382,7 +383,7 @@ const videodetails = () => {
                     onRequestClose={() => setReplyVisible(false)}
                 >
                     <View style={styles.modalContainer}>
-                        <View style={tw`bg-primary rounded-t-3xl  w-full h-4/6 mt-78  `}>
+                        <View style={tw`bg-primary rounded-t-3xl  w-full h-4/6 mt-78  mb-10 `}>
                             <View
                                 style={tw`bg-secondary w-full h-16 rounded-t-3xl flex-row items-center justify-between p-5`}
                             >
