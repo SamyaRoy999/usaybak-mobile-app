@@ -234,6 +234,7 @@ const youTubeLink = () => {
                 <View style={tw`pt-5`}>
                     <TextInput
                         placeholder='Paste your link here'
+                        placeholderTextColor="black"
                         value={youtubeLink}
                         onChangeText={setYoutubeLink}
                         style={tw`border border-gray-300 font-poppins text-base rounded-full px-4 py-3 `}
@@ -300,6 +301,7 @@ const youTubeLink = () => {
                             <TextInput
                                 style={tw`flex-1 min-w-[150px]`}
                                 placeholder="Type & hit enter"
+                                placeholderTextColor="black"
                                 value={selectedTags}
                                 onChangeText={setSelectedTags}
                                 onSubmitEditing={handleAddService}
@@ -315,6 +317,7 @@ const youTubeLink = () => {
                     <View style={tw`pb-5`}>
                         <TextInput
                             placeholder='Video title goes here'
+                            placeholderTextColor="black"
                             value={videoTitle}
                             onChangeText={setVideoTitle}
                             style={tw`border border-gray-300 font-poppins text-base rounded-full px-4 py-3 `}
@@ -322,6 +325,7 @@ const youTubeLink = () => {
                     </View>
                     <TextInput
                         placeholder='Description'
+                        placeholderTextColor="black"
                         value={description}
                         onChangeText={setDescription}
                         multiline

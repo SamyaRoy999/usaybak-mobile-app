@@ -100,6 +100,7 @@ const forgotPass = () => {
                     <TextInput
                       style={tw`border border-primaryGray rounded-full font-poppins text-base px-5 h-14`}
                       placeholder="Email"
+                      placeholderTextColor="black"
                       value={values.email}
                       onChangeText={(txt) => setFieldValue("email", txt)}
                     />

@@ -44,13 +44,12 @@ export const accountSlice = api.injectEndpoints({
             }),
             invalidatesTags: ["account"],
         }),
-
-        pause_play_watch: builder.query<any, any>({
+        pause_play_watch: builder.mutation<any, any>({
             query: () => ({
-                url: `/pause-play-watch-history`,
-                method: "GET",
+                url: "/pause-play-watch-history",
+                method: "POST",
             }),
-            providesTags: ["account"],
+            invalidatesTags: ["account"],
         }),
 
         // .............. Dashboard...........//
@@ -184,5 +183,5 @@ export const {
     useReportDetailQuery,
     useAppealPostMutation,
     useAll_delete_watch_historyMutation,
-    usePause_play_watchQuery
+    usePause_play_watchMutation
 } = accountSlice;

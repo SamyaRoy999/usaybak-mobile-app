@@ -34,11 +34,11 @@ const login = () => {
         <AlertNotificationRoot>
           <Formik
             initialValues={{ email: "", password: "" }}
-            onSubmit={async (values) => {           
+            onSubmit={async (values) => {
               try {
                 const res = await loginUser(values).unwrap();
                 if (res.status) {
-                   AsyncStorage.setItem("token", res?.data?.access_token);
+                  AsyncStorage.setItem("token", res?.data?.access_token);
                   Toast.show({
                     type: ALERT_TYPE.SUCCESS,
                     title: 'Success',
@@ -101,6 +101,7 @@ const login = () => {
                         <TextInput
                           style={tw`border border-primaryGray rounded-full font-poppins text-base px-5 h-14`}
                           placeholder="Email"
+                          placeholderTextColor="black"
                           value={values.email}
                           onChangeText={(txt) => setFieldValue("email", txt)}
                         />
@@ -114,6 +115,7 @@ const login = () => {
                         <TextInput
                           style={tw`border border-primaryGray rounded-full font-poppins text-base px-5 h-14`}
                           placeholder="Password"
+                          placeholderTextColor="black"
                           secureTextEntry={!showNewPassword}
                           value={values.password}
                           onChangeText={(txt) => setFieldValue("password", txt)}
@@ -158,9 +160,7 @@ const login = () => {
                     <TouchableOpacity
                       style={tw`bg-secondary rounded-full mx-6`}
                       onPress={() => {
-                      
                         handleSubmit();
-                        // router.replace("/home/(tabs)/landingPage");
                       }}
                     >
                       <Text

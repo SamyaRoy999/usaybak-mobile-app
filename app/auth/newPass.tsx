@@ -37,7 +37,7 @@ const newPass = () => {
     <KeyboardAvoidingView style={tw`flex-1 bg-secondary`}>
       <Formik
         initialValues={{ password: "", confirm_password: "" }}
-        onSubmit={async(values) => {
+        onSubmit={async (values) => {
           const data = {
             email: email,
             password: values.password,
@@ -73,8 +73,8 @@ const newPass = () => {
             });
           }
         }
-      }
-        
+        }
+
         validationSchema={Yup.object({
           password: Yup.string()
             .min(4, "Password is too sort ")
@@ -119,6 +119,7 @@ const newPass = () => {
                       style={tw`border border-primaryGray rounded-full font-poppins text-base px-5 h-14`}
                       placeholder="Enter new password"
                       secureTextEntry={!showNewPassword}
+                      placeholderTextColor="black"
                       value={values.password}
                       onChangeText={(txt) => setFieldValue("password", txt)}
                     />
@@ -139,6 +140,7 @@ const newPass = () => {
                     <TextInput
                       style={tw`border border-primaryGray rounded-full font-poppins text-base px-5 h-14`}
                       placeholder="Confirm new password"
+                      placeholderTextColor="black"
                       secureTextEntry={!confirmPassword}
                       value={values.confirm_password}
                       onChangeText={(txt) =>

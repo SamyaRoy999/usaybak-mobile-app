@@ -9,7 +9,7 @@ import {
     IconSettingDot
 } from '@/icons/Icon';
 import tw from '@/lib/tailwind';
-import { useAll_delete_watch_historyMutation, useHistoryVideoDeleteMutation, useLazyHistoryVideoQuery } from '@/redux/apiSlices/Account/accountSlice';
+import { useAll_delete_watch_historyMutation, useHistoryVideoDeleteMutation, useLazyHistoryVideoQuery, usePause_play_watchMutation } from '@/redux/apiSlices/Account/accountSlice';
 import { _HIGHT, _Width } from '@/utils/utils';
 
 import { Image } from 'expo-image';
@@ -37,10 +37,12 @@ const HistoryScreen = () => {
     const [loadingMore, setLoadingMore] = useState(false);
     const [refreshing, setRefreshing] = useState(false);
     const [settingsVisible, setSettingsVisible] = useState(false);
+    const [playPause, setPlayPause] = useState(false);
 
     const [fetchHistory, { isLoading, isFetching }] = useLazyHistoryVideoQuery();
     const [historyVideoDelete] = useHistoryVideoDeleteMutation();
-     const [all_delete_watch_history] = useAll_delete_watch_historyMutation()
+    const [all_delete_watch_history] = useAll_delete_watch_historyMutation()
+    const [pause_play_watch] = usePause_play_watchMutation()
 
 
     const loadHistory = useCallback(async () => {
@@ -51,7 +53,7 @@ const HistoryScreen = () => {
             if (res?.status && res?.data?.data) {
                 setHistory(prev => {
                     // Filter out duplicates
-                    const newItems = res.data.data.filter((newItem: any) => 
+                    const newItems = res.data.data.filter((newItem: any) =>
                         !prev.some(item => item.id === newItem.id)
                     );
                     return [...prev, ...newItems];
@@ -89,53 +91,53 @@ const HistoryScreen = () => {
 
     // Clear all history
     const handleClearAllHistory = async () => {
-    try {
-        const res = await all_delete_watch_history({}).unwrap();
-        
-        if (res?.status) {
-            // Clear the local state immediately
-            setHistory([]);
-            // Reset pagination
-            setPage(1);
-            
+        try {
+            const res = await all_delete_watch_history({}).unwrap();
+
+            if (res?.status) {
+                // Clear the local state immediately
+                setHistory([]);
+                // Reset pagination
+                setPage(1);
+
+                Toast.show({
+                    type: ALERT_TYPE.SUCCESS,
+                    title: "Success",
+                    textBody: res.message || "All history cleared successfully",
+                    autoClose: 2000,
+                });
+
+                // Optionally refetch to confirm with server
+
+            } else {
+                Toast.show({
+                    type: ALERT_TYPE.DANGER,
+                    title: "Error",
+                    textBody: res?.message || "Failed to clear history",
+                    autoClose: 2000,
+                });
+            }
+        } catch (err) {
+            console.error("Clear all history error:", err);
             Toast.show({
-                type: ALERT_TYPE.SUCCESS,
-                title: "Success",
-                textBody: res.message || "All history cleared successfully",
-                autoClose: 2000,
-            });
-            
-            // Optionally refetch to confirm with server
-        
-        } else {
-            Toast.show({
-                type: ALERT_TYPE.DANGER,
+                type: ALERT_TYPE.WARNING,
                 title: "Error",
-                textBody: res?.message || "Failed to clear history",
+                textBody: "Failed to clear history",
                 autoClose: 2000,
             });
         }
-    } catch (err) {
-        console.error("Clear all history error:", err);
-        Toast.show({
-            type: ALERT_TYPE.WARNING,
-            title: "Error",
-            textBody: "Failed to clear history",
-            autoClose: 2000,
-        });
-    }
-};
+    };
 
     // Delete single video
     const handleDeleteVideo = async (id: any) => {
-        
+
         try {
             const res = await historyVideoDelete(id).unwrap();
-            
+
             if (res?.status) {
                 // Remove from local state
                 setHistory(prev => prev.filter(item => item.id !== id));
-                
+
                 Toast.show({
                     type: ALERT_TYPE.SUCCESS,
                     title: "Success",
@@ -154,7 +156,30 @@ const HistoryScreen = () => {
         }
     };
 
-     
+    //................... handle_pause_play_watch.................//
+
+    const handle_pause_play_watch = async () => {
+        const res = await pause_play_watch({}).unwrap()
+        setPlayPause(res?.pause_watch_history)
+        if (res?.status) {
+            // Remove from local state
+            Toast.show({
+                type: ALERT_TYPE.SUCCESS,
+                title: "Success",
+                textBody: res.message,
+                autoClose: 2000,
+            });
+        } else {
+            Toast.show({
+                type: ALERT_TYPE.DANGER,
+                title: "Error",
+                textBody: res?.message || "Something went wrong!",
+                autoClose: 2000,
+            });
+        }
+
+    }
+
     const renderItem = ({ item }: any) => {
         const video = item?.video;
 
@@ -207,16 +232,16 @@ const HistoryScreen = () => {
                 {/* Settings Modal */}
                 {settingsVisible && (
                     <View style={tw`absolute bg-primaryText p-6 right-5 w-72 top-40 z-20 shadow-lg rounded-lg`}>
-                        <TouchableOpacity 
+                        <TouchableOpacity
                             onPress={handleClearAllHistory}
                             style={tw`flex-row items-start gap-3 pb-3`}
                         >
                             <SvgXml xml={IconDelete} />
                             <Text style={tw`font-poppinsMedium text-base`}>Clear all history</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={tw`flex-row items-start gap-3 pt-3`}>
+                        <TouchableOpacity onPress={()=>handle_pause_play_watch()} style={tw`flex-row items-start gap-3 pt-3`}>
                             <SvgXml xml={IconPouse} />
-                            <Text style={tw`font-poppinsMedium text-base`}>Pause watch history</Text>
+                            <Text style={tw`font-poppinsMedium text-base`}>{playPause ? "Pause watch history" : "Active watch history"} </Text>
                         </TouchableOpacity>
                     </View>
                 )}
@@ -267,5 +292,5 @@ const HistoryScreen = () => {
         </KeyboardAvoidingView>
     );
 };
- 
+
 export default HistoryScreen;

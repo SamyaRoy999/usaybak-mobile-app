@@ -133,6 +133,7 @@ const signUp = () => {
                         <TextInput
                           style={tw`border border-primaryGray rounded-full font-poppins text-base px-5 h-14`}
                           placeholder="Channel Name"
+                            placeholderTextColor="black"
                           value={values.channel_name}
                           onChangeText={(txt) =>
                             setFieldValue("channel_name", txt)
@@ -149,6 +150,7 @@ const signUp = () => {
                         <TextInput
                           style={tw`border border-primaryGray rounded-full font-poppins text-base px-5 h-14`}
                           placeholder="name"
+                            placeholderTextColor="black"
                           value={values.name}
                           onChangeText={(txt) => setFieldValue("name", txt)}
                         />
@@ -177,6 +179,7 @@ const signUp = () => {
                         <TextInput
                           style={tw`border border-primaryGray rounded-full font-poppins text-base px-5 h-14`}
                           placeholder="Password"
+                            placeholderTextColor="black"
                           secureTextEntry={!showNewPassword}
                           value={values.password}
                           onChangeText={(txt) => setFieldValue("password", txt)}
@@ -199,6 +202,7 @@ const signUp = () => {
                         <TextInput
                           style={tw`border border-primaryGray rounded-full font-poppins text-base px-5 h-14`}
                           placeholder="Confirm password"
+                            placeholderTextColor="black"
                           secureTextEntry={!showConfirmPassword}
                           value={values.c_password}
                           onChangeText={(txt) =>

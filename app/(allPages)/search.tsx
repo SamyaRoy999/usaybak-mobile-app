@@ -1,9 +1,9 @@
-import { View, Text, TouchableOpacity, TextInput } from "react-native";
-import React from "react";
-import { router } from "expo-router";
-import { SvgXml } from "react-native-svg";
-import { IconBackLeft, IconErowred, IconTime } from "@/icons/Icon";
+import { IconBackLeft, IconTime } from "@/icons/Icon";
 import tw from "@/lib/tailwind";
+import { router } from "expo-router";
+import React from "react";
+import { Text, TextInput, TouchableOpacity, View } from "react-native";
+import { SvgXml } from "react-native-svg";
 
 const search = () => {
   return (
@@ -24,12 +24,14 @@ const search = () => {
           <TextInput
             style={tw`border border-primaryGray bg-primaryText rounded-full font-poppins text-base px-5 h-14`}
             placeholder="Service "
+            placeholderTextColor="black"
           />
         </View>
         <View style={tw`py-3 px-6 relative`}>
           <TextInput
             style={tw`border border-primaryGray bg-primaryText rounded-full font-poppins text-base px-5 h-14`}
             placeholder="Location"
+            placeholderTextColor="black"
           />
         </View>
       </View>
@@ -105,7 +107,7 @@ const search = () => {
       {/* <View style={tw`flex-row  w-full`}> */}
       <TouchableOpacity
         style={tw`bg-secondary rounded-full mx-6  mt-48`}
-        onPress={() => {}}
+        onPress={() => { }}
       >
         <Text
           style={tw`text-primary  text-center  text-lg py-[14px] font-poppinsBold`}

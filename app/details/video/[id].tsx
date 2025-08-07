@@ -529,6 +529,7 @@ const SingleVideo = () => {
                       onChangeText={setComment}
                       style={tw`bg-primaryOff rounded-full font-poppins px-4 text-sm h-12 ml-3 flex-1`}
                       placeholder="Add your comment..."
+                        placeholderTextColor="black"
                     />
                     <TouchableOpacity style={tw`w-16`} onPress={handleSubmit}>
                       <SvgXml xml={IconSendMassage} />
@@ -614,7 +615,7 @@ const SingleVideo = () => {
                     textAlignVertical="top"
                     onChangeText={setFeedbackText}
                     placeholder="Describe your issue..."
-                    placeholderTextColor="#888"
+                      placeholderTextColor="black"
                     style={tw`border border-gray-300 rounded-xl p-4 text-base text-black h-40`}
                   />
                   <Text style={tw`text-right text-xs mt-2 text-gray-500`}>
@@ -770,6 +771,7 @@ const SingleVideo = () => {
                       onChangeText={setReply}
                       style={tw`bg-primaryOff rounded-full font-poppins px-4 text-sm h-12 ml-3 flex-1`}
                       placeholder="Add your reply..."
+                        placeholderTextColor="black"
                     />
                     <TouchableOpacity style={tw`w-16`} onPress={handleSubmitReply}>
                       <SvgXml xml={IconSendMassage} />

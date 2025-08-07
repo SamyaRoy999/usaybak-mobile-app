@@ -60,7 +60,7 @@ const UploadVideo = () => {
     });
 
     // ............... API CALL.................//
-    
+
     const {
         data: categories,
         isLoading,
@@ -75,103 +75,103 @@ const UploadVideo = () => {
     };
 
     const handlePaymentConfirm = async () => {
-    setPaymentVisible(false);
-    setSucssMassage(true);
-    
-    try {
-        // Create FormData object
-        const form = new FormData();
+        setPaymentVisible(false);
+        setSucssMassage(true);
 
-        // Add all required fields
-        form.append('category_id', formData.category_id);
-        form.append('type', formData.type);
-        form.append('title', formData.title);
-        form.append('description', formData.description);
-        form.append('visibility', formData.visibility);
-        // form.append('status', 'active');
-        form.append('is_promoted', '0');
-        
-        // Add tags as JSON string
-        if (tags.length > 0) {
-            form.append('tags', JSON.stringify(tags));
-        }
-        
-        // Add optional fields if they exist
-        if (formData.state) form.append('state', formData.state);
-        if (formData.city) form.append('city', formData.city);
-       
-        // Add thumbnail file if exists
-        if (imageAsset) {
-            const localUri = imageAsset.uri;
-            const filename = localUri.split('/').pop();
-            const match = /\.(\w+)$/.exec(filename || '');
-            const type = match ? `image/${match[1]}` : 'image/jpeg';
+        try {
+            // Create FormData object
+            const form = new FormData();
 
-            form.append('thumbnail', {
-                uri: localUri,
-                name: filename || `thumbnail_${Date.now()}.jpg`,
-                type,
-            } as any);
-        }
+            // Add all required fields
+            form.append('category_id', formData.category_id);
+            form.append('type', formData.type);
+            form.append('title', formData.title);
+            form.append('description', formData.description);
+            form.append('visibility', formData.visibility);
+            // form.append('status', 'active');
+            form.append('is_promoted', '0');
 
-        // Add video file if exists
-        if (videoAsset) {
-            const localUri = videoAsset.uri;
-            const filename = localUri.split('/').pop();
-            const match = /\.(\w+)$/.exec(filename || '');
-            const type = match ? `video/${match[1]}` : 'video/mp4';
+            // Add tags as JSON string
+            if (tags.length > 0) {
+                form.append('tags', JSON.stringify(tags));
+            }
 
-            form.append('video', {
-                uri: localUri,
-                name: filename || `video_${Date.now()}.mp4`,
-                type,
-            } as any);
-        }
+            // Add optional fields if they exist
+            if (formData.state) form.append('state', formData.state);
+            if (formData.city) form.append('city', formData.city);
 
-        // Make API call
-        const res = await upload_video(form).unwrap();
-        
-        if (res.status) {
+            // Add thumbnail file if exists
+            if (imageAsset) {
+                const localUri = imageAsset.uri;
+                const filename = localUri.split('/').pop();
+                const match = /\.(\w+)$/.exec(filename || '');
+                const type = match ? `image/${match[1]}` : 'image/jpeg';
+
+                form.append('thumbnail', {
+                    uri: localUri,
+                    name: filename || `thumbnail_${Date.now()}.jpg`,
+                    type,
+                } as any);
+            }
+
+            // Add video file if exists
+            if (videoAsset) {
+                const localUri = videoAsset.uri;
+                const filename = localUri.split('/').pop();
+                const match = /\.(\w+)$/.exec(filename || '');
+                const type = match ? `video/${match[1]}` : 'video/mp4';
+
+                form.append('video', {
+                    uri: localUri,
+                    name: filename || `video_${Date.now()}.mp4`,
+                    type,
+                } as any);
+            }
+
+            // Make API call
+            const res = await upload_video(form).unwrap();
+
+            if (res.status) {
+                Toast.show({
+                    type: ALERT_TYPE.SUCCESS,
+                    title: 'Success',
+                    textBody: res?.message,
+                    autoClose: 2000,
+                });
+                setTimeout(() => {
+                    router?.push(`/home/(tabs)/landingPage`);
+                }, 1000);
+            } else {
+                Toast.show({
+                    type: ALERT_TYPE.DANGER,
+                    title: 'Error',
+                    textBody: res?.message || "Upload failed",
+                    autoClose: 2000,
+                });
+            }
+        } catch (error: any) {
+            console.error('Upload error:', error);
+
+            let errorMessage = "Upload failed. Please try again.";
+
+            if (error?.data) {
+                errorMessage = typeof error.data === 'object'
+                    ? JSON.stringify(error.data)
+                    : error.data;
+            } else if (error?.error) {
+                errorMessage = error.error;
+            } else if (error?.message) {
+                errorMessage = error.message;
+            }
+
             Toast.show({
-                type: ALERT_TYPE.SUCCESS,
-                title: 'Success',
-                textBody: res?.message,
-                autoClose: 2000,
-            });
-            setTimeout(() => {
-                router?.push(`/home/(tabs)/landingPage`);
-            }, 1000);
-        } else {
-            Toast.show({
-                type: ALERT_TYPE.DANGER,
-                title: 'Error',
-                textBody: res?.message || "Upload failed",
-                autoClose: 2000,
+                type: ALERT_TYPE.WARNING,
+                title: 'Upload Error',
+                textBody: errorMessage,
+                autoClose: 3000,
             });
         }
-    } catch (error: any) {
-        console.error('Upload error:', error);
-        
-        let errorMessage = "Upload failed. Please try again.";
-        
-        if (error?.data) {
-            errorMessage = typeof error.data === 'object' 
-                ? JSON.stringify(error.data) 
-                : error.data;
-        } else if (error?.error) {
-            errorMessage = error.error;
-        } else if (error?.message) {
-            errorMessage = error.message;
-        }
-
-        Toast.show({
-            type: ALERT_TYPE.WARNING,
-            title: 'Upload Error',
-            textBody: errorMessage,
-            autoClose: 3000,
-        });
-    }
-};
+    };
     // ........... Close success message after 3 seconds ............//
 
     React.useEffect(() => {
@@ -218,7 +218,7 @@ const UploadVideo = () => {
         if (inputValue.trim()) {
             const newTags = [...tags, inputValue.trim()];
             setTags(newTags);
-            setFormData((prev:any) => ({ ...prev, tags: newTags }));
+            setFormData((prev: any) => ({ ...prev, tags: newTags }));
             setInputValue("");
         }
     };
@@ -227,7 +227,7 @@ const UploadVideo = () => {
         const newTags = [...tags];
         newTags.splice(index, 1);
         setTags(newTags);
-        setFormData((prev : any)=> ({ ...prev, tags: newTags }));
+        setFormData((prev: any) => ({ ...prev, tags: newTags }));
     };
 
     if (isLoading) {
@@ -347,6 +347,7 @@ const UploadVideo = () => {
                                 <TextInput
                                     style={tw`flex-1 min-w-[150px]`}
                                     placeholder="Type & hit enter"
+                                    placeholderTextColor="black"
                                     value={inputValue}
                                     onChangeText={setInputValue}
                                     onSubmitEditing={handleAddService}
@@ -362,12 +363,14 @@ const UploadVideo = () => {
                     <View style={tw``}>
                         <TextInput
                             placeholder='Video title goes here'
+                            placeholderTextColor="black"
                             value={formData.title}
                             onChangeText={(text) => updateFormData('title', text)}
                             style={tw`border border-gray-300 font-poppins text-base rounded-full px-4 py-3 mb-4`}
                         />
                         <TextInput
                             placeholder='Description'
+                            placeholderTextColor="black"
                             value={formData.description}
                             onChangeText={(text) => updateFormData('description', text)}
                             multiline
@@ -447,17 +450,20 @@ const UploadVideo = () => {
                                     <View style={tw`border border-gray-300 rounded-lg p-3 mb-3`}>
                                         <TextInput
                                             placeholder="Card number"
+                                            placeholderTextColor="black"
                                             keyboardType="number-pad"
                                             style={tw`font-poppins text-base mb-2`}
                                         />
                                         <View style={tw`flex-row justify-between`}>
                                             <TextInput
                                                 placeholder="MM/YY"
+                                                placeholderTextColor="black"
                                                 keyboardType="number-pad"
                                                 style={tw`w-[48%] font-poppins text-base`}
                                             />
                                             <TextInput
                                                 placeholder="CVC"
+                                                placeholderTextColor="black"
                                                 keyboardType="number-pad"
                                                 style={tw`w-[48%] font-poppins text-base`}
                                             />
@@ -472,6 +478,7 @@ const UploadVideo = () => {
                                     </View>
                                     <TextInput
                                         placeholder="ZIP"
+                                        placeholderTextColor="black"
                                         keyboardType="number-pad"
                                         style={tw`border border-gray-300 rounded-lg p-3 font-poppins text-base mb-5`}
                                     />

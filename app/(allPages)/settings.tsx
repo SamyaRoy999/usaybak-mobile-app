@@ -370,6 +370,7 @@ const Settings = () => {
                                             <Text style={tw`bg-primary w-12 absolute -top-2 left-7`}>Bio</Text>
                                             <TextInput
                                                 placeholder='Description'
+                                                placeholderTextColor="black"
                                                 value={values.bio}
                                                 onChangeText={(txt) => setFieldValue("bio", txt)}
                                                 multiline
@@ -399,6 +400,7 @@ const Settings = () => {
                                                 <TextInput
                                                     style={tw`flex-1 min-w-[150px]`}
                                                     placeholder='Type & hit enter'
+                                                    placeholderTextColor="black"
                                                     onSubmitEditing={(e) => {
                                                         const newService = e.nativeEvent.text.trim();
                                                         if (newService) {
@@ -431,6 +433,7 @@ const Settings = () => {
                                                             }}
                                                             style={tw`py-4 px-4 w-48 rounded-full`}
                                                             placeholder="Enter location address"
+                                                            placeholderTextColor="black"
                                                         />
                                                     </View>
 
@@ -568,7 +571,7 @@ const Settings = () => {
 
                                     {/* Save Changes Button */}
                                     <TouchableOpacity
-                                        onPress={()=>handleSubmit()}
+                                        onPress={() => handleSubmit()}
                                         style={tw`flex-row items-center gap-2 py-3 bg-secondary px-4 mx-5 mt-14 rounded-full justify-center`}
                                     >
                                         <SvgXml xml={IconSavechanges} />

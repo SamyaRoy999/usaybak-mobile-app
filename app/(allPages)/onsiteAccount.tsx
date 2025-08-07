@@ -254,6 +254,7 @@ const onsiteAccount = () => {
                                                         <TextInput
                                                             style={tw`border border-primaryGray rounded-full font-poppins text-base px-5 h-14`}
                                                             placeholder="Representative secret key"
+                                                            placeholderTextColor="black"
                                                             value={values.representative}
                                                             onChangeText={(txt) =>
                                                                 setFieldValue("representative", txt)
@@ -270,6 +271,7 @@ const onsiteAccount = () => {
                                                         <TextInput
                                                             style={tw`border border-primaryGray rounded-full font-poppins text-base px-5 h-14`}
                                                             placeholder="Channel Name"
+                                                            placeholderTextColor="black"
                                                             value={values.channel_name}
                                                             onChangeText={(txt) =>
                                                                 setFieldValue("channel_name", txt)
@@ -286,6 +288,7 @@ const onsiteAccount = () => {
                                                         <TextInput
                                                             style={tw`border border-primaryGray rounded-full font-poppins text-base px-5 h-14`}
                                                             placeholder="name"
+                                                            placeholderTextColor="black"
                                                             value={values.name}
                                                             onChangeText={(txt) => setFieldValue("name", txt)}
                                                         />
@@ -300,6 +303,7 @@ const onsiteAccount = () => {
                                                         <TextInput
                                                             style={tw`border border-primaryGray rounded-full font-poppins text-base px-5 h-14`}
                                                             placeholder="Email"
+                                                            placeholderTextColor="black"
                                                             value={values.email}
                                                             onChangeText={(txt) => setFieldValue("email", txt)}
                                                         />
@@ -314,6 +318,7 @@ const onsiteAccount = () => {
                                                         <TextInput
                                                             style={tw`border border-primaryGray rounded-full font-poppins text-base px-5 h-14`}
                                                             placeholder="Password"
+                                                            placeholderTextColor="black"
                                                             secureTextEntry={!showNewPassword}
                                                             value={values.password}
                                                             onChangeText={(txt) => setFieldValue("password", txt)}
@@ -336,6 +341,7 @@ const onsiteAccount = () => {
                                                         <TextInput
                                                             style={tw`border border-primaryGray rounded-full font-poppins text-base px-5 h-14`}
                                                             placeholder="Confirm password"
+                                                            placeholderTextColor="black"
                                                             secureTextEntry={!showConfirmPassword}
                                                             value={values.c_password}
                                                             onChangeText={(txt) =>
