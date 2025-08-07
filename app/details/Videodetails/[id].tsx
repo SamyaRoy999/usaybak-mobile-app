@@ -1,30 +1,27 @@
 import HeaderBar from '@/components/shear/HeaderBar'
 import { IconAnalytics, IconBackLeft, IconClose, IconComment, IconDate, IconDelete, IconDislike, IconEays, IconEdit, IconErow, Iconfevarite, IconLike, IconMessage, IconSettingDot, IconTime, IconWorld, IconWornoingDelete } from '@/icons/Icon'
-import data from "@/lib/data.json"
 import tw from '@/lib/tailwind'
+import { useMy_videos_detailsQuery } from '@/redux/apiSlices/MyVideo/myvideoSlice'
 import { _Width } from '@/utils/utils'
 import { useEvent } from 'expo'
 import { Image } from 'expo-image'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useVideoPlayer, VideoView } from 'expo-video'
-import React, { useEffect } from 'react'
+import React from 'react'
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import { SvgXml } from 'react-native-svg'
 
 const videodetails = () => {
     const [history, setHistory] = React.useState(false)
-    const [singleVideo, setSingleVideo] = React.useState<any>(null);
+
     const [isVisible, setIsVisible] = React.useState(false);
     const [commentVisible, setCommentVisible] = React.useState(false);
     const [replyVisible, setReplyVisible] = React.useState(false);
     const [deleteModalVisible, setDeleteModalVisible] = React.useState(false);
 
-    const { id } = useLocalSearchParams()
-    useEffect(() => {
-        const videoData = data.find((item: any) => item?.id === Number(id));
-        setSingleVideo(videoData);
-    }, [id]);
+    const { id } = useLocalSearchParams();
+    const { data: singleVideo, isLoading } = useMy_videos_detailsQuery({ id });
 
     const player = useVideoPlayer(singleVideo?.video || "", (player) => {
         player.loop = true;
@@ -36,7 +33,9 @@ const videodetails = () => {
     });
 
     if (!singleVideo) return null;
-    (singleVideo);
+
+    console.log(singleVideo, id);
+
 
     return (
 
@@ -64,7 +63,7 @@ const videodetails = () => {
                         </TouchableOpacity>
                     </View>
                     {history && (
-                        <View style={tw`absolute bg-primaryText right-5 w-56 top-14 z-20  shadow-lg rounded-lg`}>
+                        <View style={tw`absolute bg-primaryText right-5 w-56 top-14 z-20 b shadow-lg rounded-lg`}>
                             <TouchableOpacity onPress={() => router.push("/(allPages)/editvideo")}>
                                 <View style={tw`flex-row items-start gap-3 px-5 py-4`}>
                                     <SvgXml xml={IconEdit} />
@@ -72,7 +71,7 @@ const videodetails = () => {
                                 </View>
                             </TouchableOpacity>
 
-                            <TouchableOpacity onPress={() => router.push("/(allPages)/analytics")} style={tw`border  border-primaryGray`}>
+                            <TouchableOpacity onPress={() => router.push("/(allPages)/analytics")} style={tw`border border-y border-primaryGray`}>
                                 <View style={tw`flex-row items-start gap-3 px-5 py-4`}>
                                     <SvgXml xml={IconAnalytics} />
                                     <Text style={tw`font-poppinsMedium text-base `} >Analytics</Text>
@@ -90,7 +89,7 @@ const videodetails = () => {
                 </View>
                 {/* video details */}
                 {singleVideo && (
-                    <View>
+                    <View style={tw``}>
                         <VideoView
                             style={styles.video}
                             player={player}
@@ -100,27 +99,27 @@ const videodetails = () => {
                         <View style={tw`px-4`}>
 
                             <Text style={tw`font-poppinsMedium text-xl py-5`}>Title</Text>
-                            <Text style={tw`font-poppins text-base pb-5`}>{singleVideo?.title}</Text>
+                            <Text style={tw`font-poppins text-base pb-5`}>{singleVideo?.data?.title}</Text>
                             <Text style={tw`font-poppinsMedium text-xl`}>Category</Text>
-                            <Text style={tw`font-poppins text-base`}>Category 1</Text>
+                            <Text style={tw`font-poppins text-base`}>{singleVideo?.data?.category?.name}</Text>
                             <View style={tw`flex-row justify-between py-5 w-4/6`}>
                                 <Text style={tw`font-poppinsMedium text-xl`}>State</Text>
                                 <Text style={tw`font-poppinsMedium text-xl`}>City</Text>
                             </View>
                             <View style={tw`flex-row justify-between pb-5 w-4/6`}>
-                                <Text style={tw`font-poppins text-base`}>New York</Text>
-                                <Text style={tw`font-poppins text-base`}>Alaska</Text>
+                                <Text style={tw`font-poppins text-base`}>{singleVideo?.data?.states}</Text>
+                                <Text style={tw`font-poppins text-base`}>{singleVideo?.data?.city}</Text>
                             </View>
                             <Text style={tw`font-poppinsMedium text-xl pb-3`}>Description</Text>
-                            <Text style={tw`font-poppins text-base`}>Lorem ipsum dolor sit amet consectetur. Fermentum vitae nisi donec lacus morbi pharetra sed in. In ultrices nunc mi amet vulputate. Interdum varius tellus tempus placerat et commodo pellentesque. A est fermentum mi senectus eget. A donec porttitor sagittis arcu mauris. Viverra vulputate urna euismod tristique sed. Euismod nunc nascetur sit mattis id non ut. Massa sit feugiat iaculis ut tellus imperdiet bibendum mattis. Cras bibendum praesent arcu pharetra aliquam cras.</Text>
+                            <Text style={tw`font-poppins text-base`}>{singleVideo?.data?.states}</Text>
                             <Text style={tw`font-poppinsMedium text-xl py-3`}>Thumbnail</Text>
                             {/* Video Player */}
                             <Image
-                                source={singleVideo?.thumbnail}
+                                source={singleVideo?.data?.thumbnail}
                                 style={tw`w-full h-48 rounded-lg`}
 
                             />
-                            <Text style={tw`font-poppinsMedium text-xl py-3`}>Visibility</Text>
+                            <Text style={tw`font-poppinsMedium text-xl py-3`}>{singleVideo?.data?.visibility}</Text>
                             <TouchableOpacity
                                 style={tw`py-3 flex-row gap-4 w-3/6 items-center border border-primaryGray  px-6 rounded-full  bg-primary`}
                             >
@@ -136,13 +135,13 @@ const videodetails = () => {
                                 <View style={tw`flex-row gap-3 items-center`}>
                                     <SvgXml xml={IconDate} />
                                     <Text style={tw`font-poppins  text-base text-secondaryBlack`}>
-                                        24-04-2025
+                                        {singleVideo?.data?.publish_date}
                                     </Text>
                                 </View>
                                 <View style={tw`flex-row gap-3 items-center`}>
                                     <SvgXml xml={IconTime} />
                                     <Text style={tw`font-poppins  text-base text-secondaryBlack`}>
-                                        10:20 AM
+                                        {singleVideo?.data?.publish_time}
                                     </Text>
                                 </View>
                             </TouchableOpacity>
@@ -151,19 +150,19 @@ const videodetails = () => {
                             <View style={tw`flex-row w-full gap-2 justify-between items-center mb-8`}>
                                 <View style={tw`border w-20 h-20  flex-col items-center justify-center border-gray-200 rounded-lg`}>
                                     <SvgXml xml={IconEays} />
-                                    <Text style={tw`font-poppinsSemiBold text-xl pt-3`}>10,256</Text>
+                                    <Text style={tw`font-poppinsSemiBold text-xl pt-3`}>{singleVideo?.data?.views_count_formated}</Text>
                                 </View>
                                 <View style={tw`border w-20 h-20 flex-col items-center justify-center border-gray-200 rounded-lg`}>
                                     <SvgXml xml={IconLike} />
-                                    <Text style={tw`font-poppinsSemiBold text-xl pt-3`}>1,256</Text>
+                                    <Text style={tw`font-poppinsSemiBold text-xl pt-3`}>{singleVideo?.data?.likes_count_formated}</Text>
                                 </View>
                                 <View style={tw`border w-20 h-20 flex-col items-center justify-center border-gray-200 rounded-lg`}>
                                     <SvgXml xml={IconDislike} />
-                                    <Text style={tw`font-poppinsSemiBold text-xl pt-3`}>256</Text>
+                                    <Text style={tw`font-poppinsSemiBold text-xl pt-3`}>{singleVideo?.data?.dislikes_count_formated}</Text>
                                 </View>
                                 <View style={tw`border w-20 h-20 flex-col items-center justify-center border-gray-200 rounded-lg`}>
                                     <SvgXml xml={IconComment} />
-                                    <Text style={tw`font-poppinsSemiBold text-xl pt-3`}>256</Text>
+                                    <Text style={tw`font-poppinsSemiBold text-xl pt-3`}>{singleVideo?.data?.comment_replies_count_formated}</Text>
                                 </View>
                             </View>
                             <TouchableOpacity
