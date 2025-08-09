@@ -86,13 +86,13 @@ const Account = () => {
 
     }
   };
-  React.useEffect(() => {
-    // Only call refetch if the functions are available
-    if (refetch && islikeVideoRef) {
-      refetch();
-      islikeVideoRef();
-    }
-  }, [refetch, islikeVideoRef]);  // Add dependencies to ensure effect runs when these change
+  // React.useEffect(() => {
+  //   // Only call refetch if the functions are available
+  //   if (refetch && islikeVideoRef) {
+  //     refetch();
+  //     islikeVideoRef();
+  //   }
+  // }, [refetch, islikeVideoRef]);  // Add dependencies to ensure effect runs when these change
 
   return (
     <View style={tw`flex-1 bg-primary `}>

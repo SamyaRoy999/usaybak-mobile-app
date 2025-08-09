@@ -23,7 +23,7 @@ const videodetails = () => {
     const { id } = useLocalSearchParams();
     const { data: singleVideo, isLoading } = useMy_videos_detailsQuery({ id });
 
-    const player = useVideoPlayer(singleVideo?.video || "", (player) => {
+    const player = useVideoPlayer(singleVideo?.data?.video || "", (player) => {
         player.loop = true;
         player.play();
     });
@@ -34,7 +34,7 @@ const videodetails = () => {
 
     if (!singleVideo) return null;
 
-    console.log(singleVideo, id);
+
 
 
     return (
@@ -63,15 +63,18 @@ const videodetails = () => {
                         </TouchableOpacity>
                     </View>
                     {history && (
-                        <View style={tw`absolute bg-primaryText right-5 w-56 top-14 z-20 b shadow-lg rounded-lg`}>
-                            <TouchableOpacity onPress={() => router.push("/(allPages)/editvideo")}>
+                        <View style={tw`absolute bg-primaryText right-5 w-56 top-14 z-20  shadow-lg rounded-lg`}>
+                            <TouchableOpacity onPress={() => router.push({
+                                pathname: "/details/editVideoDetails/[id]",
+                                params: { id: id.toString() }  
+                            })}>
                                 <View style={tw`flex-row items-start gap-3 px-5 py-4`}>
                                     <SvgXml xml={IconEdit} />
                                     <Text style={tw`font-poppinsMedium text-base `} >Edit video</Text>
                                 </View>
                             </TouchableOpacity>
 
-                            <TouchableOpacity onPress={() => router.push("/(allPages)/analytics")} style={tw`border border-y border-primaryGray`}>
+                            <TouchableOpacity onPress={() => router.push("/(allPages)/analytics")} style={tw`border border border-primaryGray`}>
                                 <View style={tw`flex-row items-start gap-3 px-5 py-4`}>
                                     <SvgXml xml={IconAnalytics} />
                                     <Text style={tw`font-poppinsMedium text-base `} >Analytics</Text>

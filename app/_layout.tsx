@@ -59,6 +59,7 @@ export default function RootLayout() {
               <Stack.Screen name="details/video/[id]" />
               <Stack.Screen name="details/Blog/[id]" />
               <Stack.Screen name="details/promotion/[id]" />
+              <Stack.Screen name="details/editVideoDetails/[id]" />
               <Stack.Screen name="(allPages)" />
             </Stack>
           </ThemeProvider>

@@ -17,35 +17,16 @@ export const myvideoSlice = api.injectEndpoints({
                 method: "GET",
             }),
             providesTags: ["home"],
+        }),
+        updateVideo: builder.mutation<any, any>({
+            query: ({ data, id }) => ({
+                url: `/videos/${id}`,
+                method: "POST",
+                body: data
+            })
         })
-        // promotedVideoHome: builder.query<any, any >({
-        //     query: () => ({
-        //         url: `/get-promotional-video?per_page=10`,
-        //         method: "GET",
-        //     }),
-        //     providesTags: ["home"],
-        // }),
-
-        // caragoryVideos: builder.query<any, any>({
-        //     query: () => ({
-        //         url: `/home-video?video_limit=3`,
-        //         method: "GET",
-        //     }),
-        //     providesTags: ["home"],
-        // }),
-
-        // //  shear price
-
-        //  priceGetAll: builder.query<any, any>({
-        //     query: () => ({
-        //         url: `/get-price`,
-        //         method: "GET",
-        //     }),
-        //     providesTags: ["uploadVideo"],
-        // }),
-
     }),
 
 });
 
-export const { useMyVideoQuery, useMy_videos_detailsQuery } = myvideoSlice;
+export const { useMyVideoQuery, useMy_videos_detailsQuery, useUpdateVideoMutation } = myvideoSlice;
