@@ -7,13 +7,9 @@ import { ActivityIndicator, View } from "react-native";
 const index = () => {
   useEffect(() => {
     setTimeout(() => {
-      // router.replace("/auth/login");
-       router.replace("/(allPages)/my_videos");
-      // router.replace("/(allPages)/report");
-//      router.replace("/home/(tabs)/landingPage")
-      // router.replace("/(allPages)/report")
-      // router.replace("/allPages/youTubeLink");
-
+      // router.replace("/(allPages)/my_videos");
+      // router.replace("/home/(tabs)/landingPage");
+      router.replace("/auth/login");
     }, 1000);
   }, []);
 
