@@ -1,6 +1,7 @@
 import {
     IconBackLeft,
     IconClose,
+    IconCloseBlack,
     IconErowBack,
     IconLock,
     IconReplece,
@@ -16,7 +17,7 @@ import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useVideoPlayer, VideoView } from 'expo-video';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     FlatList,
     KeyboardAvoidingView,
@@ -26,42 +27,70 @@ import {
     Text,
     TextInput,
     TouchableOpacity,
-    View,
+    View
 } from 'react-native';
+import { ALERT_TYPE, Toast } from "react-native-alert-notification";
 import { SvgXml } from 'react-native-svg';
 
-const editVideoDetails = () => {
-    const [stateModalVisible, setStateModalVisible] = React.useState(false);
-    const [cityModalVisible, setCityModalVisible] = React.useState(false);
-    const [categoryModalVisible, setCategoryModalVisible] = React.useState(false);
-    const [selectedState, setSelectedState] = React.useState('');
-    const [selectedCategory, setSelectedCategory] = React.useState('');
-    const [selectedVisibility, setSelectedVisibility] = React.useState('');
-    const [visibility, setVisibility] = React.useState(false);
-    const [selectedCity, setSelectedCity] = React.useState('');
-    const [categoryID, setCategoryID] = React.useState('');
-    const [image, setImage] = React.useState<any>(null);
-    const [selectedVideos, setSelectedVideos] = React.useState<any>(null);
+const EditVideoDetails = () => {
+    const [stateModalVisible, setStateModalVisible] = useState(false);
+    const [cityModalVisible, setCityModalVisible] = useState(false);
+    const [categoryModalVisible, setCategoryModalVisible] = useState(false);
+    const [selectedState, setSelectedState] = useState('');
+    const [selectedCategory, setSelectedCategory] = useState('');
+    const [selectedVisibility, setSelectedVisibility] = useState('');
+    const [visibility, setVisibility] = useState(false);
+    const [selectedCity, setSelectedCity] = useState('');
+    const [categoryID, setCategoryID] = useState('');
+    const [image, setImage] = useState<any>(null);
+    const [selectedVideos, setSelectedVideos] = useState<any>(null);
+    const [title, setTitle] = useState('');
+    const [description, setDescription] = useState('');
+    const [selectedTags, setSelectedTags] = React.useState('');
+    const [tags, setTags] = React.useState<string[]>([]);
+
     const { id } = useLocalSearchParams();
 
-    //.................... API CALL ..................//
-
+    // API CALL
     const { data: singleVideo } = useMy_videos_detailsQuery({ id });
-    const { category, city, states, video, thumbnail, description, title, visibility: visibilityApi } = singleVideo?.data
     const {
-        data: categories,
-        isLoading,
-        refetch
-    } = useCategoriesQuery({});
-    const categoryData = categories?.data?.data
-    const [updateVideo] = useUpdateVideoMutation()
+        category,
+        city,
+        states,
+        video,
+        thumbnail,
+        description: initialDescription,
+        title: initialTitle,
+        visibility: visibilityApi,
+        tags: initialTags // Add tags from API response
+    } = singleVideo?.data || {};
 
-    // ................ UPLOAD IMG ...............//
+    const { data: categories, isLoading, refetch } = useCategoriesQuery({});
+    const categoryData = categories?.data?.data;
+    const [updateVideo] = useUpdateVideoMutation();
 
+    // Initialize form fields with API data
+    useEffect(() => {
+        if (singleVideo?.data) {
+            setTitle(initialTitle || '');
+            setDescription(initialDescription || '');
+            setSelectedState(states || '');
+            setSelectedCity(city || '');
+            setSelectedCategory(category?.name || '');
+            setCategoryID(category?.id || '');
+            setSelectedVisibility(visibilityApi || '');
+
+            // Initialize tags from API
+            if (initialTags) {
+                setTags(Array.isArray(initialTags) ? initialTags : [initialTags]);
+            }
+        }
+    }, [singleVideo]);
+
+    // UPLOAD IMG
     const pickImage = async () => {
-        // No permissions request is necessary for launching the image library
         let result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ['images'],
+             mediaTypes: ['images'],
             allowsEditing: true,
             aspect: [16, 9],
             quality: 1,
@@ -72,12 +101,10 @@ const editVideoDetails = () => {
         }
     };
 
-    // ................ UPLOAD VIDEO ...............//
-
+    // UPLOAD VIDEO
     const pickVideo = async () => {
-        // No permissions request is necessary for launching the image library
         let result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ['videos'],
+             mediaTypes: ['videos'],
             allowsEditing: true,
             aspect: [16, 9],
             quality: 1,
@@ -89,7 +116,6 @@ const editVideoDetails = () => {
     };
 
     const player = useVideoPlayer(
-        // api get video
         selectedVideos ? selectedVideos.uri : video,
         (player) => {
             player.loop = true;
@@ -100,6 +126,101 @@ const editVideoDetails = () => {
     const { isPlaying } = useEvent(player, 'playingChange', {
         isPlaying: player.playing,
     });
+
+    const handleSaveChanges = async () => {
+
+        let formData = new FormData();
+
+        formData.append('title', title);
+        formData.append('description', description);
+        formData.append('states', selectedState);
+        formData.append('city', selectedCity);
+        formData.append('category_id', categoryID);
+        if (tags.length > 0) {
+            formData.append('tags', JSON.stringify(tags));
+        }
+        formData.append('visibility', selectedVisibility);
+        formData.append('_method', 'PUT');
+
+        // Add thumbnail file if selected
+        if (image?.uri) {
+            formData.append("thumbnail", {
+                uri: image.uri,
+                name: image.fileName,
+                type: image.mimeType,
+            } as any);
+        }
+
+        // Add video file if selected
+        if (selectedVideos?.uri) {
+            formData.append('video', {
+                uri: selectedVideos.uri,
+                name: selectedVideos.fileName,
+                type: selectedVideos.mimeType,
+            } as any);
+        }
+
+        console.log('FormData to be submitted:', selectedVideos?.uri,);
+        formData._parts.forEach(([key, value]) => {
+            if (typeof value === 'object' && value.uri) {
+                console.log(`${key}:`, {
+                    uri: value.uri.substring(0, 30) + '...',
+                    name: value.name,
+                    type: value.type,
+                });
+            } else {
+                console.log(`${key}:`, value);
+            }
+        });
+
+        try {
+            const result = await updateVideo({
+                id: id,
+                data: formData,
+            }).unwrap();
+            console.log("Update result:", result);
+            if (result.status) {
+                Toast.show({
+                    type: ALERT_TYPE.SUCCESS,
+                    title: 'Success',
+                    textBody: result?.message,
+                    autoClose: 2000,
+                });
+                setTimeout(() => {
+                    router.back();
+                }, 1000);
+            } else {
+                Toast.show({
+                    type: ALERT_TYPE.DANGER,
+                    title: 'Error',
+                    textBody: result?.message,
+                    autoClose: 2000,
+                });
+            }
+        } catch (err: any) {
+            console.error("Upload error:", err.data);
+            Toast.show({
+                type: ALERT_TYPE.DANGER,
+                title: 'Error',
+                textBody: err.data?.message || JSON.stringify(err.data?.errors),
+                autoClose: 2000,
+            });
+        }
+    };
+
+    const handleAddService = () => {
+        if (selectedTags.trim()) {
+            const newTags = [...tags, selectedTags.trim()];
+            setTags(newTags);
+            setSelectedTags("");
+        }
+    };
+
+    const handleRemoveService = (index: number) => {
+        const newTags = [...tags];
+        newTags.splice(index, 1);
+        setTags(newTags);
+    };
 
     return (
         <KeyboardAvoidingView style={tw`flex-1 bg-primary`} behavior="padding">
@@ -119,7 +240,6 @@ const editVideoDetails = () => {
                 </View>
 
                 {/* Video Player */}
-
                 <VideoView
                     style={styles.video}
                     player={player}
@@ -173,15 +293,51 @@ const editVideoDetails = () => {
                             <SvgXml xml={IconErowBack} />
                         </TouchableOpacity>
                     </View>
+                    {/* tags */}
+                    <View style={tw`py-5 `}>
+                        <View
+                            style={tw`border border-gray-300 flex-col justify-center pl-7 relative rounded-3xl p-4`}
+                        >
+                            <Text style={tw`bg-primary w-14 font-poppins text-base absolute -top-2 left-7`}>Tags</Text>
 
+                            <View style={tw`flex-row gap-3 flex-wrap`}>
+                                {tags.map((service, index) => (
+                                    <View
+                                        key={index}
+                                        style={tw`gap-3 py-2 px-4 border flex-row justify-center items-center border-gray-300 rounded-full`}
+                                    >
+                                        <Text>{service}</Text>
+                                        <TouchableOpacity onPress={() => handleRemoveService(index)}>
+                                            <SvgXml xml={IconCloseBlack} width={16} height={16} />
+                                        </TouchableOpacity>
+                                    </View>
+                                ))}
+
+                                {/* Input Box */}
+                                <TextInput
+                                    style={tw`flex-1 min-w-[150px]`}
+                                    placeholder="Type & hit enter"
+                                    placeholderTextColor="black"
+                                    value={selectedTags}
+                                    onChangeText={setSelectedTags}
+                                    onSubmitEditing={handleAddService}
+                                    blurOnSubmit={false}
+                                    returnKeyType="done"
+                                />
+                            </View>
+                        </View>
+
+                    </View>
                     {/* Title & Description */}
                     <View style={tw`mt-5`}>
                         <TextInput
-                            defaultValue={title}
+                            value={title}
+                            onChangeText={setTitle}
                             style={tw`border border-gray-300 font-poppins text-base rounded-full px-4 py-3 mb-4`}
                         />
                         <TextInput
-                            defaultValue={description}
+                            value={description}
+                            onChangeText={setDescription}
                             multiline
                             textAlignVertical="top"
                             style={tw`border border-gray-300 font-poppins text-base rounded-2xl px-4 py-3 h-52`}
@@ -200,7 +356,6 @@ const editVideoDetails = () => {
 
                                 /> : <Image source={{ uri: thumbnail }} style={tw`w-full h-48 rounded-md my-4 mx-5`} />
                         }
-
                     </View>
 
                     <TouchableOpacity
@@ -226,7 +381,10 @@ const editVideoDetails = () => {
 
                     {/* Save Button */}
                     <View style={tw`mt-6 mb-10`}>
-                        <TouchableOpacity style={tw`bg-[#FF5A5F] py-4 rounded-full`}>
+                        <TouchableOpacity
+                            style={tw`bg-[#FF5A5F] py-4 rounded-full`}
+                            onPress={handleSaveChanges}
+                        >
                             <Text style={tw`text-center text-white font-poppinsBold text-lg`}>Save changes</Text>
                         </TouchableOpacity>
                     </View>
@@ -358,7 +516,7 @@ const editVideoDetails = () => {
                             </View>
                             <FlatList
                                 data={categoryData}
-                                keyExtractor={(item) => item.id.toString()}
+                                keyExtractor={(item) => item.id}
                                 renderItem={({ item }) => (
                                     <TouchableOpacity
                                         onPress={() => {
@@ -432,7 +590,7 @@ const editVideoDetails = () => {
     );
 };
 
-export default editVideoDetails;
+export default EditVideoDetails;
 
 const styles = StyleSheet.create({
     modalContainer: {

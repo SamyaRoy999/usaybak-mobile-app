@@ -74,7 +74,7 @@ const videodetails = () => {
                                 </View>
                             </TouchableOpacity>
 
-                            <TouchableOpacity onPress={() => router.push("/(allPages)/analytics")} style={tw`border border border-primaryGray`}>
+                            <TouchableOpacity onPress={() => router.push("/(allPages)/analytics")} style={tw`border border-primaryGray`}>
                                 <View style={tw`flex-row items-start gap-3 px-5 py-4`}>
                                     <SvgXml xml={IconAnalytics} />
                                     <Text style={tw`font-poppinsMedium text-base `} >Analytics</Text>

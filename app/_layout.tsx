@@ -11,6 +11,7 @@ import { useDeviceContext } from "twrnc";
 import ThemeProvider from "../context/ThemeProvider";
 // import ThemeProvider from "./context/ThemeProvider";
 import { StripeProvider } from '@stripe/stripe-react-native';
+import { AlertNotificationRoot } from "react-native-alert-notification";
 
 export default function RootLayout() {
   const [loaded] = useFonts({
@@ -45,26 +46,28 @@ export default function RootLayout() {
       publishableKey={
         "pk_test_51RpkfnRkDcyOvU0JSUiWLnfSEHqOeLQ8Ur1xBRYClX6ZFQBwuU9A9QYyHX61jVycj6T23e5GAP1dcdG09kLJWVPg00D14dofxn"
       }>
-      <GestureHandlerRootView>
-        <Provider store={store}>
-          <ThemeProvider>
-            <Stack
-              screenOptions={{
-                headerShown: false,
-              }}
-            >
-              <Stack.Screen name="index" />
-              <Stack.Screen name="home/(tabs)" />
-              <Stack.Screen name="auth" />
-              <Stack.Screen name="details/video/[id]" />
-              <Stack.Screen name="details/Blog/[id]" />
-              <Stack.Screen name="details/promotion/[id]" />
-              <Stack.Screen name="details/editVideoDetails/[id]" />
-              <Stack.Screen name="(allPages)" />
-            </Stack>
-          </ThemeProvider>
-        </Provider>
-      </GestureHandlerRootView>
+      <AlertNotificationRoot>
+        <GestureHandlerRootView>
+          <Provider store={store}>
+            <ThemeProvider>
+              <Stack
+                screenOptions={{
+                  headerShown: false,
+                }}
+              >
+                <Stack.Screen name="index" />
+                <Stack.Screen name="home/(tabs)" />
+                <Stack.Screen name="auth" />
+                <Stack.Screen name="details/video/[id]" />
+                <Stack.Screen name="details/Blog/[id]" />
+                <Stack.Screen name="details/promotion/[id]" />
+                <Stack.Screen name="details/editVideoDetails/[id]" />
+                <Stack.Screen name="(allPages)" />
+              </Stack>
+            </ThemeProvider>
+          </Provider>
+        </GestureHandlerRootView>
+      </AlertNotificationRoot>
     </StripeProvider >
   );
 }

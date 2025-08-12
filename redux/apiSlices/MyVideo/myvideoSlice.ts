@@ -19,14 +19,16 @@ export const myvideoSlice = api.injectEndpoints({
             providesTags: ["home"],
         }),
         updateVideo: builder.mutation<any, any>({
-            query: ({ data, id }) => ({
+            query: ({ id, data }) => ({
                 url: `/videos/${id}`,
                 method: "POST",
-                body: data
+                body: data,
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                }
             })
         })
     }),
-
 });
 
 export const { useMyVideoQuery, useMy_videos_detailsQuery, useUpdateVideoMutation } = myvideoSlice;

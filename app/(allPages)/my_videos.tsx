@@ -87,12 +87,12 @@ const my_videos = () => {
                                         <Text
                                             style={tw`text-base font-poppinsMedium py-1 text-secondaryBlack `}
                                         >
-                                            {item?.title.slice(0, 3)}
+                                            {item?.title.split(" ").slice(0, 4).join(" ")}
                                         </Text>
                                         <Text
                                             style={tw`text-sm  py-1 text-secondaryBlack `}
                                         >
-                                            {item?.description?.slice(0, 6)}
+                                            {item?.description?.split(" ").slice(0, 4).join(" ")}
                                         </Text>
                                         <TouchableOpacity
                                             style={tw`py-3 flex-row gap-4 items-center border border-primaryGray  px-6 rounded-full  bg-primary`}

@@ -130,8 +130,8 @@ function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
 
       {/* Add Button - Centered */}
       <TouchableOpacity
-        onPress={() => setUploadModalVisible(true)} // Fixed: use setUploadModalVisible
-        style={tw`absolute -top-10 `} // Added positioning
+        onPress={() => setUploadModalVisible(true)} 
+        style={tw`absolute -top-10 `}
       >
         <LinearGradient
           colors={["#EF4444", "#FF6868"]}

@@ -98,11 +98,6 @@ const youTubeLink = () => {
         formData.append("is_promoted", promotedOn ? "1" : "0");
         formData.append("visibility", selectedVisibility || "Everyone");
         formData.append("tags", JSON.stringify(tags));
-        console.log(".///////////////////////");
-        for (let pair of formData.entries()) {
-            console.log(pair[0], pair[1]);
-        }
-        console.log(".///////////////////////");
         if (image?.uri) {
             formData.append("thumbnail", {
                 uri: image.uri,
@@ -110,9 +105,21 @@ const youTubeLink = () => {
                 type: image.mimeType,
             } as any);
         }
+        formData._parts.forEach(([key, value]) => {
+            if (typeof value === 'object' && value.uri) {
+                console.log(`${key}:`, {
+                    uri: value.uri.substring(0, 30) + '...',
+                    name: value.name,
+                    type: value.type,
+                });
+            } else {
+                console.log(`${key}:`, value);
+            }
+        });
 
         try {
             const res = await upload_video(formData).unwrap();
+            console.log("result", res);
 
             if (res.status) {
                 Toast.show({
@@ -681,3 +688,16 @@ const youTubeLink = () => {
 }
 
 export default youTubeLink
+//  upload respons
+//   category_id: 4
+//  LOG  type: link
+//  LOG  title: Jhgyh u fuy iu yi iuyi
+//  LOG  description: Iuyoiiu iuyiuyiu ui iu yiu yooiuoiui yi
+//  LOG  link: https://www.youtube.com/watch?v=9c1NIrAqXe4&list=RDGtH7Y0a4-M4&index=2
+//  LOG  states: State 3
+//  LOG  city: City 3
+//  LOG  is_promoted: 0
+//  LOG  visibility: Everyone
+//  LOG  tags: ["jhhj","Jhj","oi"]
+//  LOG  thumbnail: {"name": "84199bdc-5c4d-4560-a334-afcaef3ad90b.jpeg", "type": "image/jpeg", "uri": "file:///data/user/0/com.anonym..."}
+//  LOG  result {"data": {"category_id": "4", "city": "City 3", "created_at": "2025-08-12T12:10:14.000000Z", "description": "Iuyoiiu iuyiuyiu ui iu yiu yooiuoiui yi", "id": 42, "is_promoted": "0", "link": "https://www.youtube.com/watch?v=9c1NIrAqXe4&list=RDGtH7Y0a4-M4&index=2", "states": "State 3", "tags": ["jhhj", "Jhj", "oi"], "thumbnail": "http://103.186.20.114:8008/uploads/thumbnail/1755000614.jpeg", "title": "Jhgyh u fuy iu yi iuyi", "type": "link", "updated_at": "2025-08-12T12:10:14.000000Z", "user_id": 25, "visibility": "Everyone"}, "message": "Video created successfully.", "status": true}

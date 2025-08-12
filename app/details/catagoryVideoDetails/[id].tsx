@@ -42,7 +42,7 @@ const catagoryVideoDetails = () => {
             </View>
         )
     }
-
+    
     return (
         <View style={tw`flex-1`}>
             <ScrollView showsVerticalScrollIndicator={false}>
