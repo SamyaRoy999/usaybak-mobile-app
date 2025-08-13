@@ -109,7 +109,6 @@ const Settings = () => {
         try {
             const response = await axios.get(
                 GOOGLEMAPAPIKEY({query})
-                // `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${query}&key=AIzaSyBayI9g3oFshYVEOzBoKGapFbXijcgR6xE`
             );
             setLocationSuggestions(response?.data?.results || []);
         } catch (error) {

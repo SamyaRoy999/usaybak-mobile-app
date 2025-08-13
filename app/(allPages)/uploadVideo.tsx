@@ -130,6 +130,7 @@ const UploadVideo = () => {
 
             // Make API call
             const res = await upload_video(form).unwrap();
+            console.log(res, " upload video ");
 
             if (res.status) {
                 Toast.show({
@@ -187,7 +188,7 @@ const UploadVideo = () => {
 
     const pickVideo = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Videos,
+            mediaTypes: ["videos"],
             allowsEditing: true,
             aspect: [4, 3],
             quality: 1,
@@ -201,7 +202,7 @@ const UploadVideo = () => {
 
     const pickImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            mediaTypes: ["images"],
             allowsEditing: true,
             aspect: [4, 3],
             quality: 1,
