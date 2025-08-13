@@ -168,8 +168,15 @@ export const accountSlice = api.injectEndpoints({
             providesTags: ["account"],
         }),
 
-    }),
+        deleteVideo: builder.mutation({
+            query: (id) => ({
+                url: `/videos/${id}`,
+                method: "DELETE"
+            }),
 
+            invalidatesTags: ["account"],
+        })
+    }),
 });
 
 export const {
@@ -192,5 +199,8 @@ export const {
     useAppealPostMutation,
     useAll_delete_watch_historyMutation,
     usePause_play_watchMutation,
-    useVideoAnalyticsQuery
+    useVideoAnalyticsQuery,
+    useDeleteVideoMutation
+
+
 } = accountSlice;

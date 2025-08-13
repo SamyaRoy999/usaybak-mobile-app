@@ -1,6 +1,7 @@
 import HeaderBar from '@/components/shear/HeaderBar'
 import { IconAnalytics, IconBackLeft, IconClose, IconComment, IconDate, IconDelete, IconDislike, IconEays, IconEdit, IconErow, Iconfevarite, IconLike, IconMessage, IconSettingDot, IconTime, IconWorld, IconWornoingDelete } from '@/icons/Icon'
 import tw from '@/lib/tailwind'
+import { useDeleteVideoMutation } from '@/redux/apiSlices/Account/accountSlice'
 import { useMy_videos_detailsQuery } from '@/redux/apiSlices/MyVideo/myvideoSlice'
 import { _Width } from '@/utils/utils'
 import { useEvent } from 'expo'
@@ -9,19 +10,19 @@ import { router, useLocalSearchParams } from 'expo-router'
 import { useVideoPlayer, VideoView } from 'expo-video'
 import React from 'react'
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { ALERT_TYPE, Toast } from 'react-native-alert-notification'
 import { ScrollView } from 'react-native-gesture-handler'
 import { SvgXml } from 'react-native-svg'
 
 const videodetails = () => {
-    const [history, setHistory] = React.useState(false)
-
-    const [isVisible, setIsVisible] = React.useState(false);
+    const [history, setHistory] = React.useState(false);
     const [commentVisible, setCommentVisible] = React.useState(false);
     const [replyVisible, setReplyVisible] = React.useState(false);
     const [deleteModalVisible, setDeleteModalVisible] = React.useState(false);
 
     const { id } = useLocalSearchParams();
     const { data: singleVideo, isLoading } = useMy_videos_detailsQuery({ id });
+    const [deleteVideo] = useDeleteVideoMutation()
 
     const player = useVideoPlayer(singleVideo?.data?.video || "", (player) => {
         player.loop = true;
@@ -35,7 +36,31 @@ const videodetails = () => {
     if (!singleVideo) return null;
 
 
+    const hendelDeleteVideo = async () => {
+        try {
+            const res = await deleteVideo(id).unwrap();
 
+            if (res?.status) {
+                Toast.show({
+                    type: ALERT_TYPE.SUCCESS,
+                    title: "Success",
+                    textBody: res.message,
+                    autoClose: 2000,
+                });
+                setTimeout(() => {
+                    router.push("/(allPages)/my_videos")
+                }, 1000);
+            } else {
+                Toast.show({
+                    type: ALERT_TYPE.DANGER,
+                    title: "Error",
+                    textBody: res?.message || "Something went wrong!",
+                    autoClose: 2000,
+                });
+            }
+        } catch (err) {
+        }
+    }
 
     return (
 
@@ -76,7 +101,7 @@ const videodetails = () => {
 
                             <TouchableOpacity onPress={() => router.push({
                                 pathname: "/details/videoAnalytics/[id]",
-                                params: { id: id.toString()}
+                                params: { id: id.toString() }
                             })} style={tw`border border-primaryGray`}>
                                 <View style={tw`flex-row items-start gap-3 px-5 py-4`}>
                                     <SvgXml xml={IconAnalytics} />
@@ -676,7 +701,7 @@ const videodetails = () => {
                     onRequestClose={() => setDeleteModalVisible(false)}
                 >
                     <View style={styles.modalContainer}>
-                        <View style={tw`bg-primary rounded-t-3xl absolute bottom-0  w-full h-2/6 mt-78  `}>
+                        <View style={tw`bg-primary rounded-t-3xl absolute bottom-0  w-full  mt-78 pb-12`}>
                             <View
                                 style={tw`bg-secondary w-full h-16 rounded-t-3xl flex-row items-center justify-between p-5`}
                             >
@@ -697,10 +722,10 @@ const videodetails = () => {
                                     <Text style={tw`font-poppinsMedium text-sm text-primaryGrayDeep pt-1 pb-7`}>Users can’t find your video anymore.</Text>
                                 </View>
                                 <View style={tw`flex-row justify-center gap-3`}>
-                                    <TouchableOpacity style={tw` w-2/6 py-5 border flex-row rounded-full justify-center border-primaryGray`}>
+                                    <TouchableOpacity onPress={() => setDeleteModalVisible(false)} style={tw` w-2/6 py-5 border flex-row rounded-full justify-center border-primaryGray`}>
                                         <Text style={tw`text-sm font-poppinsMedium`}>Cancel</Text>
                                     </TouchableOpacity>
-                                    <TouchableOpacity style={tw` w-2/6 bg-secondary  py-5 border flex-row rounded-full justify-center border-primaryGray`}>
+                                    <TouchableOpacity onPress={() => hendelDeleteVideo()} style={tw` w-2/6 bg-secondary  py-5 border flex-row rounded-full justify-center border-primaryGray`}>
                                         <Text style={tw`text-sm text-primary font-poppinsMedium`}>Yes, Delete</Text>
                                     </TouchableOpacity>
                                 </View>

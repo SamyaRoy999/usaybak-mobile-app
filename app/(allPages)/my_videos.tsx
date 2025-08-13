@@ -4,8 +4,8 @@ import tw from '@/lib/tailwind'
 import { useMyVideoQuery } from '@/redux/apiSlices/MyVideo/myvideoSlice'
 import { _HIGHT, _Width } from '@/utils/utils'
 import { Image } from 'expo-image'
-import { router } from 'expo-router'
-import React from 'react'
+import { router, useFocusEffect } from 'expo-router'
+import React, { useCallback } from 'react'
 import { FlatList, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { SvgXml } from 'react-native-svg'
 
@@ -15,7 +15,14 @@ const my_videos = () => {
 
     // ......................API CALL ..................//
 
-    const { data: myVideo, isLoading, error } = useMyVideoQuery({})
+    const { data: myVideo, isLoading, error, refetch } = useMyVideoQuery({})
+
+    useFocusEffect(
+        useCallback(() => {
+            refetch()
+        }, [refetch])
+    )
+
     if (isLoading) {
         return (
             <View style={tw`flex-1 justify-center items-center`}>
