@@ -97,7 +97,7 @@ const UploadVideo = () => {
             }
 
             // Add optional fields if they exist
-            if (formData.state) form.append('state', formData.state);
+            if (formData.state) form.append('states', formData.state);
             if (formData.city) form.append('city', formData.city);
 
             // Add thumbnail file if exists
@@ -130,7 +130,7 @@ const UploadVideo = () => {
 
             // Make API call
             const res = await upload_video(form).unwrap();
-            console.log(res, " upload video ");
+console.log(res, "result data");
 
             if (res.status) {
                 Toast.show({
@@ -188,7 +188,7 @@ const UploadVideo = () => {
 
     const pickVideo = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ["videos"],
+            mediaTypes: ImagePicker.MediaTypeOptions.Videos,
             allowsEditing: true,
             aspect: [4, 3],
             quality: 1,
@@ -202,7 +202,7 @@ const UploadVideo = () => {
 
     const pickImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ["images"],
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
             allowsEditing: true,
             aspect: [4, 3],
             quality: 1,
@@ -695,3 +695,4 @@ const styles = StyleSheet.create({
         height: 250,
     },
 });
+
