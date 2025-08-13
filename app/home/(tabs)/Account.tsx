@@ -20,8 +20,8 @@ import tw from "@/lib/tailwind";
 import { useHistoryVideoDeleteMutation, useHistoryVideoQuery, useLikeVideosDeleteMutation, useLikeVideosQuery } from "@/redux/apiSlices/Account/accountSlice";
 import { _HIGHT, _Width } from "@/utils/utils";
 import { Image } from "expo-image";
-import { router } from "expo-router";
-import React from "react";
+import { router, useFocusEffect } from "expo-router";
+import React, { useCallback } from "react";
 import {
   FlatList,
   ScrollView,
@@ -39,6 +39,13 @@ const Account = () => {
   const [deleteHistoryVideo] = useHistoryVideoDeleteMutation();
   const [likeVideosDelete] = useLikeVideosDeleteMutation();
 
+  useFocusEffect(
+    useCallback(() => {
+      refetch()
+      islikeVideoRef()
+    }, [refetch])
+  )
+
   if (isLoading || islikeVideoLoading) {
     return (
       <View style={tw`flex-1 justify-center items-center`}>
@@ -55,7 +62,7 @@ const Account = () => {
   }
 
 
-  // .............. DELETE ......... //
+  // .............. DELETE ............ //
   const handleDeleteVideo = async (type: "history" | "like", id: any) => {
     try {
       let res;
@@ -86,13 +93,6 @@ const Account = () => {
 
     }
   };
-  // React.useEffect(() => {
-  //   // Only call refetch if the functions are available
-  //   if (refetch && islikeVideoRef) {
-  //     refetch();
-  //     islikeVideoRef();
-  //   }
-  // }, [refetch, islikeVideoRef]);  // Add dependencies to ensure effect runs when these change
 
   return (
     <View style={tw`flex-1 bg-primary `}>

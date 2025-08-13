@@ -1,4 +1,5 @@
 import HeaderBar from '@/components/shear/HeaderBar'
+import { GOOGLEMAPAPIKEY } from '@/googleKey/googleApiKey'
 import { IconAddsm, IconBackLeft, IconButtonBack, IconClose, IconCloseBlack, IconDeleteRed, IconErowBackRight, IconSavechanges, IconUpload, IconUploadCover, profileChang } from '@/icons/Icon'
 import tw from '@/lib/tailwind'
 import { useProfileQuery, useSettingPostMutation } from '@/redux/apiSlices/Account/accountSlice'
@@ -107,7 +108,8 @@ const Settings = () => {
         }
         try {
             const response = await axios.get(
-                `http://157.245.63.191/${query}`
+                GOOGLEMAPAPIKEY({query})
+                // `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${query}&key=AIzaSyBayI9g3oFshYVEOzBoKGapFbXijcgR6xE`
             );
             setLocationSuggestions(response?.data?.results || []);
         } catch (error) {

@@ -43,13 +43,12 @@ const landingPage = () => {
         <SliderLanding />
         {/* <CarouselCard promotedVideo={promotedVideo} /> */}
         <FlatList
-          data={caragoryVideos?.data}
+          data={caragoryVideos?.data?.data}
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => <CatagoryCard data={item} isLoading={isLoading} />}
           showsVerticalScrollIndicator={false}
           scrollEnabled={false}
         />
-
       </ScrollView>
     </View>
   );

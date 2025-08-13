@@ -66,7 +66,7 @@ const videodetails = () => {
                         <View style={tw`absolute bg-primaryText right-5 w-56 top-14 z-20  shadow-lg rounded-lg`}>
                             <TouchableOpacity onPress={() => router.push({
                                 pathname: "/details/editVideoDetails/[id]",
-                                params: { id: id.toString() }  
+                                params: { id: id.toString() }
                             })}>
                                 <View style={tw`flex-row items-start gap-3 px-5 py-4`}>
                                     <SvgXml xml={IconEdit} />
@@ -74,10 +74,13 @@ const videodetails = () => {
                                 </View>
                             </TouchableOpacity>
 
-                            <TouchableOpacity onPress={() => router.push("/(allPages)/analytics")} style={tw`border border-primaryGray`}>
+                            <TouchableOpacity onPress={() => router.push({
+                                pathname: "/details/videoAnalytics/[id]",
+                                params: { id: id.toString()}
+                            })} style={tw`border border-primaryGray`}>
                                 <View style={tw`flex-row items-start gap-3 px-5 py-4`}>
                                     <SvgXml xml={IconAnalytics} />
-                                    <Text style={tw`font-poppinsMedium text-base `} >Analytics</Text>
+                                    <Text style={tw`font-poppinsMedium text-base`} >Analytics</Text>
                                 </View>
                             </TouchableOpacity>
 

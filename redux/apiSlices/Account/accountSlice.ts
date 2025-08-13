@@ -160,6 +160,14 @@ export const accountSlice = api.injectEndpoints({
             invalidatesTags: ["user"],
         }),
 
+        videoAnalytics: builder.query<any, { month: string, year: string }>({
+            query: ({ id, month, year }: any) => ({
+                url: `/video-analytics/${id}?type=custom&month=${month}&year=${year}`,
+                method: "GET",
+            }),
+            providesTags: ["account"],
+        }),
+
     }),
 
 });
@@ -183,5 +191,6 @@ export const {
     useReportDetailQuery,
     useAppealPostMutation,
     useAll_delete_watch_historyMutation,
-    usePause_play_watchMutation
+    usePause_play_watchMutation,
+    useVideoAnalyticsQuery
 } = accountSlice;
