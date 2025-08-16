@@ -27,8 +27,15 @@ export const myvideoSlice = api.injectEndpoints({
                     'Content-Type': 'multipart/form-data',
                 }
             })
-        })
+        }),
+        myProfile: builder.query<any, any>({
+            query: () => ({
+                url: `/profile`,
+                method: "GET",
+            }),
+            providesTags: ["home"],
+        }),
     }),
 });
 
-export const { useMyVideoQuery, useMy_videos_detailsQuery, useUpdateVideoMutation } = myvideoSlice;
+export const { useMyVideoQuery, useMy_videos_detailsQuery, useUpdateVideoMutation, useMyProfileQuery } = myvideoSlice;

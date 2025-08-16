@@ -4,20 +4,24 @@ import {
     IconCloseBlack,
     IconErowBack,
     IconLock,
-    IconSucssMsg,
     IconUpload,
     IconUploadBlue,
-    IconWorld,
-    IconWorningGary
+    IconWorld
 } from '@/icons/Icon'
 import tw from '@/lib/tailwind'
+import { usePriceGetAllQuery } from '@/redux/apiSlices/Home/homeApiSlices'
+import { useMyProfileQuery } from '@/redux/apiSlices/MyVideo/myvideoSlice'
+import { usePaymentMutation, usePaymentSuccessMutation } from '@/redux/apiSlices/payment/paymentSlice'
 import { useCategoriesQuery, useUpload_videoMutation } from '@/redux/apiSlices/UploadVideo/uploadVideoSices'
 import { _Width } from '@/utils/utils'
+import { useStripe } from '@stripe/stripe-react-native'
+import { Image } from 'expo-image'
 import * as ImagePicker from 'expo-image-picker'
 import { router } from 'expo-router'
 import React from 'react'
 import {
     ActivityIndicator,
+    Button,
     FlatList,
     KeyboardAvoidingView,
     Modal,
@@ -43,6 +47,12 @@ const UploadVideo = () => {
     const [imageAsset, setImageAsset] = React.useState<ImagePicker.ImagePickerAsset | null>(null);
     const [tags, setTags] = React.useState<string[]>([]);
     const [inputValue, setInputValue] = React.useState("");
+    const [paymentIntentData, setPaymentIntentData] = React.useState<any>(null);
+    const [isProcessing, setIsProcessing] = React.useState(false); 
+
+
+    // ............stripe ..............//
+    const { initPaymentSheet, presentPaymentSheet } = useStripe();
 
     //............. Form data state...............//
     const [formData, setFormData] = React.useState({
@@ -55,8 +65,8 @@ const UploadVideo = () => {
         description: '',
         visibility: '',
         tags: [],
-        is_promoted: '0', // Added from API requirements
-        status: 'active' // Added from API requirements
+        is_promoted: '0',
+        status: 'active'
     });
 
     // ............... API CALL.................//
@@ -66,123 +76,217 @@ const UploadVideo = () => {
         isLoading,
         refetch
     } = useCategoriesQuery({});
+    const {
+        data: userId,
+        isLoading: isUserLoading,
+        error: userError,
+    } = useMyProfileQuery({});
+
     const categoryData = categories?.data?.data
     const [upload_video] = useUpload_videoMutation()
+    const [payment] = usePaymentMutation()
+    const [paymentSuccess] = usePaymentSuccessMutation()
+    const {
+        data: priceUploadVideo,
+    } = usePriceGetAllQuery({});
 
-    // Update form data
+
+    if (isLoading || isUserLoading) {
+        return (
+            <View style={tw`flex-1 justify-center items-center`}>
+                <ActivityIndicator size="large" color="#0000ff" />
+                <Text style={tw`mt-4`}>Loading data...</Text>
+            </View>
+        );
+    }
+
+    if (userError) {
+        Toast.show({
+            type: ALERT_TYPE.DANGER,
+            title: 'Error',
+            textBody: "Failed to load user data",
+            autoClose: 2000,
+        });
+    }
+
     const updateFormData = (field: string, value: string | { name: string }) => {
         setFormData(prev => ({ ...prev, [field]: value }));
     };
 
-    const handlePaymentConfirm = async () => {
+    const handleUploadVideo = async () => {
+        if (
+            !formData.category_id ||
+            !formData.type ||
+            !formData.title ||
+            !formData.description ||
+            !formData.visibility ||
+            !imageAsset ||
+            !videoAsset
+        ) {
+            Toast.show({
+                type: ALERT_TYPE.WARNING,
+                title: 'Success',
+                textBody: "Missing Information",
+                autoClose: 2000,
+            });
+            return;
+        }
+
         setPaymentVisible(false);
-        setSucssMassage(true);
+        const form = new FormData();
 
+        form.append('category_id', formData.category_id);
+        form.append('type', formData.type);
+        form.append('title', formData.title);
+        form.append('description', formData.description);
+        form.append('visibility', formData.visibility);
+        form.append('is_promoted', '0');
+
+        if (tags.length > 0) {
+            form.append('tags', JSON.stringify(tags));
+        }
+
+        if (formData.state) form.append('states', formData.state);
+        if (formData.city) form.append('city', formData.city);
+
+        if (imageAsset) {
+            const localUri = imageAsset.uri;
+            const filename = localUri.split('/').pop();
+            const match = /\.(\w+)$/.exec(filename || '');
+            const type = match ? `image/${match[1]}` : 'image/jpeg';
+
+            form.append('thumbnail', {
+                uri: localUri,
+                name: filename || `thumbnail_${Date.now()}.jpg`,
+                type,
+            } as any);
+        }
+
+        if (videoAsset) {
+            const localUri = videoAsset.uri;
+            const filename = localUri.split('/').pop();
+            const match = /\.(\w+)$/.exec(filename || '');
+            const type = match ? `video/${match[1]}` : 'video/mp4';
+
+            form.append('video', {
+                uri: localUri,
+                name: filename || `video_${Date.now()}.mp4`,
+                type,
+            } as any);
+        }
+
+        handleSetupInitialPayment(form);
+    };
+
+    //............ Payment ...........//
+
+    const handleSetupInitialPayment = async (item: any) => {
         try {
-            // Create FormData object
-            const form = new FormData();
+            const amount = priceUploadVideo?.data?.uploading_video || "0";
 
-            // Add all required fields
-            form.append('category_id', formData.category_id);
-            form.append('type', formData.type);
-            form.append('title', formData.title);
-            form.append('description', formData.description);
-            form.append('visibility', formData.visibility);
-            // form.append('status', 'active');
-            form.append('is_promoted', '0');
-
-            // Add tags as JSON string
-            if (tags.length > 0) {
-                form.append('tags', JSON.stringify(tags));
+            const paymentData = {
+                reason: "Uploading video",
+                amount: amount,
+                payment_method: "pm_card_visa",
             }
 
-            // Add optional fields if they exist
-            if (formData.state) form.append('states', formData.state);
-            if (formData.city) form.append('city', formData.city);
+            const res = await payment(paymentData).unwrap();
 
-            // Add thumbnail file if exists
-            if (imageAsset) {
-                const localUri = imageAsset.uri;
-                const filename = localUri.split('/').pop();
-                const match = /\.(\w+)$/.exec(filename || '');
-                const type = match ? `image/${match[1]}` : 'image/jpeg';
+            const successData = {
+                id: res?.data?.id,
+                amount: res.data?.amount,
+                reason: "Uploading video"
+            };
 
-                form.append('thumbnail', {
-                    uri: localUri,
-                    name: filename || `thumbnail_${Date.now()}.jpg`,
-                    type,
-                } as any);
-            }
+            setPaymentIntentData(successData);
 
-            // Add video file if exists
-            if (videoAsset) {
-                const localUri = videoAsset.uri;
-                const filename = localUri.split('/').pop();
-                const match = /\.(\w+)$/.exec(filename || '');
-                const type = match ? `video/${match[1]}` : 'video/mp4';
+            const client_secret = res?.data?.client_secret;
 
-                form.append('video', {
-                    uri: localUri,
-                    name: filename || `video_${Date.now()}.mp4`,
-                    type,
-                } as any);
-            }
+            const { error } = await initPaymentSheet({
+                merchantDisplayName: "MyTSV App",
+                paymentIntentClientSecret: client_secret,
+            });
 
-            // Make API call
-            const res = await upload_video(form).unwrap();
-console.log(res, "result data");
-
-            if (res.status) {
-                Toast.show({
-                    type: ALERT_TYPE.SUCCESS,
-                    title: 'Success',
-                    textBody: res?.message,
-                    autoClose: 2000,
-                });
-                setTimeout(() => {
-                    router?.push(`/home/(tabs)/landingPage`);
-                }, 1000);
-            } else {
+            if (error) {
                 Toast.show({
                     type: ALERT_TYPE.DANGER,
                     title: 'Error',
-                    textBody: res?.message || "Upload failed",
+                    textBody: error?.message,
                     autoClose: 2000,
                 });
+            } else {
+                checkout(item);
             }
-        } catch (error: any) {
-            console.error('Upload error:', error);
-
-            let errorMessage = "Upload failed. Please try again.";
-
-            if (error?.data) {
-                errorMessage = typeof error.data === 'object'
-                    ? JSON.stringify(error.data)
-                    : error.data;
-            } else if (error?.error) {
-                errorMessage = error.error;
-            } else if (error?.message) {
-                errorMessage = error.message;
-            }
-
+        } catch (error) {
             Toast.show({
-                type: ALERT_TYPE.WARNING,
-                title: 'Upload Error',
-                textBody: errorMessage,
-                autoClose: 3000,
+                type: ALERT_TYPE.DANGER,
+                title: 'Error',
+                textBody: "Payment setup failed",
+                autoClose: 2000,
             });
         }
-    };
-    // ........... Close success message after 3 seconds ............//
+    }
 
-    React.useEffect(() => {
-        if (sucssMassage) {
-            const timer = setTimeout(() => {
-                setSucssMassage(false);
-            }, 3000);
-            return () => clearTimeout(timer);
+    const checkout = async (item: any) => {
+        setIsProcessing(true);
+
+        try {
+            const { error } = await presentPaymentSheet();
+
+            if (error) {
+                Toast.show({
+                    type: ALERT_TYPE.DANGER,
+                    title: 'Error',
+                    textBody: error?.message,
+                    autoClose: 2000,
+                });
+                return;
+            }
+
+            if (!userId?.data?.id || !paymentIntentData) {
+                Toast.show({
+                    type: ALERT_TYPE.DANGER,
+                    title: 'Error',
+                    textBody: "User or payment data not available",
+                    autoClose: 2000,
+                });
+                return;
+            }
+
+            const data = {
+                user_id: userId.data.id,
+                payment_intent_id: paymentIntentData.id,
+                reason: paymentIntentData.reason,
+                amount: paymentIntentData.amount
+            }
+
+            const res = await paymentSuccess(data).unwrap();
+
+            if (res?.status) {
+                const uploadRes = await upload_video(item).unwrap();
+                if (uploadRes.status) {
+                    Toast.show({
+                        type: ALERT_TYPE.SUCCESS,
+                        title: 'Success',
+                        textBody: 'Video uploaded successfully!',
+                        autoClose: 2000,
+                    });
+                    setTimeout(() => {
+                        router.replace("/home/(tabs)/landingPage");
+                    }, 2000);
+                }
+            }
+        } catch (error) {
+            Toast.show({
+                type: ALERT_TYPE.DANGER,
+                title: 'Error',
+                textBody: (error as any)?.message || "Payment processing failed",
+                autoClose: 2000,
+            });
+        } finally {
+            setIsProcessing(false);
         }
-    }, [sucssMassage]);
+    };
 
     // ............... UPLOAD VIDEO ...................// 
 
@@ -215,6 +319,7 @@ console.log(res, "result data");
     };
 
     // ............... HANDLE TAGS  ..................//
+
     const handleAddService = () => {
         if (inputValue.trim()) {
             const newTags = [...tags, inputValue.trim()];
@@ -231,29 +336,28 @@ console.log(res, "result data");
         setFormData((prev: any) => ({ ...prev, tags: newTags }));
     };
 
-    if (isLoading) {
-        return (
-            <View style={tw`flex-1 justify-center items-center`}>
-                <ActivityIndicator size="large" color="#0000ff" />
-            </View>
-        );
-    }
     return (
         <KeyboardAvoidingView
             enabled={true}
             behavior={"padding"}
             style={tw`bg-primary flex-1 p-4`}
         >
-            <AlertNotificationRoot>
+            {isProcessing && (
+                <View style={tw`absolute inset-0 bg-black/50 justify-center items-center z-10`}>
+                    <ActivityIndicator size="large" color="#0000ff" />
+                    <Text style={tw`text-white mt-4`}>Processing payment...</Text>
+                </View>
+            )}
 
+            <AlertNotificationRoot>
                 <ScrollView showsVerticalScrollIndicator={false}>
                     <View style={tw`relative`}>
                         <View style={tw`flex-row justify-between items-center gap-5  mb-8`}>
-                            <View style={tw`bg-primaryText w-13 h-13 p-4 rounded-full flex-row items-center justify-center border border-primaryGray`}>
-                                <TouchableOpacity onPress={() => router.back()}>
+                            <TouchableOpacity onPress={() => router.back()}>
+                                <View style={tw`bg-primaryText w-13 h-13 p-4 rounded-full flex-row items-center justify-center border border-primaryGray`}>
                                     <SvgXml xml={IconBackLeft} />
-                                </TouchableOpacity>
-                            </View>
+                                </View>
+                            </TouchableOpacity>
                             <Text style={tw`font-poppinsMedium text-xl`}>
                                 Upload Video
                             </Text>
@@ -275,13 +379,12 @@ console.log(res, "result data");
                             <Text style={tw`font-poppins text-base text-primaryGrayDeep`}>or</Text>
                             <TouchableOpacity
                                 onPress={pickVideo}
-                                // disabled={isUploading}
                                 style={tw`font-poppins text-base bg-secondary rounded-md`}>
                                 <Text style={tw`text-primary py-2 px-6`}>Browse files</Text>
                             </TouchableOpacity>
-                            {/* {video &&
-                                <Text style={tw` py-2 px-6`}>{video}</Text>
-                            } */}
+                            {videoAsset &&
+                                <Text style={tw`py-2 px-6`}>{videoAsset?.fileName}</Text>
+                            }
                         </>
 
                     </TouchableOpacity>
@@ -381,21 +484,30 @@ console.log(res, "result data");
                     </View>
 
                     {/* Thumbnail Upload */}
-                    <TouchableOpacity
-                        style={tw`flex-row items-center justify-between border border-primaryGray px-6 py-3 rounded-full mt-4`}
-                        onPress={pickImage}
-                    >
+
+                    {/* Thumbnail */}
+                    <View style={tw`flex-row items-center border border-primaryGray rounded-2xl mt-5 justify-between  px-6 py-3  `}>
                         <Text style={tw`font-poppins text-base`}>Thumbnail</Text>
-                        <View style={tw`flex-row items-center gap-3 border border-[#3B97D3] py-2 px-5 rounded-full`}>
-                            <SvgXml xml={IconUploadBlue} />
-                            <Text style={tw`font-poppins text-base text-[#3B97D3]`}>
-                                Upload an image
-                            </Text>
-                        </View>
-                    </TouchableOpacity>
-                    {/* {image &&
-                        <Text style={tw` py-2 px-6`}>{image}</Text>
-                    } */}
+                        {!imageAsset?.uri && (
+                            <TouchableOpacity onPress={pickImage} style={tw`flex-row items-center gap-3 border border-[#3B97D3] py-2 px-5 rounded-full`}>
+                                <SvgXml xml={IconUploadBlue} />
+                                <Text style={tw`font-poppins text-base text-[#3B97D3]`}>Upload an image</Text>
+                            </TouchableOpacity>
+                        )}
+                    </View>
+                    <View style={tw`p-3 w-full`}>
+                        {imageAsset?.uri && (
+                            <View style={tw`relative`}>
+                                <TouchableOpacity>
+                                    <Image style={tw`w-full aspect-video rounded-lg`} source={{ uri: imageAsset.uri }} />
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={() => setImageAsset(null)} style={tw`bg-primary h-8 w-8 rounded-full flex-row items-center justify-center absolute top-3 right-3`}>
+                                    <SvgXml xml={IconCloseBlack} />
+                                </TouchableOpacity>
+                            </View>
+                        )}
+                    </View>
+
                     {/* Visibility */}
                     <TouchableOpacity
                         onPress={() => setVisibilityModalVisible(true)}
@@ -410,19 +522,12 @@ console.log(res, "result data");
                     {/* Footer */}
                     <View style={tw`flex-row justify-end gap-3 px-6 py-4`}>
                         <TouchableOpacity style={tw`border flex-row items-center border-primaryGray rounded-md`}>
-                            <Text style={tw`text-2xl font-poppinsMedium py-2 px-7`}>$99.00</Text>
+                            <Text style={tw`text-2xl font-poppinsMedium py-2 px-7`}>${priceUploadVideo?.data?.uploading_video}</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity
-                            onPress={() => setPaymentVisible(true)}
-                            style={tw`border flex-row items-center bg-secondary border-primaryGray rounded-md`}
-                        >
-                            <Text style={tw`text-base font-poppinsMedium py-2 px-7 text-primary`}>Pay now</Text>
-                        </TouchableOpacity>
-                    </View>
-
-                    <View style={tw`flex-row gap-2 py-7`}>
-                        <SvgXml xml={IconWorningGary} />
-                        <Text style={tw`text-base font-poppins`}>After payment you will be returned here immediately.</Text>
+                        <Button
+                            onPress={handleUploadVideo}
+                            title="Checkout"
+                        />
                     </View>
 
                     {/* Payment Modal */}
@@ -444,45 +549,8 @@ console.log(res, "result data");
                                 <View style={tw`p-5`}>
                                     <View style={tw`items-center mb-5`}>
                                         <Text style={tw`text-gray-500 font-poppins`}>Required amount</Text>
-                                        <Text style={tw`text-3xl font-poppinsBold text-black`}>$99.99</Text>
+                                        <Text style={tw`text-3xl font-poppinsBold text-black`}>${priceUploadVideo?.data?.uploading_video}</Text>
                                     </View>
-
-                                    <Text style={tw`text-base font-poppinsMedium mb-2`}>Card information</Text>
-                                    <View style={tw`border border-gray-300 rounded-lg p-3 mb-3`}>
-                                        <TextInput
-                                            placeholder="Card number"
-                                            placeholderTextColor="black"
-                                            keyboardType="number-pad"
-                                            style={tw`font-poppins text-base mb-2`}
-                                        />
-                                        <View style={tw`flex-row justify-between`}>
-                                            <TextInput
-                                                placeholder="MM/YY"
-                                                placeholderTextColor="black"
-                                                keyboardType="number-pad"
-                                                style={tw`w-[48%] font-poppins text-base`}
-                                            />
-                                            <TextInput
-                                                placeholder="CVC"
-                                                placeholderTextColor="black"
-                                                keyboardType="number-pad"
-                                                style={tw`w-[48%] font-poppins text-base`}
-                                            />
-                                        </View>
-                                    </View>
-
-                                    <Text style={tw`text-base font-poppinsMedium mb-2`}>Billing address</Text>
-                                    <View style={tw`border border-gray-300 rounded-lg mb-3`}>
-                                        <TouchableOpacity style={tw`p-3`}>
-                                            <Text style={tw`font-poppins text-base text-gray-600`}>United States</Text>
-                                        </TouchableOpacity>
-                                    </View>
-                                    <TextInput
-                                        placeholder="ZIP"
-                                        placeholderTextColor="black"
-                                        keyboardType="number-pad"
-                                        style={tw`border border-gray-300 rounded-lg p-3 font-poppins text-base mb-5`}
-                                    />
 
                                     <View style={tw`flex-row justify-between`}>
                                         <TouchableOpacity
@@ -494,32 +562,12 @@ console.log(res, "result data");
 
                                         <TouchableOpacity
                                             style={tw`bg-[#FF5A5F] rounded-full py-3 px-6 w-[48%]`}
-                                            onPress={handlePaymentConfirm}
                                         >
                                             <Text style={tw`text-center font-poppinsBold text-base text-white`}>
                                                 Pay now
                                             </Text>
                                         </TouchableOpacity>
                                     </View>
-                                </View>
-                            </View>
-                        </View>
-                    </Modal>
-
-                    {/* Success Message Modal */}
-                    <Modal
-                        visible={sucssMassage}
-                        transparent={true}
-                        animationType="fade"
-                        onRequestClose={() => setSucssMassage(false)}
-                    >
-                        <View style={tw`flex-1 h-4/6 bg-black/50 justify-center`}>
-                            <View style={tw`bg-primary flex-col justify-center items-center mx-8 py-14 rounded-`}>
-                                <SvgXml xml={IconSucssMsg} />
-                                <Text style={tw`font-poppinsSemiBold text-xl text-[#008716] p-5`}>Payment successful</Text>
-                                <View style={tw`flex-row gap-1`}>
-                                    <ActivityIndicator color={"gray"} size={"small"} />
-                                    <Text style={tw`font-poppins text-sm text-secondarygray`}>Redirecting to publishing page</Text>
                                 </View>
                             </View>
                         </View>
@@ -592,7 +640,6 @@ console.log(res, "result data");
                     </Modal>
 
                     {/* Category Selection Modal */}
-
                     <Modal
                         visible={categoryModalVisible}
                         transparent={true}
@@ -695,4 +742,3 @@ const styles = StyleSheet.create({
         height: 250,
     },
 });
-

@@ -13,9 +13,19 @@ export const paymentSlice = api.injectEndpoints({
             }),
             invalidatesTags: ["uploadVideo"],
         }),
+        paymentSuccess: builder.mutation<any, any>({
+            query: (data) => ({
+                url: `/payment-success`,
+                method: "POST",
+                body: data,
+            }),
+            invalidatesTags: ["uploadVideo"],
+        }),
+
     })
 });
 
 export const {
-  usePaymentMutation
+    usePaymentMutation,
+    usePaymentSuccessMutation
 } = paymentSlice;

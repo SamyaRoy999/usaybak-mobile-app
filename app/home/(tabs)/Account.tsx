@@ -18,6 +18,7 @@ import {
 } from "@/icons/Icon";
 import tw from "@/lib/tailwind";
 import { useHistoryVideoDeleteMutation, useHistoryVideoQuery, useLikeVideosDeleteMutation, useLikeVideosQuery } from "@/redux/apiSlices/Account/accountSlice";
+import { useMyProfileQuery } from "@/redux/apiSlices/MyVideo/myvideoSlice";
 import { _HIGHT, _Width } from "@/utils/utils";
 import { Image } from "expo-image";
 import { router, useFocusEffect } from "expo-router";
@@ -38,15 +39,21 @@ const Account = () => {
   const { data: likeVideo, isLoading: islikeVideoLoading, refetch: islikeVideoRef } = useLikeVideosQuery({})
   const [deleteHistoryVideo] = useHistoryVideoDeleteMutation();
   const [likeVideosDelete] = useLikeVideosDeleteMutation();
+  const {
+    data: userData,
+    isLoading: isUserLoading,
+    refetch: refetchUser
+  } = useMyProfileQuery({})
 
   useFocusEffect(
     useCallback(() => {
       refetch()
       islikeVideoRef()
-    }, [refetch])
+      refetchUser()
+    }, [])
   )
 
-  if (isLoading || islikeVideoLoading) {
+  if (isLoading || islikeVideoLoading || isUserLoading) {
     return (
       <View style={tw`flex-1 justify-center items-center`}>
         <Text>Loading...</Text>
@@ -93,6 +100,9 @@ const Account = () => {
 
     }
   };
+
+  console.log("userData", userData, "userData");
+
 
   return (
     <View style={tw`flex-1 bg-primary `}>

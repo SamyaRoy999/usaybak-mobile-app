@@ -44,7 +44,7 @@ export default function RootLayout() {
   return (
     <StripeProvider
       publishableKey={
-        "pk_test_51RpkfnRkDcyOvU0JSUiWLnfSEHqOeLQ8Ur1xBRYClX6ZFQBwuU9A9QYyHX61jVycj6T23e5GAP1dcdG09kLJWVPg00D14dofxn"
+        "pk_test_51QKAtBKOpUtqOuW1x5VdNqH3vG7CZZl1P6V3VuV1qsRUmPLNk26i34AXeu2zCO3QurFJAOZ9zfb0EkWeCVhqBYgH008X41cXr6"
       }>
       <AlertNotificationRoot>
         <GestureHandlerRootView>
