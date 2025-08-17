@@ -22,7 +22,6 @@ const onSiteOtp = () => {
     const [verifyOtp] = useVerifyOtpMutation()
     const { email } = useLocalSearchParams();
 
-
     return (
         <KeyboardAvoidingView style={tw`flex-1 bg-secondary`}>
             <ScrollView showsVerticalScrollIndicator={false} style={tw``}>

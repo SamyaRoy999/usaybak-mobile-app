@@ -18,7 +18,7 @@ export const homeApiSlices = api.injectEndpoints({
             }),
             providesTags: ["home"],
         }),
-        promotedVideoHome: builder.query<any, any >({
+        promotedVideoHome: builder.query<any, any>({
             query: () => ({
                 url: `/get-promotional-video?per_page=10`,
                 method: "GET",
@@ -36,7 +36,7 @@ export const homeApiSlices = api.injectEndpoints({
 
         //  shear price
 
-         priceGetAll: builder.query<any, any>({
+        priceGetAll: builder.query<any, any>({
             query: () => ({
                 url: `/get-price`,
                 method: "GET",
@@ -44,8 +44,17 @@ export const homeApiSlices = api.injectEndpoints({
             providesTags: ["uploadVideo"],
         }),
 
+        channelProfile: builder.query<any, any>({
+            query: (id) => ({
+                url: `/channel-details/${id}`,
+                method: "GET",
+            }),
+            providesTags: ["uploadVideo"],
+        }),
+
+
     }),
 
 });
 
-export const { useBannerQuery, usePromotedVideoQuery, useCaragoryVideosQuery, usePromotedVideoHomeQuery, usePriceGetAllQuery } = homeApiSlices;
+export const { useBannerQuery, usePromotedVideoQuery, useCaragoryVideosQuery, usePromotedVideoHomeQuery, usePriceGetAllQuery, useChannelProfileQuery } = homeApiSlices;

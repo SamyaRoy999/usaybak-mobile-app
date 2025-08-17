@@ -37,6 +37,7 @@ const onsiteAccount = () => {
     } = usePriceGetAllQuery({});
 
     // User profile data
+
     const {
         data: userData,
         isLoading: isUserLoading,
@@ -63,12 +64,43 @@ const onsiteAccount = () => {
             email: values.email,
             password: values.password,
             c_password: values.c_password,
+            registration_type: "on_site"
         }
-        handleSetupInitialPayment(data);
+        console.log(data);
+        try {
+            const res = await onsiteAccountReg(data).unwrap();
+            if (res.status) {
+                Toast.show({
+                    type: ALERT_TYPE.SUCCESS,
+                    title: 'Success',
+                    textBody: res?.message,
+                    autoClose: 2000,
+                });
+                router.push(`/auth/onSiteOtp?email=${values?.email}`);
+            } else {
+                Toast.show({
+                    type: ALERT_TYPE.DANGER,
+                    title: 'Error',
+                    textBody: res?.message?.email?.[0] || "Something went wrong!",
+                    autoClose: 2000,
+                });
+            }
+
+        } catch (error: any) {
+
+            Toast.show({
+                type: ALERT_TYPE.WARNING,
+                title: 'Error',
+                textBody: error?.message,
+            });
+
+        }
+
+        handleSetupInitialPayment();
 
     }
 
-    const handleSetupInitialPayment = async (item: any) => {
+    const handleSetupInitialPayment = async () => {
         try {
             await refreshUserData()
             if (!userId) {
@@ -87,7 +119,7 @@ const onsiteAccount = () => {
             const successData = {
                 id: res?.data?.id,
                 amount: res.data?.amount,
-                reason: "Uploading video"
+                reason: "Onsite account creation"
             };
 
             setPaymentIntentData(successData);
@@ -107,7 +139,7 @@ const onsiteAccount = () => {
                     autoClose: 2000,
                 });
             } else {
-                checkout(item);
+                checkout();
             }
         } catch (error) {
             Toast.show({
@@ -119,9 +151,8 @@ const onsiteAccount = () => {
         }
     }
 
-    const checkout = async (item: any) => {
+    const checkout = async () => {
         setIsProcessing(true);
-
         try {
             const { error } = await presentPaymentSheet();
 
@@ -153,38 +184,39 @@ const onsiteAccount = () => {
             }
 
             const res = await paymentSuccess(data).unwrap();
+            console.log(res);
 
-            if (res?.status) {
-                try {
+            // if (res?.status) {
+            //     try {
 
-                    const res = await onsiteAccountReg(item).unwrap();
-                    if (res.status) {
-                        Toast.show({
-                            type: ALERT_TYPE.SUCCESS,
-                            title: 'Success',
-                            textBody: res?.message,
-                            autoClose: 2000,
-                        });
-                        router.push(`/auth/onSiteOtp?email=${item?.values?.email}`);
-                    } else {
-                        Toast.show({
-                            type: ALERT_TYPE.DANGER,
-                            title: 'Error',
-                            textBody: res?.message?.email?.[0] || "Something went wrong!",
-                            autoClose: 2000,
-                        });
-                    }
+            //         const res = await onsiteAccountReg(item).unwrap();
+            //         if (res.status) {
+            //             Toast.show({
+            //                 type: ALERT_TYPE.SUCCESS,
+            //                 title: 'Success',
+            //                 textBody: res?.message,
+            //                 autoClose: 2000,
+            //             });
+            //             router.push(`/auth/onSiteOtp?email=${item?.values?.email}`);
+            //         } else {
+            //             Toast.show({
+            //                 type: ALERT_TYPE.DANGER,
+            //                 title: 'Error',
+            //                 textBody: res?.message?.email?.[0] || "Something went wrong!",
+            //                 autoClose: 2000,
+            //             });
+            //         }
 
-                } catch (error: any) {
+            //     } catch (error: any) {
 
-                    Toast.show({
-                        type: ALERT_TYPE.WARNING,
-                        title: 'Error',
-                        textBody: error?.message,
-                    });
+            //         Toast.show({
+            //             type: ALERT_TYPE.WARNING,
+            //             title: 'Error',
+            //             textBody: error?.message,
+            //         });
 
-                }
-            }
+            //     }
+            // }
         } catch (error) {
             Toast.show({
                 type: ALERT_TYPE.DANGER,
@@ -343,8 +375,8 @@ const onsiteAccount = () => {
                                 </TouchableOpacity>
                             </View>
                             <ScrollView
-                                contentContainerStyle={tw`pb-10`} 
-                                style={tw`max-h-[90%]`}  
+                                contentContainerStyle={tw`pb-10`}
+                                style={tw`max-h-[90%]`}
                             >
                                 <Formik
                                     initialValues={{

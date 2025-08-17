@@ -9,7 +9,7 @@ import { SvgXml } from "react-native-svg";
 
 const CategoryCard = ({ data, isLoading }: { data: any, isLoading?: boolean }) => {
 
-  const { id: categoryId, name: categoryName, videos = [] } = data || {};
+  const { id: categoryId, name: categoryName, videos = [], } = data || {};
 
   if (isLoading) {
     return (
@@ -21,10 +21,11 @@ const CategoryCard = ({ data, isLoading }: { data: any, isLoading?: boolean }) =
     );
   }
 
+  console.log(videos?.user?.id, "caragoryVideos");
+
   if (!videos || videos.length === 0) {
     return null;
   }
-
   return (
     <View style={tw`bg-primary mb-4 overflow-hidden`}>
       {/* Category header with "See all" button */}
@@ -81,7 +82,10 @@ const CategoryCard = ({ data, isLoading }: { data: any, isLoading?: boolean }) =
               {/* Video details */}
               <View style={tw`flex-row px-4 py-3 items-start`}>
                 {/* Channel profile image */}
-                <TouchableOpacity onPress={() => router.push("/(allPages)/channelProfile")}>
+                <TouchableOpacity onPress={() => router.push({
+                  pathname: "/details/channelProfile/[id]",
+                  params: { id: item?.user?.id }
+                })}>
                   <Image
                     source={{ uri: item.user?.avatar }}
                     style={tw`w-10 h-10 rounded-full mr-3`}

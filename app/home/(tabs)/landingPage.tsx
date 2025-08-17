@@ -12,7 +12,6 @@ import {
   View
 } from "react-native";
 
-
 const landingPage = () => {
   // promoted video api 
   const { data: promoted } = usePromotedVideoHomeQuery({});
@@ -27,14 +26,16 @@ const landingPage = () => {
       per_page: 500,
     },
   });
-  
-   if (isLoading) {
-        return (
-            <View style={tw`flex-1 justify-center items-center`}>
-                <Text>Loading...</Text>
-            </View>
-        );
-    }
+
+  if (isLoading) {
+    return (
+      <View style={tw`flex-1 justify-center items-center`}>
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
+
+  console.log(caragoryVideos, "caragoryVideos");
 
   return (
     <View>
