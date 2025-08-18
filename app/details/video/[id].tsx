@@ -55,6 +55,7 @@ const SingleVideo = () => {
   const [page, setPage] = useState(1);
   const [commentID, setCommentID] = useState()
 
+console.log(id);
 
   const { data, isLoading, error } = useVideodetailQuery({ id });
   const {

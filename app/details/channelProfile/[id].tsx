@@ -1,8 +1,6 @@
-import { profileBanner, profleImg } from "@/assets/images/images";
 import Card from "@/components/landing_page/Card";
 import HeaderBar from "@/components/shear/HeaderBar";
 import { IconBackLeft, IconGmail, IconLikes, IconLoction, IconPhone, IconPhoto, IconVideo } from "@/icons/Icon";
-import data from "@/lib/data.json";
 import tw from "@/lib/tailwind";
 import { useChannelProfileQuery } from "@/redux/apiSlices/Home/homeApiSlices";
 import { _HIGHT, _Width } from "@/utils/utils";
@@ -16,35 +14,39 @@ const channelProfile = () => {
 
     const { id } = useLocalSearchParams();
     // API CALL
-    const { data: profileData, isLoading } = useChannelProfileQuery({ id });
+    const { data: profileData, isLoading } = useChannelProfileQuery(Number(id));
+    console.log(id);
 
-    console.log(profileData);
-    
-    // if (isLoading) {
-    //     return (
-    //         <View style={tw`flex-1 justify-center items-center`}>
-    //             <Text>Loading...</Text>
-    //         </View>
-    //     );
-    // }
-    // const { services, locations, contact, bio, avatar, cover_image, email, channel_name } = profileData?.data.channel
-    // const locations = [
-    //     {
-    //         latitude: 37.78825,
-    //         longitude: -122.4324,
-    //         title: "Location 1",
-    //     },
-    //     {
-    //         latitude: 37.78925,
-    //         longitude: -122.4224,
-    //         title: "Location 2",
-    //     },
-    //     {
-    //         latitude: 37.79025,
-    //         longitude: -122.4124,
-    //         title: "Location 3",
-    //     },
-    // ];
+
+
+    if (isLoading) {
+        return (
+            <View style={tw`flex-1 justify-center items-center`}>
+                <Text>Loading...</Text>
+            </View>
+        );
+    }
+    const {
+        total_likes,
+        total_videos,
+        total_views,
+        videos,
+    } = profileData?.data || {};
+
+    const {
+        services,
+        locations,
+        contact,
+        bio,
+        avatar,
+        cover_image,
+        email,
+        channel_name
+    } = profileData?.data?.channel || {};
+
+    // Find head office location
+    const headOffice = locations?.find((item: any) => item.type === "head-office");
+    console.log(headOffice?.location);
 
     return (
         <View style={tw`flex-1 bg-primary`}>
@@ -58,13 +60,13 @@ const channelProfile = () => {
                             <SvgXml xml={IconBackLeft} />
                         </View>
                     </TouchableOpacity>
-                    <Text style={tw`font-poppinsMedium text-xl`}>channel_name</Text>
+                    <Text style={tw`font-poppinsMedium text-xl`}>{channel_name}</Text>
                     <View></View>
                 </View>
                 <View style={tw`px-5 pt-5`}>
                     {/* Profile banner */}
                     <Image
-                        source={profileBanner}
+                        source={cover_image}
                         style={[
                             tw`w-full rounded-2xl relative`,
                             {
@@ -72,11 +74,11 @@ const channelProfile = () => {
                             },
                         ]}
                     />
-                    {/* Profile  */}
+                    {/* Profile*/}
                     <View
                         style={tw`bg-primary rounded-full h-28 w-28 flex-row items-center justify-center  right-[45%] -bottom-10 absolute`}
                     >
-                        <Image source={profleImg} style={tw`rounded-full h-24 w-24 `} />
+                        <Image source={avatar} style={tw`rounded-full h-24 w-24 `} />
                     </View>
                 </View>
                 <View style={tw`mt-14 flex-row justify-center  `}>
@@ -85,15 +87,18 @@ const channelProfile = () => {
                         }>Haircut Pro</Text>
                         <View style={tw`flex-row gap-3 p-1`}>
                             <SvgXml xml={IconLoction} />
-                            <Text style={tw` text-base font-poppins `}>New work, USA</Text>
+                            <Text style={tw`text-base font-poppins`}>
+                                {headOffice.location}
+                            </Text>
                         </View>
+
                         <View style={tw`flex-row gap-3  p-1`}>
                             <SvgXml xml={IconPhone} />
-                            <Text style={tw` text-base font-poppins`}>+65896585232</Text>
+                            <Text style={tw` text-base font-poppins`}>{contact}</Text>
                         </View>
                         <View style={tw`flex-row gap-3 p-1`}>
                             <SvgXml xml={IconGmail} />
-                            <Text style={tw`text-base font-poppins `}>example@gmail.com</Text>
+                            <Text style={tw`text-base font-poppins `}>{email}</Text>
                         </View>
                     </View>
                 </View>
@@ -101,7 +106,7 @@ const channelProfile = () => {
                     <SvgXml xml={IconVideo} />
                     <View style={tw`flex-col justify-center items-center`}>
                         <Text style={tw`text-base font-poppins`}>Videos</Text>
-                        <Text style={tw`text-3xl font-poppinsSemiBold py-5`}>40</Text>
+                        <Text style={tw`text-3xl font-poppinsSemiBold py-5`}>{total_videos}</Text>
                     </View>
                 </View>
                 <View style={tw`flex-row items-center gap-4 pt-2 w-full px-5`}>
@@ -110,8 +115,8 @@ const channelProfile = () => {
                     }]}>
                         <SvgXml xml={IconPhoto} />
                         <View style={tw`flex-col justify-center items-center`}>
-                            <Text style={tw`text-base font-poppins pt-4`}>Videos</Text>
-                            <Text style={tw`text-3xl font-poppinsSemiBold py-5`}>22,568</Text>
+                            <Text style={tw`text-base font-poppins pt-4`}>Views</Text>
+                            <Text style={tw`text-3xl font-poppinsSemiBold py-5`}>{total_views}</Text>
                         </View>
                     </View>
                     <View style={[tw` items-center  p-5 pt-4 border border-primaryGray rounded-xl`, {
@@ -120,26 +125,28 @@ const channelProfile = () => {
                         <SvgXml xml={IconLikes} />
                         <View style={tw`flex-col justify-center items-center`}>
                             <Text style={tw`text-base font-poppins pt-4`}>Likes</Text>
-                            <Text style={tw`text-3xl font-poppinsSemiBold py-5`}>17,256</Text>
+                            <Text style={tw`text-3xl font-poppinsSemiBold py-5`}>{total_likes}</Text>
                         </View>
                     </View>
                 </View>
                 {/* About section */}
                 <View style={tw`mt-10 mx-5 p-5  border border-primaryGray rounded-xl`}>
                     <Text style={tw`font-poppinsMedium text-xl pb-3`}>About</Text>
-                    <Text style={tw`font-poppins text-sm `}>Lorem ipsum dolor sit amet consectetur. Nibh sagittis ligula sem pulvinar elementum rhoncus lacus. Dignissim pretium vitae neque vulputate velit libero suscipit amet. Felis proin in tortor amet. Sit imperdiet ac aliquam leo est egestas. Sit id vitae tempus nulla ut consectetur mi lobortis nec. Convallis velit lectus aliquam elementum dignissim. Est risus adipiscing ornare et lorem </Text>
+                    <Text style={tw`font-poppins text-sm `}>{bio}</Text>
                 </View>
                 {/* Services */}
-                <View style={tw`mt-10 mx-5 p-5 flex-col justify-start  border border-primaryGray rounded-xl`}>
-                    <Text style={tw`font-poppinsMedium text-xl pb-3`}>Services</Text>
-                    <Text style={tw`font-poppins text-base pb-2 `}>1. Haircuts & Trims </Text>
-                    <Text style={tw`font-poppins text-base pb-2 `}>2. Hair Styling</Text>
-                    <Text style={tw`font-poppins text-base pb-2 `}>3. Hair Coloring</Text>
-                    <Text style={tw`font-poppins text-base pb-2 `}>4. Hair Treatments</Text>
-                    <Text style={tw`font-poppins text-base pb-2 `}>5. Chemical Services </Text>
+                <View style={tw`mt-10 mx-5 p-5 flex-col justify-start mb-4 border border-primaryGray rounded-xl`}>
+                    <Text style={tw`font-poppinsMedium text-xl pb-3 `}>Services</Text>
+                    {
+                        services?.map((item: any, index: number) => (
+                            <Text key={index} style={tw`font-poppins text-base pb-2 text-black`}>
+                                {item}
+                            </Text>
+                        ))
+                    }
                 </View>
                 <FlatList
-                    data={data}
+                    data={videos?.data}
                     keyExtractor={(item) => item.id.toString()}
                     renderItem={({ item }) => <Card data={item} />}
                     showsVerticalScrollIndicator={false}

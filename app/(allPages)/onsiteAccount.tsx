@@ -36,7 +36,6 @@ const onsiteAccount = () => {
         data: priceOnSide,
     } = usePriceGetAllQuery({});
 
-    // User profile data
 
     const {
         data: userData,
@@ -109,7 +108,7 @@ const onsiteAccount = () => {
             const amount = priceOnSide?.data?.onsite_account_creation || "0";
 
             const paymentData = {
-                reason: "Uploading video",
+                reason: "Onsite account creation",
                 amount: amount,
                 payment_method: "pm_card_visa",
             }
