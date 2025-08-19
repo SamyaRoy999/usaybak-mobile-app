@@ -37,9 +37,10 @@ const Card = ({ data }: any) => {
         {/* Details section */}
         <View style={tw`flex-row px-4 py-3 items-start`}>
           {/* Channel profile image */}
-          <TouchableOpacity
-            onPress={() => router.push("/(allPages)/channelProfile")}
-          >
+          <TouchableOpacity onPress={() => router.push({
+            pathname: "/details/channelProfile/[id]",
+            params: { id: user?.id }
+          })}>
             <Image
               source={{ uri: user?.avatar }}
               style={tw`w-10 h-10 rounded-full mr-3`}

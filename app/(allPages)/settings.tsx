@@ -68,7 +68,19 @@ const Settings = () => {
         );
     }
 
-    const { bio, contact, channel_name, name, cover_image, avatar, services } = defouldData?.data || {};
+    const { bio, contact, channel_name, name, cover_image, avatar, services, locations } = defouldData?.data || {};
+    console.log("defouldData", locations, "defouldData");
+
+    const transformLocations = (backendLocations: any[]) => {
+        return backendLocations?.map(loc => ({
+            location: loc.location || "",
+            officeType: loc.type === "head-office" ? "Head office" : "Branch",
+            showOfficeType: false,
+            showSuggestions: false,
+            lat: loc.lat || "",
+            long: loc.long || ""
+        })) || [];
+    }
 
     const initialValues: FormValues = {
         channel_name: channel_name || "",
@@ -76,15 +88,14 @@ const Settings = () => {
         contact: contact || "",
         bio: bio || "",
         services: services || ["Hair cutting", "Hair cutting", "Hair cutting", "Hair cutting"],
-        locations: [
-            {
-                location: "",
-                officeType: "",
-                showOfficeType: false,
-                showSuggestions: false
-            }
-        ]
+        locations: transformLocations(locations) || [{
+            location: "",
+            officeType: "",
+            showOfficeType: false,
+            showSuggestions: false
+        }]
     };
+
 
     const validationSchema = Yup.object().shape({
         channel_name: Yup.string().required("Channel name is required"),
@@ -108,7 +119,7 @@ const Settings = () => {
         }
         try {
             const response = await axios.get(
-                GOOGLEMAPAPIKEY({query})
+                GOOGLEMAPAPIKEY({ query })
             );
             setLocationSuggestions(response?.data?.results || []);
         } catch (error) {
@@ -134,7 +145,7 @@ const Settings = () => {
             searchLocations(query);
         }, 300); // 500ms delay
 
-        setSearchTimeout(timeout);
+        setSearchTimeout(timeout as any);
     };
 
     // Function to select a location from suggestions
@@ -221,20 +232,8 @@ const Settings = () => {
                     type: coverImage.mimeType
                 } as any);
             }
-
-            console.log("................foreatch data..................");
-            for (let pair of formData.entries()) {
-                console.log(pair[0], pair[1]);
-            }
-            console.log("................from data..................");
-
-            console.log("dddddddddddd", formData, "ddddddddddddd");
             // Send data to backend
             const res = await settingPost(formData).unwrap();
-            console.log(".///////////////////////");
-            console.log(res);
-            console.log(".///////////////////////");
-
             if (res.status) {
                 Toast.show({
                     type: ALERT_TYPE.SUCCESS,
@@ -467,7 +466,6 @@ const Settings = () => {
                                                             onPress={() => {
                                                                 const newLocations = [...values.locations];
                                                                 newLocations[index].showOfficeType = true;
-                                                                newLocations[index].showSuggestions = false;
                                                                 setFieldValue("locations", newLocations);
                                                             }}
                                                             style={tw`absolute -top-12 right-2 border border-primaryGray w-2/5 rounded-full p-2 px-3 flex-row items-center gap-3`}
@@ -479,7 +477,6 @@ const Settings = () => {
                                                         </TouchableOpacity>
                                                     </View>
 
-                                                    {/* Office Type Modal for this location */}
                                                     {location.showOfficeType && (
                                                         <Modal
                                                             visible={location.showOfficeType}
@@ -517,11 +514,26 @@ const Settings = () => {
                                                                                 <Text style={tw`py-5 font-poppins text-lg`}>Branch</Text>
                                                                             </View>
                                                                         </TouchableOpacity>
+
                                                                         <TouchableOpacity onPress={() => {
-                                                                            const newLocations = [...values.locations];
-                                                                            newLocations[index].officeType = "Head office";
-                                                                            newLocations[index].showOfficeType = false;
-                                                                            setFieldValue("locations", newLocations);
+                                                                            // Check for existing head office
+                                                                            const hasExistingHeadOffice = values.locations.some(
+                                                                                (loc, i) => i !== index && loc.officeType === "Head office"
+                                                                            );
+
+                                                                            if (hasExistingHeadOffice) {
+                                                                                Toast.show({
+                                                                                    type: ALERT_TYPE.WARNING,
+                                                                                    title: 'Limit Reached',
+                                                                                    textBody: 'Only one Head office is allowed',
+                                                                                    autoClose: 2000,
+                                                                                });
+                                                                            } else {
+                                                                                const newLocations = [...values.locations];
+                                                                                newLocations[index].officeType = "Head office";
+                                                                                newLocations[index].showOfficeType = false;
+                                                                                setFieldValue("locations", newLocations);
+                                                                            }
                                                                         }}>
                                                                             <View style={tw`mx-5 flex-row justify-center rounded-lg bg-primaryText`}>
                                                                                 <Text style={tw`py-5 font-poppins text-lg`}>Head office</Text>
@@ -532,18 +544,6 @@ const Settings = () => {
                                                             </View>
                                                         </Modal>
                                                     )}
-
-                                                    {/* Validation errors
-                                                    {errors.locations?.[index]?.location && (
-                                                        <Text style={tw`text-red-700 font-poppins text-sm pl-2 mt-1`}>
-                                                            {errors.locations[index]?.location}
-                                                        </Text>
-                                                    )}
-                                                    {errors.locations?.[index]?.officeType && (
-                                                        <Text style={tw`text-red-700 font-poppins text-sm pl-2 mt-1`}>
-                                                            {errors.locations[index]?.officeType}
-                                                        </Text>
-                                                    )} */}
                                                 </View>
                                             ))}
 

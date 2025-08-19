@@ -1,5 +1,6 @@
 import Card from "@/components/landing_page/Card";
 import HeaderBar from "@/components/shear/HeaderBar";
+import SimpleMapView from "@/components/shear/SimpleMapView";
 import { IconBackLeft, IconGmail, IconLikes, IconLoction, IconPhone, IconPhoto, IconVideo } from "@/icons/Icon";
 import tw from "@/lib/tailwind";
 import { useChannelProfileQuery } from "@/redux/apiSlices/Home/homeApiSlices";
@@ -13,7 +14,9 @@ import { SvgXml } from "react-native-svg";
 const channelProfile = () => {
 
     const { id } = useLocalSearchParams();
-    // API CALL
+
+    //...................... API CALL........................//
+
     const { data: profileData, isLoading } = useChannelProfileQuery(Number(id));
     console.log(id);
 
@@ -44,9 +47,17 @@ const channelProfile = () => {
         channel_name
     } = profileData?.data?.channel || {};
 
-    // Find head office location
+    // .................. Find head office location.................//
+
     const headOffice = locations?.find((item: any) => item.type === "head-office");
-    console.log(headOffice?.location);
+    const LoctionShow = locations?.map((item: any) => item);
+
+    const latGet = LoctionShow?.lat;
+    const longGet = LoctionShow?.long;
+
+    // console.log("Location", longGet, latGet);
+    console.log(LoctionShow);
+
 
     return (
         <View style={tw`flex-1 bg-primary`}>
@@ -129,6 +140,13 @@ const channelProfile = () => {
                         </View>
                     </View>
                 </View>
+
+               
+                    <View style={[tw`mt-5 mx-5`, { height: 300, borderRadius: 10, overflow: 'hidden' }]}>
+                        <SimpleMapView locations={profileData?.data?.channel?.locations} />
+                    </View>
+              
+
                 {/* About section */}
                 <View style={tw`mt-10 mx-5 p-5  border border-primaryGray rounded-xl`}>
                     <Text style={tw`font-poppinsMedium text-xl pb-3`}>About</Text>
