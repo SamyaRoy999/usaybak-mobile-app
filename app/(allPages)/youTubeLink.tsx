@@ -140,7 +140,6 @@ const youTubeLink = () => {
         } else {
             try {
                 const res = await upload_video(formData).unwrap();
-                console.log("result", res);
 
                 if (res.status) {
                     Toast.show({
@@ -252,7 +251,6 @@ const youTubeLink = () => {
                 // upload video
                 try {
                     const res = await upload_video(item).unwrap();
-                    console.log("result", res);
 
                     if (res.status) {
                         Toast.show({

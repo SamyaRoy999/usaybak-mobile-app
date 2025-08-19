@@ -103,7 +103,6 @@ const Account = () => {
     }
   };
 
-  console.log("userData", userData, "userData");
 
   return (
     <View style={tw`flex-1 bg-primary `}>

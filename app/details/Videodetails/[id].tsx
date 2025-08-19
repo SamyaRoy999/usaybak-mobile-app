@@ -1,15 +1,16 @@
 import HeaderBar from '@/components/shear/HeaderBar'
-import { IconAnalytics, IconBackLeft, IconClose, IconComment, IconDate, IconDelete, IconDislike, IconEays, IconEdit, IconErow, Iconfevarite, IconLike, IconMessage, IconSettingDot, IconTime, IconWorld, IconWornoingDelete } from '@/icons/Icon'
+import { IconAnalytics, IconBackLeft, IconClose, IconComment, IconDate, IconDelete, IconDeleteComment, IconDislike, IconEays, IconEdit, IconErow, Iconfevarite, IconfevariteActive, IconLike, IconMessage, IconSettingDot, IconTime, IconWorld, IconWornoingDelete } from '@/icons/Icon'
 import tw from '@/lib/tailwind'
 import { useDeleteVideoMutation } from '@/redux/apiSlices/Account/accountSlice'
 import { useMy_videos_detailsQuery } from '@/redux/apiSlices/MyVideo/myvideoSlice'
+import { useCommentDeleteMutation, useCommentsQuery, useRepliesQuery } from '@/redux/apiSlices/videoDetails/videoDetailsSlice'
 import { _Width } from '@/utils/utils'
 import { useEvent } from 'expo'
 import { Image } from 'expo-image'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useVideoPlayer, VideoView } from 'expo-video'
 import React from 'react'
-import { Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { ActivityIndicator, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { ALERT_TYPE, Toast } from 'react-native-alert-notification'
 import { ScrollView } from 'react-native-gesture-handler'
 import { SvgXml } from 'react-native-svg'
@@ -19,11 +20,26 @@ const videodetails = () => {
     const [commentVisible, setCommentVisible] = React.useState(false);
     const [replyVisible, setReplyVisible] = React.useState(false);
     const [deleteModalVisible, setDeleteModalVisible] = React.useState(false);
+    const [commentID, setCommentID] = React.useState()
 
     const { id } = useLocalSearchParams();
     const { data: singleVideo, isLoading } = useMy_videos_detailsQuery({ id });
-    const [deleteVideo] = useDeleteVideoMutation()
+    const {
+        data: commentsData,
+        isLoading: isLoadingComment
+    } = useCommentsQuery({
+        video_id: id,
+    });
 
+    const {
+        data: repliesData,
+        isLoading: isLoadingReply
+    } = useRepliesQuery({
+        comment_id: commentID,
+    });
+    console.log("commentsData", repliesData, "commentsData");
+    const [deleteVideo] = useDeleteVideoMutation()
+    const [commentDelete] = useCommentDeleteMutation()
     const player = useVideoPlayer(singleVideo?.data?.video || "", (player) => {
         player.loop = true;
         player.play();
@@ -62,6 +78,13 @@ const videodetails = () => {
         }
     }
 
+    if (isLoadingComment || isLoadingReply) {
+        return (
+            <View style={tw`flex-1 justify-center items-center bg-primary`}>
+                <ActivityIndicator size="large" color="#0000ff" />
+            </View>
+        );
+    }
     return (
 
         <View style={tw`flex-1 bg-primary`}>
@@ -230,179 +253,76 @@ const videodetails = () => {
                                 </TouchableOpacity>
                             </View>
 
-                            <ScrollView showsVerticalScrollIndicator={false}>
-                                <View style={tw`flex-row  gap-4 pt-4  px-7`}>
-                                    <Image
-                                        source={{ uri: singleVideo.avatar }}
-                                        style={tw`w-10 h-10 rounded-full`}
-                                    />
-                                    <View>
-                                        <View style={tw`flex-row items-center gap-2`}>
-                                            <Text style={tw`font-poppinsMedium text-lg`}>
-                                                Abid Hasan
-                                            </Text>
-                                            <View style={tw`bg-primaryGray rounded-full h-2 w-2`} />
-                                            <Text>10 hours ago</Text>
-                                        </View>
-                                        <Text style={tw` font-poppins text-sm`}>
-                                            Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                                            Consectetur
-                                        </Text>
-                                        <View style={tw`flex-row gap-4 py-5`}>
-                                            <View style={tw`flex-row gap-4 `}>
-                                                <SvgXml xml={Iconfevarite} />
-                                                <Text>2.6k</Text>
-                                            </View>
-                                            <TouchableOpacity onPress={() => {
-                                                setCommentVisible(false); // hide comment modal
-                                                setTimeout(() => {
-                                                    setReplyVisible(true); // show reply modal (with delay for smooth transition)
-                                                }, 300);
-                                            }} style={tw`flex-row gap-4 `}>
-                                                <SvgXml xml={IconMessage} />
-                                                <Text>10</Text>
-                                            </TouchableOpacity>
-                                        </View>
-                                    </View>
+                            {/* Loader */}
+                            {isLoadingComment && (
+                                <View style={tw`flex-1 justify-center items-center`}>
+                                    <ActivityIndicator size="large" color="#0000ff" />
                                 </View>
-                                <View style={tw`flex-row  gap-4 pt-4  px-7`}>
-                                    <Image
-                                        source={{ uri: singleVideo.avatar }}
-                                        style={tw`w-10 h-10 rounded-full`}
-                                    />
-                                    <View>
-                                        <View style={tw`flex-row items-center gap-2`}>
-                                            <Text style={tw`font-poppinsMedium text-lg`}>
-                                                Abid Hasan
-                                            </Text>
-                                            <View style={tw`bg-primaryGray rounded-full h-2 w-2`} />
-                                            <Text>10 hours ago</Text>
-                                        </View>
-                                        <Text style={tw` font-poppins text-sm`}>
-                                            Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                                            Consectetur
-                                        </Text>
-                                        <View style={tw`flex-row gap-4 py-5`}>
-                                            <View style={tw`flex-row gap-4 `}>
-                                                <SvgXml xml={Iconfevarite} />
-                                                <Text>2.6k</Text>
-                                            </View>
-                                            <TouchableOpacity onPress={() => {
-                                                setCommentVisible(false); // hide comment modal
-                                                setTimeout(() => {
-                                                    setReplyVisible(true); // show reply modal (with delay for smooth transition)
-                                                }, 300);
-                                            }} style={tw`flex-row gap-4 `}>
-                                                <SvgXml xml={IconMessage} />
-                                                <Text>10</Text>
-                                            </TouchableOpacity>
-                                        </View>
-                                    </View>
-                                </View>
-                                <View style={tw`flex-row  gap-4 pt-4  px-7`}>
-                                    <Image
-                                        source={{ uri: singleVideo.avatar }}
-                                        style={tw`w-10 h-10 rounded-full`}
-                                    />
-                                    <View>
-                                        <View style={tw`flex-row items-center gap-2`}>
-                                            <Text style={tw`font-poppinsMedium text-lg`}>
-                                                Abid Hasan
-                                            </Text>
-                                            <View style={tw`bg-primaryGray rounded-full h-2 w-2`} />
-                                            <Text>10 hours ago</Text>
-                                        </View>
-                                        <Text style={tw` font-poppins text-sm`}>
-                                            Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                                            Consectetur
-                                        </Text>
-                                        <View style={tw`flex-row gap-4 py-5`}>
-                                            <View style={tw`flex-row gap-4 `}>
-                                                <SvgXml xml={Iconfevarite} />
-                                                <Text>2.6k</Text>
-                                            </View>
-                                            <TouchableOpacity onPress={() => {
-                                                setCommentVisible(false); // hide comment modal
-                                                setTimeout(() => {
-                                                    setReplyVisible(true); // show reply modal (with delay for smooth transition)
-                                                }, 300);
-                                            }} style={tw`flex-row gap-4 `}>
-                                                <SvgXml xml={IconMessage} />
-                                                <Text>10</Text>
-                                            </TouchableOpacity>
-                                        </View>
-                                    </View>
-                                </View>
-                                <View style={tw`flex-row  gap-4 pt-4  px-7`}>
-                                    <Image
-                                        source={{ uri: singleVideo.avatar }}
-                                        style={tw`w-10 h-10 rounded-full`}
-                                    />
-                                    <View>
-                                        <View style={tw`flex-row items-center gap-2`}>
-                                            <Text style={tw`font-poppinsMedium text-lg`}>
-                                                Abid Hasan
-                                            </Text>
-                                            <View style={tw`bg-primaryGray rounded-full h-2 w-2`} />
-                                            <Text>10 hours ago</Text>
-                                        </View>
-                                        <Text style={tw` font-poppins text-sm`}>
-                                            Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                                            Consectetur
-                                        </Text>
-                                        <View style={tw`flex-row gap-4 py-5`}>
-                                            <View style={tw`flex-row gap-4 `}>
-                                                <SvgXml xml={Iconfevarite} />
-                                                <Text>2.6k</Text>
-                                            </View>
-                                            <TouchableOpacity onPress={() => {
-                                                setCommentVisible(false); // hide comment modal
-                                                setTimeout(() => {
-                                                    setReplyVisible(true); // show reply modal (with delay for smooth transition)
-                                                }, 300);
-                                            }} style={tw`flex-row gap-4 `}>
-                                                <SvgXml xml={IconMessage} />
-                                                <Text>10</Text>
-                                            </TouchableOpacity>
-                                        </View>
-                                    </View>
-                                </View>
-                                <View style={tw`flex-row  gap-4 pt-4  px-7`}>
-                                    <Image
-                                        source={{ uri: singleVideo.avatar }}
-                                        style={tw`w-10 h-10 rounded-full`}
-                                    />
-                                    <View>
-                                        <View style={tw`flex-row items-center gap-2`}>
-                                            <Text style={tw`font-poppinsMedium text-lg`}>
-                                                Abid Hasan
-                                            </Text>
-                                            <View style={tw`bg-primaryGray rounded-full h-2 w-2`} />
-                                            <Text>10 hours ago</Text>
-                                        </View>
-                                        <Text style={tw` font-poppins text-sm`}>
-                                            Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                                            Consectetur
-                                        </Text>
-                                        <View style={tw`flex-row gap-4 py-5`}>
-                                            <View style={tw`flex-row gap-4 `}>
-                                                <SvgXml xml={Iconfevarite} />
-                                                <Text>2.6k</Text>
-                                            </View>
-                                            <TouchableOpacity onPress={() => {
-                                                setCommentVisible(false); // hide comment modal
-                                                setTimeout(() => {
-                                                    setReplyVisible(true); // show reply modal (with delay for smooth transition)
-                                                }, 300);
-                                            }} style={tw`flex-row gap-4 `}>
-                                                <SvgXml xml={IconMessage} />
-                                                <Text>10</Text>
-                                            </TouchableOpacity>
-                                        </View>
-                                    </View>
-                                </View>
-                            </ScrollView>
+                            )}
 
+                            {/* Comments List */}
+                            <ScrollView showsVerticalScrollIndicator={false} style={tw`mb-20`}>
+                                {commentsData?.data?.comments?.data?.length === 0 ? (
+                                    <View style={tw`flex-1 items-center justify-center py-10`}>
+                                        <Text style={tw`text-gray-500 font-poppins`}>No comments yet</Text>
+                                    </View>
+                                ) : (commentsData?.data?.comments?.data?.map((comment: any) => (
+                                    <View key={comment.id} style={tw`flex-row gap-4 pt-4 px-7 mb-5`}>
+
+                                        {/* User Avatar */}
+                                        <Image
+                                            source={{ uri: comment?.user?.avatar }}
+                                            style={tw`w-10 h-10 rounded-full`}
+                                        />
+
+                                        {/* Comment Content */}
+                                        <View style={tw`flex-1`}>
+                                            {/* User Info */}
+                                            <View style={tw`flex-row items-center gap-2 mb-1`}>
+                                                <Text style={tw`font-poppinsMedium text-base text-gray-800`}>
+                                                    {comment?.user?.name}
+                                                </Text>
+                                                <View style={tw`bg-gray-400 rounded-full h-1 w-1`} />
+                                                <Text style={tw`font-poppins text-xs text-gray-500`}>
+                                                    {comment?.created_at_format}
+                                                </Text>
+                                            </View>
+
+                                            {/* Comment Text */}
+                                            <Text style={tw`font-poppins text-sm text-gray-800`}>
+                                                {comment?.comment}
+                                            </Text>
+                                            {/* Reactions */}
+                                            <View style={tw`flex-row gap-6 mt-3`}>
+                                                <View style={tw`flex-row gap-2 items-center`}>
+                                                    <TouchableOpacity>
+                                                        <SvgXml xml={comment?.is_react ? IconfevariteActive : Iconfevarite} width={16} height={16} />
+                                                    </TouchableOpacity>
+                                                    <Text style={tw`font-poppins text-xs text-gray-500`}>
+                                                        {comment?.reactions_count_format}
+                                                    </Text>
+                                                </View>
+                                                <TouchableOpacity
+                                                    onPress={() => {
+                                                        setReplyVisible(true)
+                                                        setCommentID(comment?.id)
+                                                    }}
+                                                    style={tw`flex-row gap-2 items-center`}
+                                                >
+                                                    <SvgXml xml={IconMessage} width={16} height={16} />
+                                                    <Text style={tw`font-poppins text-xs text-gray-500`}>
+                                                        Reply
+                                                    </Text>
+                                                </TouchableOpacity>
+                                            </View>
+
+                                        </View>
+                                        <TouchableOpacity style={tw`mt-8`} onPress={() => commentDelete(comment?.id)}>
+                                            <SvgXml xml={IconDeleteComment} />
+                                        </TouchableOpacity>
+                                    </View>)
+                                ))}
+                            </ScrollView>
                         </View>
                     </View>
                 </Modal>
@@ -428,266 +348,58 @@ const videodetails = () => {
                                 </TouchableOpacity>
                             </View>
 
-                            <ScrollView showsVerticalScrollIndicator={false}>
-                                <View style={tw`flex-row  gap-4 pt-4  px-7`}>
-                                    <Image
-                                        source={{ uri: singleVideo.avatar }}
-                                        style={tw`w-10 h-10 rounded-full`}
-                                    />
-                                    <View>
-                                        <View style={tw`flex-row items-center gap-2`}>
-                                            <Text style={tw`font-poppinsMedium text-lg`}>
-                                                Abid Hasan
-                                            </Text>
-                                            <View style={tw`bg-primaryGray rounded-full h-2 w-2`} />
-                                            <Text>10 hours ago</Text>
-                                        </View>
-                                        <Text style={tw` font-poppins text-sm`}>
-                                            Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                                            Consectetur
-                                        </Text>
-                                        <View style={tw`flex-row gap-4 py-5`}>
-                                            <View style={tw`flex-row gap-4 `}>
-                                                <SvgXml xml={Iconfevarite} />
-                                                <Text>2.6k</Text>
-                                            </View>
+                            {/* Loader */}
+                            {isLoadingReply && (
+                                <View style={tw`flex-1 justify-center items-center`}>
+                                    <ActivityIndicator size="large" color="#0000ff" />
+                                </View>
+                            )}
 
-                                        </View>
+                            {/* Comments List */}
+                            <ScrollView showsVerticalScrollIndicator={false} style={tw`mb-20`}>
+                                {repliesData?.data?.length === 0 ? (
+                                    <View style={tw`items-center justify-center py-10`}>
+                                        <Text style={tw`text-gray-500 font-poppins`}>No Replies yet</Text>
                                     </View>
-                                </View>
-                                <View style={tw`flex-row  gap-4 pt-4  px-7`}>
-                                    <Image
-                                        source={{ uri: singleVideo.avatar }}
-                                        style={tw`w-10 h-10 rounded-full`}
-                                    />
-                                    <View>
-                                        <View style={tw`flex-row items-center gap-2`}>
-                                            <Text style={tw`font-poppinsMedium text-lg`}>
-                                                Abid Hasan
-                                            </Text>
-                                            <View style={tw`bg-primaryGray rounded-full h-2 w-2`} />
-                                            <Text>10 hours ago</Text>
-                                        </View>
-                                        <Text style={tw` font-poppins text-sm`}>
-                                            Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                                            Consectetur
-                                        </Text>
-                                        <View style={tw`flex-row gap-4 py-5`}>
-                                            <View style={tw`flex-row gap-4 `}>
-                                                <SvgXml xml={Iconfevarite} />
-                                                <Text>2.6k</Text>
-                                            </View>
+                                ) : (
+                                    repliesData?.data?.map((replies: any) => (
+                                        <View key={replies.id} style={tw`flex-row gap-4 pt-4 px-7 mb-5`}>
+                                            {/* User Avatar */}
+                                            <Image
+                                                source={{ uri: replies?.user?.avatar }}
+                                                style={tw`w-10 h-10 rounded-full`}
+                                            />
 
-                                        </View>
-                                    </View>
-                                </View>
-                                <View style={tw`flex-row  gap-4 pt-4  px-7`}>
-                                    <Image
-                                        source={{ uri: singleVideo.avatar }}
-                                        style={tw`w-10 h-10 rounded-full`}
-                                    />
-                                    <View>
-                                        <View style={tw`flex-row items-center gap-2`}>
-                                            <Text style={tw`font-poppinsMedium text-lg`}>
-                                                Abid Hasan
-                                            </Text>
-                                            <View style={tw`bg-primaryGray rounded-full h-2 w-2`} />
-                                            <Text>10 hours ago</Text>
-                                        </View>
-                                        <Text style={tw` font-poppins text-sm`}>
-                                            Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                                            Consectetur
-                                        </Text>
-                                        <View style={tw`flex-row gap-4 py-5`}>
-                                            <View style={tw`flex-row gap-4 `}>
-                                                <SvgXml xml={Iconfevarite} />
-                                                <Text>2.6k</Text>
-                                            </View>
+                                            {/* replies Content */}
+                                            <View style={tw`flex-1`}>
+                                                {/* User Info */}
+                                                <View style={tw`flex-row items-center gap-2 mb-1`}>
+                                                    <Text style={tw`font-poppinsMedium text-base text-gray-800`}>
+                                                        {replies?.user?.name}
+                                                    </Text>
+                                                    <View style={tw`bg-gray-400 rounded-full h-1 w-1`} />
+                                                    <Text style={tw`font-poppins text-xs text-gray-500`}>
+                                                        {replies?.created_at_format}
+                                                    </Text>
+                                                </View>
 
-                                        </View>
-                                    </View>
-                                </View>
-                                <View style={tw`flex-row  gap-4 pt-4  px-7`}>
-                                    <Image
-                                        source={{ uri: singleVideo.avatar }}
-                                        style={tw`w-10 h-10 rounded-full`}
-                                    />
-                                    <View>
-                                        <View style={tw`flex-row items-center gap-2`}>
-                                            <Text style={tw`font-poppinsMedium text-lg`}>
-                                                Abid Hasan
-                                            </Text>
-                                            <View style={tw`bg-primaryGray rounded-full h-2 w-2`} />
-                                            <Text>10 hours ago</Text>
-                                        </View>
-                                        <Text style={tw` font-poppins text-sm`}>
-                                            Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                                            Consectetur
-                                        </Text>
-                                        <View style={tw`flex-row gap-4 py-5`}>
-                                            <View style={tw`flex-row gap-4 `}>
-                                                <SvgXml xml={Iconfevarite} />
-                                                <Text>2.6k</Text>
-                                            </View>
+                                                {/* replies Text */}
+                                                <Text style={tw`font-poppins text-sm pb-2 text-gray-800`}>
+                                                    {replies?.reply}
+                                                </Text>
 
-                                        </View>
-                                    </View>
-                                </View>
-                                <View style={tw`flex-row  gap-4 pt-4  px-7`}>
-                                    <Image
-                                        source={{ uri: singleVideo.avatar }}
-                                        style={tw`w-10 h-10 rounded-full`}
-                                    />
-                                    <View>
-                                        <View style={tw`flex-row items-center gap-2`}>
-                                            <Text style={tw`font-poppinsMedium text-lg`}>
-                                                Abid Hasan
-                                            </Text>
-                                            <View style={tw`bg-primaryGray rounded-full h-2 w-2`} />
-                                            <Text>10 hours ago</Text>
-                                        </View>
-                                        <Text style={tw` font-poppins text-sm`}>
-                                            Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                                            Consectetur
-                                        </Text>
-                                        <View style={tw`flex-row gap-4 py-5`}>
-                                            <View style={tw`flex-row gap-4 `}>
-                                                <SvgXml xml={Iconfevarite} />
-                                                <Text>2.6k</Text>
+                                                {/* Reactions */}
+                                                <View style={tw`flex-row gap-2 items-center`}>
+                                                    <TouchableOpacity>
+                                                        <SvgXml xml={replies?.is_react ? IconfevariteActive : Iconfevarite} width={16} height={16} />
+                                                    </TouchableOpacity>
+                                                    <Text style={tw`font-poppins text-xs text-gray-500`}>
+                                                        {replies?.reactions_count_format}
+                                                    </Text>
+                                                </View>
                                             </View>
-
-                                        </View>
-                                    </View>
-                                </View>
-                                <View style={tw`flex-row  gap-4 pt-4  px-7`}>
-                                    <Image
-                                        source={{ uri: singleVideo.avatar }}
-                                        style={tw`w-10 h-10 rounded-full`}
-                                    />
-                                    <View>
-                                        <View style={tw`flex-row items-center gap-2`}>
-                                            <Text style={tw`font-poppinsMedium text-lg`}>
-                                                Abid Hasan
-                                            </Text>
-                                            <View style={tw`bg-primaryGray rounded-full h-2 w-2`} />
-                                            <Text>10 hours ago</Text>
-                                        </View>
-                                        <Text style={tw` font-poppins text-sm`}>
-                                            Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                                            Consectetur
-                                        </Text>
-                                        <View style={tw`flex-row gap-4 py-5`}>
-                                            <View style={tw`flex-row gap-4 `}>
-                                                <SvgXml xml={Iconfevarite} />
-                                                <Text>2.6k</Text>
-                                            </View>
-
-                                        </View>
-                                    </View>
-                                </View>
-                                <View style={tw`flex-row  gap-4 pt-4  px-7`}>
-                                    <Image
-                                        source={{ uri: singleVideo.avatar }}
-                                        style={tw`w-10 h-10 rounded-full`}
-                                    />
-                                    <View>
-                                        <View style={tw`flex-row items-center gap-2`}>
-                                            <Text style={tw`font-poppinsMedium text-lg`}>
-                                                Abid Hasan
-                                            </Text>
-                                            <View style={tw`bg-primaryGray rounded-full h-2 w-2`} />
-                                            <Text>10 hours ago</Text>
-                                        </View>
-                                        <Text style={tw` font-poppins text-sm`}>
-                                            Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                                            Consectetur
-                                        </Text>
-                                        <View style={tw`flex-row gap-4 py-5`}>
-                                            <View style={tw`flex-row gap-4 `}>
-                                                <SvgXml xml={Iconfevarite} />
-                                                <Text>2.6k</Text>
-                                            </View>
-
-                                        </View>
-                                    </View>
-                                </View>
-                                <View style={tw`flex-row  gap-4 pt-4  px-7`}>
-                                    <Image
-                                        source={{ uri: singleVideo.avatar }}
-                                        style={tw`w-10 h-10 rounded-full`}
-                                    />
-                                    <View>
-                                        <View style={tw`flex-row items-center gap-2`}>
-                                            <Text style={tw`font-poppinsMedium text-lg`}>
-                                                Abid Hasan
-                                            </Text>
-                                            <View style={tw`bg-primaryGray rounded-full h-2 w-2`} />
-                                            <Text>10 hours ago</Text>
-                                        </View>
-                                        <Text style={tw` font-poppins text-sm`}>
-                                            Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                                            Consectetur
-                                        </Text>
-                                        <View style={tw`flex-row gap-4 py-5`}>
-                                            <View style={tw`flex-row gap-4 `}>
-                                                <SvgXml xml={Iconfevarite} />
-                                                <Text>2.6k</Text>
-                                            </View>
-
-                                        </View>
-                                    </View>
-                                </View>
-                                <View style={tw`flex-row  gap-4 pt-4  px-7`}>
-                                    <Image
-                                        source={{ uri: singleVideo.avatar }}
-                                        style={tw`w-10 h-10 rounded-full`}
-                                    />
-                                    <View>
-                                        <View style={tw`flex-row items-center gap-2`}>
-                                            <Text style={tw`font-poppinsMedium text-lg`}>
-                                                Abid Hasan
-                                            </Text>
-                                            <View style={tw`bg-primaryGray rounded-full h-2 w-2`} />
-                                            <Text>10 hours ago</Text>
-                                        </View>
-                                        <Text style={tw` font-poppins text-sm`}>
-                                            Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                                            Consectetur
-                                        </Text>
-                                        <View style={tw`flex-row gap-4 py-5`}>
-                                            <View style={tw`flex-row gap-4 `}>
-                                                <SvgXml xml={Iconfevarite} />
-                                                <Text>2.6k</Text>
-                                            </View>
-
-                                        </View>
-                                    </View>
-                                </View>
-                                <View style={tw`flex-row  gap-4 pt-4  px-7`}>
-                                    <Image
-                                        source={{ uri: singleVideo.avatar }}
-                                        style={tw`w-10 h-10 rounded-full`}
-                                    />
-                                    <View>
-                                        <View style={tw`flex-row items-center gap-2`}>
-                                            <Text style={tw`font-poppinsMedium text-lg`}>
-                                                Abid Hasan
-                                            </Text>
-                                            <View style={tw`bg-primaryGray rounded-full h-2 w-2`} />
-                                            <Text>10 hours ago</Text>
-                                        </View>
-                                        <Text style={tw` font-poppins text-sm`}>
-                                            Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                                            Consectetur
-                                        </Text>
-                                        <View style={tw`flex-row gap-4 py-5`}>
-                                            <View style={tw`flex-row gap-4 `}>
-                                                <SvgXml xml={Iconfevarite} />
-                                                <Text>2.6k</Text>
-                                            </View>
-                                        </View>
-                                    </View>
-                                </View>
+                                        </View>)
+                                    ))}
                             </ScrollView>
                         </View>
                     </View>

@@ -55,8 +55,6 @@ const SingleVideo = () => {
   const [page, setPage] = useState(1);
   const [commentID, setCommentID] = useState()
 
-console.log(id);
-
   const { data, isLoading, error } = useVideodetailQuery({ id });
   const {
     data: commentsData,
@@ -72,6 +70,7 @@ console.log(id);
     comment_id: commentID,
   });
 
+  
   const [watchedVidew] = useWatchVideoMutation()
   const [likeVideo] = useLikeVideoMutation();
   const [comment_reaction] = useComment_reactionMutation();
@@ -721,7 +720,6 @@ console.log(id);
                   ) : (
                     repliesData?.data?.map((replies: any) => (
                       <View key={replies.id} style={tw`flex-row gap-4 pt-4 px-7 mb-5`}>
-
                         {/* User Avatar */}
                         <Image
                           source={{ uri: replies?.user?.avatar }}

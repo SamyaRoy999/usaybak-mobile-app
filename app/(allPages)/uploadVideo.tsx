@@ -99,9 +99,6 @@ const UploadVideo = () => {
         );
     }
 
-    console.log(cityData);
-
-
     if (userError) {
         Toast.show({
             type: ALERT_TYPE.DANGER,

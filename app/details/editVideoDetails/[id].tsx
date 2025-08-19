@@ -160,25 +160,11 @@ const EditVideoDetails = () => {
             } as any);
         }
 
-        console.log('FormData to be submitted:', selectedVideos?.uri,);
-        formData._parts.forEach(([key, value]) => {
-            if (typeof value === 'object' && value.uri) {
-                console.log(`${key}:`, {
-                    uri: value.uri.substring(0, 30) + '...',
-                    name: value.name,
-                    type: value.type,
-                });
-            } else {
-                console.log(`${key}:`, value);
-            }
-        });
-
         try {
             const result = await updateVideo({
                 id: id,
                 data: formData,
             }).unwrap();
-            console.log("Update result:", result);
             if (result.status) {
                 Toast.show({
                     type: ALERT_TYPE.SUCCESS,

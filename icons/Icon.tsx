@@ -731,6 +731,12 @@ export const IconProfileView = `<svg width="114" height="113" viewBox="0 0 114 1
 </svg>
 
 `;
+export const IconDeleteComment = `<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="40" height="40" rx="6" fill="#FFE8E8"/>
+<path d="M27 12H23.5L22.5 11H17.5L16.5 12H13V14H27M14 27C14 27.5304 14.2107 28.0391 14.5858 28.4142C14.9609 28.7893 15.4696 29 16 29H24C24.5304 29 25.0391 28.7893 25.4142 28.4142C25.7893 28.0391 26 27.5304 26 27V15H14V27Z" fill="#FF5353"/>
+</svg>
+
+`;
 
 export const IconMission = `<svg width="68" height="60" viewBox="0 0 68 60" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M29.6938 58.1094C46.0933 58.1094 59.3877 45.1012 59.3877 29.0547C59.3877 13.0082 46.0933 0 29.6938 0C13.2944 0 0 13.0082 0 29.0547C0 45.1012 13.2944 58.1094 29.6938 58.1094Z" fill="#CBE9FF"/>

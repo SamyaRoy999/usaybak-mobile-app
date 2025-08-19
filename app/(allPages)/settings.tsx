@@ -69,7 +69,6 @@ const Settings = () => {
     }
 
     const { bio, contact, channel_name, name, cover_image, avatar, services, locations } = defouldData?.data || {};
-    console.log("defouldData", locations, "defouldData");
 
     const transformLocations = (backendLocations: any[]) => {
         return backendLocations?.map(loc => ({
@@ -363,7 +362,6 @@ const Settings = () => {
                                             <Text style={tw`text-red-700 font-poppins text-sm pl-6`}>{errors.contact}</Text>
                                         )}
                                     </View>
-
                                     {/* Bio */}
                                     <View style={tw`py-3 px-6`}>
                                         <View style={tw`border border-primaryGray flex-col justify-center pl-7 relative rounded-2xl p-4`}>

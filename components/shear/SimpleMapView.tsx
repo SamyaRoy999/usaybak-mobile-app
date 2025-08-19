@@ -1,11 +1,12 @@
 import { AppleMaps, GoogleMaps } from "expo-maps";
+import { AppleMapsMapType } from "expo-maps/build/apple/AppleMaps.types";
 import { Platform, Text } from "react-native";
 
 interface SimpleMapViewProps {
   locations: { lat: string; long: string; type: string; location: string }[];
 }
 
-const SF_ZOOM = 10;
+const SF_ZOOM = 7;
 
 export default function SimpleMapView({ locations }: SimpleMapViewProps) {
   // সব location কে markersGoogle/markersApple এ রূপান্তর
@@ -37,12 +38,21 @@ export default function SimpleMapView({ locations }: SimpleMapViewProps) {
     },
     zoom: SF_ZOOM,
   };
+  const polylineCoordinates = {   
+      latitude: Number(locations?.[0]?.lat) || 23.81,
+      longitude: Number(locations?.[0]?.long) || 90.41,
+  };
 
   if (Platform.OS === "ios") {
     return (
       <AppleMaps.View
         cameraPosition={cameraPosition}
         markers={markersApple}
+        properties={{
+            isTrafficEnabled: false,
+            mapType: AppleMapsMapType.STANDARD,
+            selectionEnabled: true,
+          }}
         style={{ flex: 1 }}
       />
     );
@@ -52,6 +62,16 @@ export default function SimpleMapView({ locations }: SimpleMapViewProps) {
         style={{ flex: 1 }}
         markers={markersGoogle}
         cameraPosition={cameraPosition}
+        properties={{
+            isBuildingEnabled: true,
+            isIndoorEnabled: true,
+            selectionEnabled: true,
+            isMyLocationEnabled: false, // requires location permission
+            isTrafficEnabled: true,
+            // minZoomPreference: 1,
+            // maxZoomPreference: 20,
+          }}
+          // 3
       />
     );
   } else {

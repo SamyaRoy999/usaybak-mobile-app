@@ -65,7 +65,6 @@ const onsiteAccount = () => {
             c_password: values.c_password,
             registration_type: "on_site"
         }
-        console.log(data);
         try {
             const res = await onsiteAccountReg(data).unwrap();
             if (res.status) {
@@ -183,7 +182,6 @@ const onsiteAccount = () => {
             }
 
             const res = await paymentSuccess(data).unwrap();
-            console.log(res);
 
             // if (res?.status) {
             //     try {

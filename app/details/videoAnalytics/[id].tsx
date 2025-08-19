@@ -34,7 +34,6 @@ const videoAnalytics = () => {
             </View>
         );
     }
-    console.log(id);
 
     return (
         <View style={tw`flex-1 bg-white`}>

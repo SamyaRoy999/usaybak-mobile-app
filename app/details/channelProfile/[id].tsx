@@ -18,10 +18,6 @@ const channelProfile = () => {
     //...................... API CALL........................//
 
     const { data: profileData, isLoading } = useChannelProfileQuery(Number(id));
-    console.log(id);
-
-
-
     if (isLoading) {
         return (
             <View style={tw`flex-1 justify-center items-center`}>
@@ -54,9 +50,6 @@ const channelProfile = () => {
 
     const latGet = LoctionShow?.lat;
     const longGet = LoctionShow?.long;
-
-    // console.log("Location", longGet, latGet);
-    console.log(LoctionShow);
 
 
     return (

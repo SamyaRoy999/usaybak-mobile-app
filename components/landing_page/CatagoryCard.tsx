@@ -21,8 +21,6 @@ const CategoryCard = ({ data, isLoading }: { data: any, isLoading?: boolean }) =
     );
   }
 
-  console.log(videos?.user?.id, "caragoryVideos");
-
   if (!videos || videos.length === 0) {
     return null;
   }

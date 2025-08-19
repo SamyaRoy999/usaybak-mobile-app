@@ -10,7 +10,6 @@ import HeaderBar from './HeaderBar';
 
 const AnalyticsShear = (analyticsData: any) => {
 
-    console.log(analyticsData?.analytics?.data, "analyticsData data");
 
     const { analytics, total_dislikes, total_likes, total_views } = analyticsData?.analytics?.data;
 

@@ -35,7 +35,6 @@ const landingPage = () => {
     );
   }
 
-  console.log(caragoryVideos, "caragoryVideos");
 
   return (
     <View>

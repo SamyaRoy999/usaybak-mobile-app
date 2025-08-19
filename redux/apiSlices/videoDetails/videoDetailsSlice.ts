@@ -55,6 +55,14 @@ export const videoDetailsSlice = api.injectEndpoints({
             }),
             invalidatesTags: ["singleVideo"],
         }),
+        commentDelete: builder.mutation<any, any>({
+            query: (id) => ({
+                url: `/comments/${id}`,
+                method: "DELETE",
+            }),
+            invalidatesTags: ["singleVideo"],
+        }),
+
 
         //............. replies .................//
 
@@ -104,5 +112,6 @@ export const {
     useRepliesQuery,
     useReplies_reactionMutation,
     useRepliesPostMutation,
-    useReportPostMutation
+    useReportPostMutation,
+    useCommentDeleteMutation
 } = videoDetailsSlice;
