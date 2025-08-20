@@ -21,6 +21,8 @@ const videodetails = () => {
     const [replyVisible, setReplyVisible] = React.useState(false);
     const [deleteModalVisible, setDeleteModalVisible] = React.useState(false);
     const [commentID, setCommentID] = React.useState()
+    const [deleteCommentModalVisible, setDeleteCommentModalVisible] = React.useState(false)
+    const [selectedCommentId, setSelectedCommentId] = React.useState()
 
     const { id } = useLocalSearchParams();
     const { data: singleVideo, isLoading } = useMy_videos_detailsQuery({ id });
@@ -40,17 +42,49 @@ const videodetails = () => {
     console.log("commentsData", repliesData, "commentsData");
     const [deleteVideo] = useDeleteVideoMutation()
     const [commentDelete] = useCommentDeleteMutation()
+    // Comment delete function
+    const handleDeleteComment = async () => {
+        if (!selectedCommentId) return;
+
+        try {
+            const res = await commentDelete(selectedCommentId).unwrap();
+
+            if (res?.status) {
+                Toast.show({
+                    type: ALERT_TYPE.SUCCESS,
+                    title: "Success",
+                    textBody: res.message,
+                    autoClose: 2000,
+                });
+                setDeleteCommentModalVisible(false);
+            } else {
+                Toast.show({
+                    type: ALERT_TYPE.DANGER,
+                    title: "Error",
+                    textBody: res?.message || "Failed to delete comment",
+                    autoClose: 2000,
+                });
+            }
+        } catch (err) {
+            console.error("Delete comment error:", err);
+            Toast.show({
+                type: ALERT_TYPE.WARNING,
+                title: "Error",
+                textBody: "Failed to delete comment",
+            });
+        }
+    }
     const player = useVideoPlayer(singleVideo?.data?.video || "", (player) => {
         player.loop = true;
         player.play();
     });
+
 
     const { isPlaying } = useEvent(player, "playingChange", {
         isPlaying: player.playing,
     });
 
     if (!singleVideo) return null;
-
 
     const hendelDeleteVideo = async () => {
         try {
@@ -85,6 +119,7 @@ const videodetails = () => {
             </View>
         );
     }
+
     return (
 
         <View style={tw`flex-1 bg-primary`}>
@@ -247,7 +282,6 @@ const videodetails = () => {
                                 <Text style={tw`text-primary text-xl font-poppins`}>
                                     Comments
                                 </Text>
-
                                 <TouchableOpacity onPress={() => setCommentVisible(false)}>
                                     <SvgXml xml={IconClose} />
                                 </TouchableOpacity>
@@ -317,7 +351,14 @@ const videodetails = () => {
                                             </View>
 
                                         </View>
-                                        <TouchableOpacity style={tw`mt-8`} onPress={() => commentDelete(comment?.id)}>
+                                        {/* <TouchableOpacity style={tw`mt-8`} */}
+                                        <TouchableOpacity
+                                            style={tw`mt-8`}
+                                            onPress={() => {
+                                                setSelectedCommentId(comment.id); 
+                                                setDeleteCommentModalVisible(true);
+                                            }}
+                                        >
                                             <SvgXml xml={IconDeleteComment} />
                                         </TouchableOpacity>
                                     </View>)
@@ -405,7 +446,6 @@ const videodetails = () => {
                     </View>
                 </Modal>
                 {/* Deleted video */}
-
                 <Modal
                     visible={deleteModalVisible}
                     transparent={true}
@@ -438,6 +478,50 @@ const videodetails = () => {
                                         <Text style={tw`text-sm font-poppinsMedium`}>Cancel</Text>
                                     </TouchableOpacity>
                                     <TouchableOpacity onPress={() => hendelDeleteVideo()} style={tw` w-2/6 bg-secondary  py-5 border flex-row rounded-full justify-center border-primaryGray`}>
+                                        <Text style={tw`text-sm text-primary font-poppinsMedium`}>Yes, Delete</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </ScrollView>
+                        </View>
+                    </View>
+                </Modal>
+                <Modal
+                    visible={deleteCommentModalVisible}
+                    transparent={true}
+                    animationType="slide"
+                    onRequestClose={() => setDeleteCommentModalVisible(false)}
+                >
+                    <View style={styles.modalContainer}>
+                        <View style={tw`bg-primary rounded-t-3xl absolute bottom-0  w-full  mt-78 pb-12`}>
+                            <View
+                                style={tw`bg-secondary w-full h-16 rounded-t-3xl flex-row items-center justify-between p-5`}
+                            >
+                                <View></View>
+                                <Text style={tw`text-primary text-xl font-poppins`}>
+                                    Delete Comment
+                                </Text>
+                                <TouchableOpacity onPress={() => setDeleteCommentModalVisible(false)}>
+                                    <SvgXml xml={IconClose} />
+                                </TouchableOpacity>
+                            </View>
+
+                            <ScrollView contentContainerStyle={tw`px-4 `} showsVerticalScrollIndicator={false}>
+                                <View style={tw` flex-col items-center justify-center pt-5`}>
+                                    <SvgXml xml={IconWornoingDelete} />
+                                    <Text style={tw`font-poppinsMedium text-lg text-secondary pt-5`}>Are you sure to delete this comment?</Text>
+                                    <Text style={tw`font-poppinsMedium text-sm text-primaryGrayDeep pt-1 pb-7`}>This action cannot be undone.</Text>
+                                </View>
+                                <View style={tw`flex-row justify-center gap-3`}>
+                                    <TouchableOpacity
+                                        onPress={() => setDeleteCommentModalVisible(false)}
+                                        style={tw` w-2/6 py-5 border flex-row rounded-full justify-center border-primaryGray`}
+                                    >
+                                        <Text style={tw`text-sm font-poppinsMedium`}>Cancel</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        onPress={handleDeleteComment}
+                                        style={tw` w-2/6 bg-secondary  py-5 border flex-row rounded-full justify-center border-primaryGray`}
+                                    >
                                         <Text style={tw`text-sm text-primary font-poppinsMedium`}>Yes, Delete</Text>
                                     </TouchableOpacity>
                                 </View>

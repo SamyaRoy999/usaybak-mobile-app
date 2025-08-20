@@ -6,8 +6,8 @@ import { useLikeVideosDeleteMutation, useLikeVideosQuery } from '@/redux/apiSlic
 import { _HIGHT, _Width } from '@/utils/utils';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
-import { router } from 'expo-router';
-import React, { useEffect, useState } from 'react';
+import { router, useFocusEffect } from 'expo-router';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
     ActivityIndicator,
     FlatList,
@@ -27,9 +27,13 @@ const LikedVideosScreen = () => {
 
     const { data, isLoading, isFetching, refetch } = useLikeVideosQuery({ page });
     const [likeVideosDelete] = useLikeVideosDeleteMutation();
-    
 
-    // Load initial or paginated data
+    useFocusEffect(
+        useCallback(() => {
+            refetch()
+        }, [])
+    )
+
     useEffect(() => {
         if (data?.status && data?.data?.data) {
             if (page === 1) {
@@ -40,7 +44,6 @@ const LikedVideosScreen = () => {
         }
     }, [data]);
 
-    // Refresh function
     const onRefresh = async () => {
         setRefreshing(true);
         setPage(1);
@@ -48,14 +51,12 @@ const LikedVideosScreen = () => {
         setRefreshing(false);
     };
 
-    // Load more on scroll
     const loadMore = () => {
         if (!loadingMore && !isFetching && data?.data?.data?.length >= 5) {
             setPage((prev) => prev + 1);
         }
     };
 
-    // Handle Delete
     const handleDelete = async (videoId: number) => {
         try {
             await likeVideosDelete(videoId as any).unwrap();
@@ -68,45 +69,33 @@ const LikedVideosScreen = () => {
     if (isLoading && page === 1) {
         return (
             <View style={tw`flex-1 justify-center items-center`}>
-                <Text>Loading...</Text>
+                <ActivityIndicator size="large" color="#0000ff" />
             </View>
         );
     }
 
     return (
         <View style={tw`flex-1`}>
-            <ScrollView showsVerticalScrollIndicator={false} >
+            <ScrollView showsVerticalScrollIndicator={false}>
                 <HeaderBar />
                 <View style={tw`flex-row justify-between items-center gap-5 px-5 mb-8`}>
                     <TouchableOpacity onPress={() => router.back()}>
-                        <View
-                            style={tw`bg-primaryText w-13 h-13 p-4 rounded-full flex-row items-center justify-center border border-primaryGray`}
-                        >
+                        <View style={tw`bg-primaryText w-13 h-13 p-4 rounded-full flex-row items-center justify-center border border-primaryGray`}>
                             <SvgXml xml={IconBackLeft} />
                         </View>
                     </TouchableOpacity>
-                    <Text style={tw`font-poppinsMedium text-xl `}>Liked videos</Text>
+                    <Text style={tw`font-poppinsMedium text-xl`}>Liked videos</Text>
                     <View />
                 </View>
 
                 <View style={tw`p-5 relative`}>
                     <LinearGradient
-                        style={[
-                            tw`rounded-2xl absolute`,
-                            {
-                                height: _HIGHT * 0.6,
-                                width: _Width,
-                            },
-                        ]}
+                        style={[tw`rounded-2xl absolute`, { height: _HIGHT * 0.6, width: _Width }]}
                         colors={['#753A88', '#EF4444E5', '#eb7a82', 'transparent', 'transparent']}
                     />
                     <Image
                         source={historypage}
-                        style={{
-                            width: _Width * 0.9,
-                            height: _HIGHT * 0.3,
-                            borderRadius: 20,
-                        }}
+                        style={{ width: _Width * 0.9, height: _HIGHT * 0.3, borderRadius: 20 }}
                     />
                     <View style={tw`flex-row items-center justify-between pt-5 pb-20`}>
                         <View>
@@ -120,14 +109,12 @@ const LikedVideosScreen = () => {
                     </View>
                 </View>
 
-
-                {/* FlatList for Infinite Scroll */}
                 <FlatList
                     data={videos}
-                     keyExtractor={(item) => `${item.id}-${item.video?.id || '0'}`}
+                    keyExtractor={(item, index) => `liked-video-${item.id}-${index}`}
                     scrollEnabled={false}
                     renderItem={({ item }) => (
-                        <View style={[tw`flex-row gap-4 px-5 py-3 items-start border-b border-gray-200`]}>
+                        <View style={tw`flex-row gap-4 px-5 py-3 items-start border-b border-gray-200`}>
                             <Image
                                 style={[tw`rounded-xl`, { width: _Width * 0.3, height: _HIGHT * 0.1 }]}
                                 source={{ uri: item?.video?.thumbnail }}
@@ -147,14 +134,12 @@ const LikedVideosScreen = () => {
                             </View>
                         </View>
                     )}
-                    refreshControl={
-                        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={['#ED6237']} />
-                    }
+                    refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={['#ED6237']} />}
                     onEndReached={loadMore}
                     onEndReachedThreshold={0.5}
                     ListFooterComponent={loadingMore || isFetching ? <ActivityIndicator /> : null}
                 />
-            </ScrollView >
+            </ScrollView>
         </View>
     );
 };

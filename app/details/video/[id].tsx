@@ -17,12 +17,11 @@ import {
 import tw from "@/lib/tailwind";
 import { useCatagoryDetailsQuery } from "@/redux/apiSlices/catagoryDataSlices/catagoryDataSlices";
 import { useComment_reactionMutation, useCommentsPostMutation, useCommentsQuery, useLikeVideoMutation, useReplies_reactionMutation, useRepliesPostMutation, useRepliesQuery, useReportPostMutation, useVideodetailQuery, useWatchVideoMutation } from "@/redux/apiSlices/videoDetails/videoDetailsSlice";
-// import { useComment_reactionMutation, useCommentsPostMutation, useCommentsQuery, useLikeVideoMutation, useReplies_reactionMutation, useRepliesPostMutation, useRepliesQuery, useReportVideoMutation, useVideodetailQuery, useWatchVideoMutation } from "@/redux/apiSlices/videoDetails/videoDetailsSlice";
 import { _Width } from "@/utils/utils";
 import * as Clipboard from 'expo-clipboard';
-import { useLocalSearchParams } from "expo-router";
+import { useFocusEffect, useLocalSearchParams } from "expo-router";
 import { useVideoPlayer, VideoView } from "expo-video";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
@@ -38,6 +37,7 @@ import {
 } from "react-native";
 import { ALERT_TYPE, AlertNotificationRoot, Toast } from "react-native-alert-notification";
 import { SvgXml } from "react-native-svg";
+import YoutubeIframe from 'react-native-youtube-iframe';
 
 const SingleVideo = () => {
   const { id } = useLocalSearchParams();
@@ -54,8 +54,11 @@ const SingleVideo = () => {
   const [reply, setReply] = useState('');
   const [page, setPage] = useState(1);
   const [commentID, setCommentID] = useState()
-
+  const [isYoutubeVideo, setIsYoutubeVideo] = useState(false); // Added missing state
+  const [youtubeVideoId, setYoutubeVideoId] = useState(''); // Added missing state
+  const playerRef = useRef<any>(null);
   const { data, isLoading, error } = useVideodetailQuery({ id });
+
   const {
     data: commentsData,
     isLoading: isLoadingComment
@@ -64,26 +67,51 @@ const SingleVideo = () => {
   });
 
   const {
-    data: repliesData,  //replies
+    data: repliesData,
     isLoading: isLoadingReply
   } = useRepliesQuery({
     comment_id: commentID,
   });
 
-  
   const [watchedVidew] = useWatchVideoMutation()
   const [likeVideo] = useLikeVideoMutation();
   const [comment_reaction] = useComment_reactionMutation();
-  const [commentsPost, refetch] = useCommentsPostMutation()
+  const [commentsPost] = useCommentsPostMutation()
   const [replies_reaction] = useReplies_reactionMutation()
   const [repliesPost] = useRepliesPostMutation()
   const [reportPost] = useReportPostMutation()
 
   const videoDetails = data?.data;
+
   const player = useVideoPlayer(videoDetails?.video || "", (player) => {
     player.loop = true;
     player.play();
+    playerRef.current = player;
   });
+
+  useFocusEffect(
+    useCallback(() => {
+      if (playerRef.current) {
+        playerRef.current.play();
+      }
+
+      return () => {
+        if (playerRef.current) {
+          playerRef.current.pause();
+        }
+      };
+    }, [])
+  );
+
+  useEffect(() => {
+    return () => {
+      if (playerRef.current) {
+        playerRef.current.pause();
+        playerRef.current.seekTo(0);
+        playerRef.current = null;
+      }
+    };
+  }, []);
 
   const handlePress = async (action: "like" | "dislike") => {
     setLikeDislike(action);
@@ -99,12 +127,28 @@ const SingleVideo = () => {
       try {
         const res = await watchedVidew(id as any).unwrap()
       } catch (error) {
-
       }
     }, 2000)
   }, [])
 
-  // .................. RELETED VIDEO ................//
+  useEffect(() => {
+    // Check if it's a YouTube video
+    if (videoDetails?.link && (videoDetails.link.includes('youtube.com') || videoDetails.link.includes('youtu.be'))) {
+      setIsYoutubeVideo(true);
+
+      // Extract YouTube video ID
+      const youtubeId = extractYoutubeId(videoDetails.link);
+      if (youtubeId) {
+        setYoutubeVideoId(youtubeId);
+      }
+    }
+  }, [videoDetails]);
+
+  const extractYoutubeId = (url: string) => {
+    const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
+    const match = url.match(regExp);
+    return (match && match[7].length === 11) ? match[7] : null;
+  };
 
   const { data: reletedVideo, isLoading: reletedlodding } = useCatagoryDetailsQuery({ id });
   const apiResponseVideo = reletedVideo?.data?.data;
@@ -138,10 +182,8 @@ const SingleVideo = () => {
     );
   }
 
-  // .......... ADD COMMENT............//
-
   const handleSubmit = async () => {
-    if (!comment.trim()) return; // Empty comment check
+    if (!comment.trim()) return;
 
     const payload = {
       video_id: Number(id),
@@ -159,7 +201,6 @@ const SingleVideo = () => {
           autoClose: 2000,
         });
         setComment('');
-        // refetch();           
       } else {
         Toast.show({
           type: ALERT_TYPE.DANGER,
@@ -169,7 +210,6 @@ const SingleVideo = () => {
         });
       }
     } catch (error: any) {
-
       Toast.show({
         type: ALERT_TYPE.DANGER,
         title: 'Error',
@@ -179,10 +219,8 @@ const SingleVideo = () => {
     }
   };
 
-  // .......... ADD REPLY............//
-
   const handleSubmitReply = async () => {
-    if (!reply.trim()) return; // Empty comment check
+    if (!reply.trim()) return;
 
     const payload = {
       comment_id: commentID,
@@ -200,7 +238,6 @@ const SingleVideo = () => {
           autoClose: 2000,
         });
         setReply('');
-        // refetch();           
       } else {
         Toast.show({
           type: ALERT_TYPE.DANGER,
@@ -210,7 +247,6 @@ const SingleVideo = () => {
         });
       }
     } catch (error: any) {
-
       Toast.show({
         type: ALERT_TYPE.DANGER,
         title: 'Error',
@@ -220,7 +256,6 @@ const SingleVideo = () => {
     }
   };
 
-  // copy link
   const copyToClipboard = async (link: any) => {
     await Clipboard.setStringAsync(link);
     Toast.show({
@@ -230,8 +265,6 @@ const SingleVideo = () => {
       autoClose: 2000,
     });
   };
-
-  //................REPORT VIDEO................//
 
   const submitReport = async () => {
     const data = {
@@ -249,7 +282,6 @@ const SingleVideo = () => {
           autoClose: 2000,
         });
         setFeedbackText('');
-
       } else {
         Toast.show({
           type: ALERT_TYPE.DANGER,
@@ -259,7 +291,6 @@ const SingleVideo = () => {
         });
       }
     } catch (error: any) {
-
       Toast.show({
         type: ALERT_TYPE.DANGER,
         title: 'Error',
@@ -267,9 +298,7 @@ const SingleVideo = () => {
         autoClose: 2000,
       });
     }
-
   }
-
 
   return (
     <KeyboardAvoidingView
@@ -282,13 +311,26 @@ const SingleVideo = () => {
           <HeaderBar />
           <View>
             {/* Video Player */}
-            <VideoView
-              style={styles.video}
-              player={player}
-
-              allowsFullscreen
-              allowsPictureInPicture
-            />
+            {isYoutubeVideo ? (
+              <YoutubeIframe
+                height={250}
+                width={_Width}
+                videoId={youtubeVideoId}
+                play={true}
+                onChangeState={(event: any) => {
+                  if (event === 'ended') {
+                    // Handle video end
+                  }
+                }}
+              />
+            ) : (
+              <VideoView
+                style={styles.video}
+                player={player}
+                allowsFullscreen
+                allowsPictureInPicture
+              />
+            )}
 
             {/* Video Info */}
             <View style={tw`p-5`}>
@@ -332,7 +374,7 @@ const SingleVideo = () => {
                   style={tw`flex-row items-center gap-4 py-2 px-6 border justify-center border-primaryGray rounded-full`}
                   onPress={() => handlePress("dislike")}
                 >
-                  <SvgXml xml={ videoDetails?.is_disliked? IconDislikeBlack : IconDislike} />
+                  <SvgXml xml={videoDetails?.is_disliked ? IconDislikeBlack : IconDislike} />
                   <Text>{videoDetails?.dislikes_count_formated}</Text>
                 </TouchableOpacity>
 
@@ -375,7 +417,7 @@ const SingleVideo = () => {
               </View>
             </TouchableOpacity>
 
-            {apiResponseVideo.length > 0 ? (
+            {apiResponseVideo && apiResponseVideo.length > 0 ? (
               <FlatList
                 data={apiResponseVideo}
                 keyExtractor={(item) => item.id.toString()}
@@ -529,7 +571,7 @@ const SingleVideo = () => {
                       onChangeText={setComment}
                       style={tw`bg-primaryOff rounded-full font-poppins px-4 text-sm h-12 ml-3 flex-1`}
                       placeholder="Add your comment..."
-                        placeholderTextColor="black"
+                      placeholderTextColor="black"
                     />
                     <TouchableOpacity style={tw`w-16`} onPress={handleSubmit}>
                       <SvgXml xml={IconSendMassage} />
@@ -615,7 +657,7 @@ const SingleVideo = () => {
                     textAlignVertical="top"
                     onChangeText={setFeedbackText}
                     placeholder="Describe your issue..."
-                      placeholderTextColor="black"
+                    placeholderTextColor="black"
                     style={tw`border border-gray-300 rounded-xl p-4 text-base text-black h-40`}
                   />
                   <Text style={tw`text-right text-xs mt-2 text-gray-500`}>
@@ -770,7 +812,7 @@ const SingleVideo = () => {
                       onChangeText={setReply}
                       style={tw`bg-primaryOff rounded-full font-poppins px-4 text-sm h-12 ml-3 flex-1`}
                       placeholder="Add your reply..."
-                        placeholderTextColor="black"
+                      placeholderTextColor="black"
                     />
                     <TouchableOpacity style={tw`w-16`} onPress={handleSubmitReply}>
                       <SvgXml xml={IconSendMassage} />

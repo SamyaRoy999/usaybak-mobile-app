@@ -13,10 +13,10 @@ import {
 } from "react-native";
 
 const landingPage = () => {
-  // promoted video api 
+  // ................promoted video api.................// 
   const { data: promoted } = usePromotedVideoHomeQuery({});
   const promotedVideo = promoted?.data?.data;
-  // caragoryVideo
+  // .............caragoryVideo................//
   const {
     data: caragoryVideos,
     isLoading,
