@@ -7,8 +7,8 @@ export const accountSlice = api.injectEndpoints({
     endpoints: (builder) => ({
         // .............. History...........//
         historyVideo: builder.query<any, any>({
-            query: ({ page, per_page = 5 }) => ({
-                url: `/watch-history?page=${page}&per_page=${per_page}`,
+            query: ({ page, per_page = 5, search }) => ({
+                url: `/watch-history?page=${page}&per_page=${per_page}${search ? `&search=${search}` : ''}`,
                 method: "GET",
             }),
             providesTags: ["account"],

@@ -610,42 +610,54 @@ const UploadVideo = () => {
                         </ScrollView>
                     </Modal>
 
-                    {/* State Selection Modal */}
+                    {/* city Selection Modal */}
                     <Modal
                         visible={cityModalVisible}
                         transparent={true}
                         animationType="slide"
                         onRequestClose={() => setCityModalVisible(false)}
                     >
-                        <ScrollView showsVerticalScrollIndicator={false}>
+                        <View style={tw`flex-1 justify-end bg-black/50`}>
+                            <View style={tw`bg-primary rounded-t-3xl w-full max-h-3/4`}>
+                                {/* Header - Fixed at top */}
+                                <View style={tw`bg-secondary w-full h-16 rounded-t-3xl flex-row items-center justify-between px-4`}>
+                                    <View></View>
+                                    <Text style={tw`text-primary text-xl font-poppins`}>Select City</Text>
+                                    <TouchableOpacity onPress={() => setCityModalVisible(false)}>
+                                        <SvgXml xml={IconClose} />
+                                    </TouchableOpacity>
+                                </View>
 
-                            <View style={tw`flex-1 justify-end bg-black/50`}>
-                                <View style={tw`bg-primary rounded-t-3xl w-full`}>
-                                    <View style={tw`bg-secondary w-full h-16 rounded-t-3xl flex-row items-center justify-between px-4`}>
-                                        <View></View>
-                                        < Text style={tw`text-primary text-xl font-poppins`}> Select City</Text>
-                                        < TouchableOpacity onPress={() => setCityModalVisible(false)}>
-                                            <SvgXml xml={IconClose} />
-                                        </TouchableOpacity>
-                                    </View>
-
-                                    {
-                                        cityData?.data?.map((city: any) => (
-                                            <TouchableOpacity
-                                                key={city.id}
-                                                onPress={() => {
-                                                    updateFormData('city', city.name);
-                                                    setCityModalVisible(false);
-                                                }}
-
-                                                style={tw`py-4 border-b border-primaryGray`}
-                                            >
-                                                <Text style={tw`text-center font-poppins text-base`}> {city.name} </Text>
-                                            </TouchableOpacity>
-                                        ))}
+                                {/* Scrollable Content - Dynamic height based on data */}
+                                <View style={tw`max-h-64`}>
+                                    <ScrollView
+                                        showsVerticalScrollIndicator={true}
+                                        contentContainerStyle={tw`pb-4`}
+                                    >
+                                        {cityData?.data.length === 0 ? (
+                                            <Text style={tw`text-center font-poppins text-gray-500 py-4`}>
+                                                No cities available. Please select a state first.
+                                            </Text>
+                                        ) : (
+                                            cityData?.data.map((city: any) => (
+                                                <TouchableOpacity
+                                                    key={city.id}
+                                                    onPress={() => {
+                                                        updateFormData('city', city.name);
+                                                        setCityModalVisible(false);
+                                                    }}
+                                                    style={tw`py-4 border-b border-primaryGray`}
+                                                >
+                                                    <Text style={tw`text-center font-poppins text-base`}>
+                                                        {city.name}
+                                                    </Text>
+                                                </TouchableOpacity>
+                                            ))
+                                        )}
+                                    </ScrollView>
                                 </View>
                             </View>
-                        </ScrollView>
+                        </View>
                     </Modal>
                     {/* Category Selection Modal */}
                     <Modal

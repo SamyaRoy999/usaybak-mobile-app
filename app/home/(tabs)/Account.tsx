@@ -69,6 +69,7 @@ const Account = () => {
   //     </View>
   //   );
   // }
+  console.log("historyVideo", historyVideo.data.data.id, "historyVideo");
 
   // .............. DELETE ............ //
 
@@ -107,7 +108,6 @@ const Account = () => {
   return (
     <View style={tw`flex-1 bg-primary `}>
       {isAuthenticated ? (
-
         <AlertNotificationRoot>
           <ScrollView showsVerticalScrollIndicator={false}>
             <HeaderBar />
@@ -147,27 +147,29 @@ const Account = () => {
                   renderItem={({ item }) => {
                     return (
                       <View style={[tw` mr-4`, { width: _Width * 0.4 }]}>
-                        <Image
-                          style={[
-                            tw`rounded-xl`,
-                            { width: _Width * 0.4, height: _HIGHT * 0.1 },
-                          ]}
-                          source={{ uri: item?.video?.thumbnail }}
-                        />
-                        <Text
-                          style={tw`text-base font-poppinsMedium py-1 text-secondaryBlack `}
-                        >
-                          {item.video?.title?.split(" ").slice(0, 4).join(" ")}...
-                        </Text>
-                        <View style={tw`flex-row justify-between w-full items-center`}>
-                          <Text style={tw`text-sm font-poppins  text-secondaryBlack `}>
-                            {item.video?.user?.channel_name}
+                        <TouchableOpacity onPress={() => router.push(`/details/video/${item.video?.id}`)}>
+                          <Image
+                            style={[
+                              tw`rounded-xl`,
+                              { width: _Width * 0.4, height: _HIGHT * 0.1 },
+                            ]}
+                            source={{ uri: item?.video?.thumbnail }}
+                          />
+                          <Text
+                            style={tw`text-base font-poppinsMedium py-1 text-secondaryBlack `}
+                          >
+                            {item.video?.title?.split(" ").slice(0, 4).join(" ")}...
                           </Text>
-                          {/* Delete Button */}
-                          <TouchableOpacity onPress={() => handleDeleteVideo("history", item?.id)}>
-                            <SvgXml xml={IconCansel} width={20} height={20} />
-                          </TouchableOpacity>
-                        </View>
+                          <View style={tw`flex-row justify-between w-full items-center`}>
+                            <Text style={tw`text-sm font-poppins  text-secondaryBlack `}>
+                              {item.video?.user?.channel_name}
+                            </Text>
+                            {/* Delete Button */}
+                            <TouchableOpacity onPress={() => handleDeleteVideo("history", item?.id)}>
+                              <SvgXml xml={IconCansel} width={20} height={20} />
+                            </TouchableOpacity>
+                          </View>
+                        </TouchableOpacity>
                       </View>
                     )
                   }}
@@ -210,26 +212,28 @@ const Account = () => {
                   horizontal
                   renderItem={({ item }) => (
                     <View style={[tw` mr-4`, { width: _Width * 0.4 }]}>
-                      <Image
-                        style={[
-                          tw`rounded-xl`,
-                          { width: _Width * 0.4, height: _HIGHT * 0.1 },
-                        ]}
-                        source={{ uri: item?.video?.thumbnail }}
-                      />
-                      <Text
-                        style={tw`text-base font-poppinsMedium py-1 text-secondaryBlack `}
-                      >
-                        {item.video?.title?.split(" ").slice(0, 4).join(" ")}...
-                      </Text>
-                      <View style={tw`flex-row justify-between w-full items-center`}>
-                        <Text style={tw`text-sm font-poppins  text-secondaryBlack `}>
-                          {item?.video?.user.channel_name}
+                      <TouchableOpacity onPress={() => router.push(`/details/video/${item.video?.id}`)} >
+                        <Image
+                          style={[
+                            tw`rounded-xl`,
+                            { width: _Width * 0.4, height: _HIGHT * 0.1 },
+                          ]}
+                          source={{ uri: item?.video?.thumbnail }}
+                        />
+                        <Text
+                          style={tw`text-base font-poppinsMedium py-1 text-secondaryBlack `}
+                        >
+                          {item.video?.title?.split(" ").slice(0, 4).join(" ")}...
                         </Text>
-                        <TouchableOpacity onPress={() => handleDeleteVideo("like", item?.id)}>
-                          <SvgXml xml={IconCansel} width={20} height={20} />
-                        </TouchableOpacity>
-                      </View>
+                        <View style={tw`flex-row justify-between w-full items-center`}>
+                          <Text style={tw`text-sm font-poppins  text-secondaryBlack `}>
+                            {item?.video?.user.channel_name}
+                          </Text>
+                          <TouchableOpacity onPress={() => handleDeleteVideo("like", item?.id)}>
+                            <SvgXml xml={IconCansel} width={20} height={20} />
+                          </TouchableOpacity>
+                        </View>
+                      </TouchableOpacity>
                     </View>
                   )}
                 />

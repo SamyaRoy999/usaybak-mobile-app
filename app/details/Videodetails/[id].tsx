@@ -5,15 +5,15 @@ import { useDeleteVideoMutation } from '@/redux/apiSlices/Account/accountSlice'
 import { useMy_videos_detailsQuery } from '@/redux/apiSlices/MyVideo/myvideoSlice'
 import { useCommentDeleteMutation, useCommentsQuery, useRepliesQuery } from '@/redux/apiSlices/videoDetails/videoDetailsSlice'
 import { _Width } from '@/utils/utils'
-import { useEvent } from 'expo'
 import { Image } from 'expo-image'
-import { router, useLocalSearchParams } from 'expo-router'
+import { router, useFocusEffect, useLocalSearchParams } from 'expo-router'
 import { useVideoPlayer, VideoView } from 'expo-video'
-import React from 'react'
+import React, { useCallback, useEffect, useRef } from 'react'
 import { ActivityIndicator, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { ALERT_TYPE, Toast } from 'react-native-alert-notification'
 import { ScrollView } from 'react-native-gesture-handler'
 import { SvgXml } from 'react-native-svg'
+import YoutubeIframe from 'react-native-youtube-iframe'
 
 const videodetails = () => {
     const [history, setHistory] = React.useState(false);
@@ -23,9 +23,17 @@ const videodetails = () => {
     const [commentID, setCommentID] = React.useState()
     const [deleteCommentModalVisible, setDeleteCommentModalVisible] = React.useState(false)
     const [selectedCommentId, setSelectedCommentId] = React.useState()
+    const [isYoutubeVideo, setIsYoutubeVideo] = React.useState(false);
+    const [youtubeVideoId, setYoutubeVideoId] = React.useState('');
+    const isPlayerInitialized = useRef(false);
+    const playerRef = useRef<any>(null);
 
     const { id } = useLocalSearchParams();
-    const { data: singleVideo, isLoading } = useMy_videos_detailsQuery({ id });
+    const { data: singleVideo, isLoading, refetch:singleVideoRefetch } = useMy_videos_detailsQuery({ id });
+    // const { type } = singleVideo?.data
+
+    console.log(singleVideo);
+
     const {
         data: commentsData,
         isLoading: isLoadingComment
@@ -39,9 +47,15 @@ const videodetails = () => {
     } = useRepliesQuery({
         comment_id: commentID,
     });
-    console.log("commentsData", repliesData, "commentsData");
     const [deleteVideo] = useDeleteVideoMutation()
     const [commentDelete] = useCommentDeleteMutation()
+
+    useFocusEffect(
+    useCallback(() => {
+      singleVideoRefetch()
+     
+    }, [])
+  )
     // Comment delete function
     const handleDeleteComment = async () => {
         if (!selectedCommentId) return;
@@ -74,18 +88,53 @@ const videodetails = () => {
             });
         }
     }
-    const player = useVideoPlayer(singleVideo?.data?.video || "", (player) => {
-        player.loop = true;
-        player.play();
+
+    const player = useVideoPlayer(singleVideo?.data?.type === 'link' ? "" : (singleVideo?.data?.video || ""), (player) => {
+        if (!isPlayerInitialized.current && singleVideo?.data?.type !== 'link') {
+            player.loop = true;
+            player.play();
+            isPlayerInitialized.current = true;
+        }
     });
+    useFocusEffect(
+        useCallback(() => {
+            if (playerRef.current && isPlayerInitialized.current && singleVideo?.data?.type !== 'link') {
+                try {
+                    playerRef.current.play();
+                } catch (error) {
+                    console.log("Player already released");
+                }
+            }
 
+            return () => {
+                if (playerRef.current && isPlayerInitialized.current && singleVideo?.data?.type !== 'link') {
+                    try {
+                        playerRef.current.pause();
+                    } catch (error) {
+                        console.log("Player already released during cleanup");
+                    }
+                }
+            };
+        }, [singleVideo?.data?.type])
+    );
+    useEffect(() => {
+        // Check if it's a YouTube video
+        if (singleVideo?.data?.link && (singleVideo?.data.link.includes('youtube.com') || singleVideo?.data.link.includes('youtu.be'))) {
+            setIsYoutubeVideo(true);
 
-    const { isPlaying } = useEvent(player, "playingChange", {
-        isPlaying: player.playing,
-    });
+            // Extract YouTube video ID
+            const youtubeId = extractYoutubeId(singleVideo?.data.link);
+            if (youtubeId) {
+                setYoutubeVideoId(youtubeId);
+            }
+        }
+    }, [singleVideo?.data]);
 
-    if (!singleVideo) return null;
-
+    const extractYoutubeId = (url: string) => {
+        const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
+        const match = url.match(regExp);
+        return (match && match[7].length === 11) ? match[7] : null;
+    };
     const hendelDeleteVideo = async () => {
         try {
             const res = await deleteVideo(id).unwrap();
@@ -179,12 +228,27 @@ const videodetails = () => {
                 {/* video details */}
                 {singleVideo && (
                     <View style={tw``}>
-                        <VideoView
-                            style={styles.video}
-                            player={player}
-                            allowsFullscreen
-                            allowsPictureInPicture
-                        />
+                        {/* Video Player */}
+                        {isYoutubeVideo ? (
+                            <YoutubeIframe
+                                height={250}
+                                width={_Width}
+                                videoId={youtubeVideoId}
+                                play={true}
+                                onChangeState={(event: any) => {
+                                    if (event === 'ended') {
+                                        // Handle video end
+                                    }
+                                }}
+                            />
+                        ) : (
+                            <VideoView
+                                style={styles.video}
+                                player={player}
+                                allowsFullscreen
+                                allowsPictureInPicture
+                            />
+                        )}
                         <View style={tw`px-4`}>
 
                             <Text style={tw`font-poppinsMedium text-xl py-5`}>Title</Text>
@@ -355,7 +419,7 @@ const videodetails = () => {
                                         <TouchableOpacity
                                             style={tw`mt-8`}
                                             onPress={() => {
-                                                setSelectedCommentId(comment.id); 
+                                                setSelectedCommentId(comment.id);
                                                 setDeleteCommentModalVisible(true);
                                             }}
                                         >

@@ -33,12 +33,13 @@ const baseQueryWithRath: BaseQueryFn<BaseQueryArgs, unknown, unknown> = async (
       },
     });
 
-    // (result.data);
-    // Check if response data is a string and malformed
+    // ........Check if response data is a string and malformed.......//
+
     if (result?.status === 403) {
       AsyncStorage.removeItem("token");
       AsyncStorage.removeItem("user");
     }
+    console.log(token);
 
     if (result?.status === 401) {
       AsyncStorage.removeItem("token");
@@ -74,7 +75,8 @@ const baseQueryWithRath: BaseQueryFn<BaseQueryArgs, unknown, unknown> = async (
   }
 };
 
-// Define the `createApi` with appropriate types
+// .......Define the `createApi` with appropriate types....//
+
 export const api = createApi({
   reducerPath: "api",
   baseQuery: baseQueryWithRath,

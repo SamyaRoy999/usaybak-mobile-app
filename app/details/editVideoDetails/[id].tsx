@@ -5,19 +5,17 @@ import {
     IconErowBack,
     IconLock,
     IconReplece,
-    IconWorld,
-    IconWornoingDelete,
+    IconWorld
 } from '@/icons/Icon';
 import tw from '@/lib/tailwind';
 import { useMy_videos_detailsQuery, useUpdateVideoMutation } from '@/redux/apiSlices/MyVideo/myvideoSlice';
 import { useCategoriesQuery } from '@/redux/apiSlices/UploadVideo/uploadVideoSices';
 import { _Width } from '@/utils/utils';
-import { useEvent } from 'expo';
 import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
-import { router, useLocalSearchParams } from 'expo-router';
+import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { useVideoPlayer, VideoView } from 'expo-video';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
     FlatList,
     KeyboardAvoidingView,
@@ -31,6 +29,7 @@ import {
 } from 'react-native';
 import { ALERT_TYPE, AlertNotificationRoot, Toast } from "react-native-alert-notification";
 import { SvgXml } from 'react-native-svg';
+import YoutubeIframe from 'react-native-youtube-iframe';
 
 const EditVideoDetails = () => {
     const [stateModalVisible, setStateModalVisible] = useState(false);
@@ -48,11 +47,16 @@ const EditVideoDetails = () => {
     const [description, setDescription] = useState('');
     const [selectedTags, setSelectedTags] = React.useState('');
     const [tags, setTags] = React.useState<string[]>([]);
+    const [isYoutubeVideo, setIsYoutubeVideo] = React.useState(false);
+    const [youtubeVideoId, setYoutubeVideoId] = React.useState('');
+    const [youtubeLink, setYoutubeLink] = React.useState('');
+    const playerRef = useRef<any>(null);
+    const isPlayerInitialized = useRef(false);
 
     const { id } = useLocalSearchParams();
 
     // API CALL
-    const { data: singleVideo } = useMy_videos_detailsQuery({ id });
+    const { data: singleVideo, refetch: singleVideoRefetch } = useMy_videos_detailsQuery({ id });
     const {
         category,
         city,
@@ -62,14 +66,21 @@ const EditVideoDetails = () => {
         description: initialDescription,
         title: initialTitle,
         visibility: visibilityApi,
-        tags: initialTags // Add tags from API response
+        tags: initialTags,
+        link,
+        type
     } = singleVideo?.data || {};
 
     const { data: categories, isLoading, refetch } = useCategoriesQuery({});
     const categoryData = categories?.data?.data;
     const [updateVideo] = useUpdateVideoMutation();
 
-    // Initialize form fields with API data
+    // .........Initialize form fields with API data.........//
+    useFocusEffect(
+        useCallback(() => {
+            singleVideoRefetch()
+        }, [])
+    )
     useEffect(() => {
         if (singleVideo?.data) {
             setTitle(initialTitle || '');
@@ -79,7 +90,7 @@ const EditVideoDetails = () => {
             setSelectedCategory(category?.name || '');
             setCategoryID(category?.id || '');
             setSelectedVisibility(visibilityApi || '');
-
+            setYoutubeLink(link || '');
             // Initialize tags from API
             if (initialTags) {
                 setTags(Array.isArray(initialTags) ? initialTags : [initialTags]);
@@ -101,7 +112,7 @@ const EditVideoDetails = () => {
         }
     };
 
-    // UPLOAD VIDEO
+    // UPLOAD VIDEO - Only for non-YouTube videos
     const pickVideo = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ['videos'],
@@ -115,20 +126,80 @@ const EditVideoDetails = () => {
         }
     };
 
-    const player = useVideoPlayer(
-        selectedVideos ? selectedVideos.uri : video,
-        (player) => {
+    // Initialize video player only for non-YouTube videos
+    const videoSource = type === 'link'
+        ? video
+        : selectedVideos
+            ? { uri: selectedVideos.uri }
+            : video;
+    const player = useVideoPlayer(videoSource, (player) => {
+        if (!isPlayerInitialized.current && type !== 'link') {
             player.loop = true;
             player.play();
+            playerRef.current = player;
+            isPlayerInitialized.current = true;
         }
-    );
-
-    const { isPlaying } = useEvent(player, 'playingChange', {
-        isPlaying: player.playing,
     });
 
-    const handleSaveChanges = async () => {
+    useFocusEffect(
+        useCallback(() => {
+            if (playerRef.current && isPlayerInitialized.current && type !== 'link') {
+                try {
+                    playerRef.current.play();
+                } catch (error) {
+                    console.log("Player already released");
+                }
+            }
 
+            return () => {
+                if (playerRef.current && isPlayerInitialized.current && type !== 'link') {
+                    try {
+                        playerRef.current.pause();
+                    } catch (error) {
+                        console.log("Player already released during cleanup");
+                    }
+                }
+            };
+        }, [type])
+    );
+
+    useEffect(() => {
+        return () => {
+            // Clean up player when component unmounts
+            if (playerRef.current && isPlayerInitialized.current && type !== 'link') {
+                try {
+                    playerRef.current.pause();
+                    playerRef.current.seekTo(0);
+                    isPlayerInitialized.current = false;
+                } catch (error) {
+                    console.log("Player already released during unmount");
+                }
+            }
+        };
+    }, [type]);
+
+    useEffect(() => {
+        // Check if it's a YouTube video
+        if (type === 'link' && link && (link.includes('youtube.com') || link.includes('youtu.be'))) {
+            setIsYoutubeVideo(true);
+
+            // Extract YouTube video ID
+            const youtubeId = extractYoutubeId(link);
+            if (youtubeId) {
+                setYoutubeVideoId(youtubeId);
+            }
+        } else {
+            setIsYoutubeVideo(false);
+        }
+    }, [type, link]);
+
+    const extractYoutubeId = (url: string) => {
+        const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
+        const match = url.match(regExp);
+        return (match && match[7].length === 11) ? match[7] : null;
+    };
+
+    const handleSaveChanges = async () => {
         let formData = new FormData();
 
         formData.append('title', title);
@@ -136,27 +207,34 @@ const EditVideoDetails = () => {
         formData.append('states', selectedState);
         formData.append('city', selectedCity);
         formData.append('category_id', categoryID);
+
         if (tags.length > 0) {
             formData.append('tags', JSON.stringify(tags));
         }
+
         formData.append('visibility', selectedVisibility);
         formData.append('_method', 'PUT');
+
+        // For YouTube videos, add the link
+        if (type === 'link') {
+            formData.append('link', youtubeLink);
+        }
 
         // Add thumbnail file if selected
         if (image?.uri) {
             formData.append("thumbnail", {
                 uri: image.uri,
-                name: image.fileName,
-                type: image.mimeType,
+                name: image.fileName || `thumbnail_${Date.now()}.jpg`,
+                type: image.mimeType || 'image/jpeg',
             } as any);
         }
 
-        // Add video file if selected
-        if (selectedVideos?.uri) {
+        // Add video file if selected (only for non-YouTube videos)
+        if (type !== 'link' && selectedVideos?.uri) {
             formData.append('video', {
                 uri: selectedVideos.uri,
-                name: selectedVideos.fileName,
-                type: selectedVideos.mimeType,
+                name: selectedVideos.fileName || `video_${Date.now()}.mp4`,
+                type: selectedVideos.mimeType || 'video/mp4',
             } as any);
         }
 
@@ -165,6 +243,7 @@ const EditVideoDetails = () => {
                 id: id,
                 data: formData,
             }).unwrap();
+
             if (result.status) {
                 Toast.show({
                     type: ALERT_TYPE.SUCCESS,
@@ -211,8 +290,6 @@ const EditVideoDetails = () => {
     return (
         <KeyboardAvoidingView style={tw`flex-1 bg-primary`} behavior="padding">
             <AlertNotificationRoot>
-
-
                 <ScrollView showsVerticalScrollIndicator={false}>
                     {/* Header */}
                     <View style={tw`relative mt-5`}>
@@ -223,28 +300,56 @@ const EditVideoDetails = () => {
                             >
                                 <SvgXml xml={IconBackLeft} />
                             </TouchableOpacity>
-                            <Text style={tw`font-poppinsMedium text-xl`}>Replace video</Text>
+                            <Text style={tw`font-poppinsMedium text-xl`}>Edit video details</Text>
                             <View></View>
                         </View>
                     </View>
 
                     {/* Video Player */}
-                    <VideoView
-                        style={styles.video}
-                        player={player}
-                        allowsFullscreen
-                        allowsPictureInPicture
-                    />
+                    {isYoutubeVideo && youtubeVideoId ? (
+                        <YoutubeIframe
+                            height={250}
+                            width={_Width}
+                            videoId={youtubeVideoId}
+                            play={true}
+                            onChangeState={(event: any) => {
+                                if (event === 'ended') {
+                                    // Handle video end
+                                }
+                            }}
+                        />
+                    ) : (
+                        <VideoView
+                            style={styles.video}
+                            player={player}
+                            allowsFullscreen
+                            allowsPictureInPicture
+                        />
+                    )}
 
                     <View style={tw`p-5`}>
-                        {/* Replace Video Button */}
-                        <TouchableOpacity
-                            onPress={pickVideo}
-                            style={tw`py-3 flex-row gap-4 w-4/7 items-center border border-[#3B97D3] px-6 rounded-full bg-primary`}
-                        >
-                            <SvgXml xml={IconReplece} />
-                            <Text style={tw`font-poppins text-base text-[#3B97D3]`}>Replace video</Text>
-                        </TouchableOpacity>
+                        {/* YouTube Link Input (for YouTube videos) */}
+                        {type === 'link' ? (
+                            <View style={tw`mb-4`}>
+                                <Text style={tw`font-poppinsMedium text-base mb-2`}>YouTube Link</Text>
+                                <TextInput
+                                    style={tw`border border-primaryGray px-6 py-4 rounded-full`}
+                                    placeholder="YouTube video URL"
+                                    placeholderTextColor="gray"
+                                    value={youtubeLink}
+                                    onChangeText={setYoutubeLink}
+                                />
+                            </View>
+                        ) : (
+                            /* Replace Video Button (for uploaded videos) */
+                            <TouchableOpacity
+                                onPress={pickVideo}
+                                style={tw`py-3 flex-row gap-4 w-4/7 items-center border border-[#3B97D3] px-6 rounded-full bg-primary mb-4`}
+                            >
+                                <SvgXml xml={IconReplece} />
+                                <Text style={tw`font-poppins text-base text-[#3B97D3]`}>Replace video</Text>
+                            </TouchableOpacity>
+                        )}
 
                         {/* State */}
                         <View style={tw`pt-4`}>
@@ -252,7 +357,7 @@ const EditVideoDetails = () => {
                                 onPress={() => setStateModalVisible(true)}
                                 style={tw`flex-row items-center justify-between border border-primaryGray px-6 py-3 rounded-full `}
                             >
-                                <Text style={tw`font-poppins text-base`}>{selectedState ? selectedState : states}</Text>
+                                <Text style={tw`font-poppins text-base`}>{selectedState || states || 'Select State'}</Text>
                                 <SvgXml xml={IconErowBack} />
                             </TouchableOpacity>
                         </View>
@@ -263,7 +368,7 @@ const EditVideoDetails = () => {
                                 onPress={() => setCityModalVisible(true)}
                                 style={tw`flex-row items-center justify-between border border-primaryGray px-6 py-3 rounded-full `}
                             >
-                                <Text style={tw`font-poppins text-base`}>{selectedCity ? selectedCity : city}</Text>
+                                <Text style={tw`font-poppins text-base`}>{selectedCity || city || 'Select City'}</Text>
                                 <SvgXml xml={IconErowBack} />
                             </TouchableOpacity>
                         </View>
@@ -276,13 +381,14 @@ const EditVideoDetails = () => {
                             >
                                 {isLoading ? (
                                     <Text style={tw`flex-1 justify-center items-center`}>loading...</Text>
-                                )
-                                    : (<Text style={tw`font-poppins text-base`}>{selectedCategory ? selectedCategory : category?.name}</Text>)
-                                }
+                                ) : (
+                                    <Text style={tw`font-poppins text-base`}>{selectedCategory || category?.name || 'Select Category'}</Text>
+                                )}
                                 <SvgXml xml={IconErowBack} />
                             </TouchableOpacity>
                         </View>
-                        {/* tags */}
+
+                        {/* Tags */}
                         <View style={tw`py-5 `}>
                             <View
                                 style={tw`border border-gray-300 flex-col justify-center pl-7 relative rounded-3xl p-4`}
@@ -315,13 +421,15 @@ const EditVideoDetails = () => {
                                     />
                                 </View>
                             </View>
-
                         </View>
+
                         {/* Title & Description */}
                         <View style={tw`mt-5`}>
                             <TextInput
                                 value={title}
                                 onChangeText={setTitle}
+                                placeholder="Video title"
+                                placeholderTextColor="gray"
                                 style={tw`border border-gray-300 font-poppins text-secondaryBlack text-base rounded-full px-4 py-3 mb-4`}
                             />
                             <TextInput
@@ -329,26 +437,29 @@ const EditVideoDetails = () => {
                                 onChangeText={setDescription}
                                 multiline
                                 textAlignVertical="top"
+                                placeholder="Video description"
+                                placeholderTextColor="gray"
                                 style={tw`border border-gray-300 font-poppins text-base text-secondaryBlack rounded-2xl px-4 py-3 h-52`}
                             />
                         </View>
 
                         {/* Thumbnail */}
                         <View style={tw`items-center`}>
-                            {
-                                image ?
-                                    <Image
-                                        source={{
-                                            uri: image.uri
-                                        }}
-                                        style={tw`w-full h-48 rounded-md my-4 mx-5`}
-
-                                    /> : <Image source={{ uri: thumbnail }} style={tw`w-full h-48 rounded-md my-4 mx-5`} />
-                            }
+                            {image ? (
+                                <Image
+                                    source={{ uri: image.uri }}
+                                    style={tw`w-full h-48 rounded-md my-4 mx-5`}
+                                />
+                            ) : (
+                                <Image
+                                    source={{ uri: thumbnail }}
+                                    style={tw`w-full h-48 rounded-md my-4 mx-5`}
+                                />
+                            )}
                         </View>
 
                         <TouchableOpacity
-                            style={tw`py-3 flex-row gap-4 w-5/7 items-center border border-[#3B97D3] px-6 rounded-full bg-primary`}
+                            style={tw`py-3 flex-row gap-4 w-5/7 items-center border border-[#3B97D3] px-6 rounded-full bg-primary mb-4`}
                             onPress={pickImage}
                         >
                             <SvgXml xml={IconReplece} />
@@ -363,7 +474,7 @@ const EditVideoDetails = () => {
                                 onPress={() => setVisibility(true)}
                                 style={tw`flex-row items-center justify-between border border-primaryGray px-6 py-3 rounded-full `}
                             >
-                                <Text style={tw`font-poppins text-base`}>{selectedVisibility ? selectedVisibility : visibilityApi}</Text>
+                                <Text style={tw`font-poppins text-base`}>{selectedVisibility || visibilityApi || 'Select Visibility'}</Text>
                                 <SvgXml xml={IconErowBack} />
                             </TouchableOpacity>
                         </View>
@@ -378,43 +489,6 @@ const EditVideoDetails = () => {
                             </TouchableOpacity>
                         </View>
                     </View>
-
-                    {/* Delete Modal */}
-
-                    <Modal
-                        visible={stateModalVisible}
-                        transparent={true}
-                        animationType="slide"
-                        onRequestClose={() => setStateModalVisible(false)}
-                    >
-                        <View style={styles.modalContainer}>
-                            <View style={tw`bg-primary rounded-t-3xl absolute bottom-0 w-full h-2/6`}>
-                                <View style={tw`bg-secondary w-full h-16 rounded-t-3xl flex-row items-center justify-between p-5`}>
-                                    <View></View>
-                                    <Text style={tw`text-primary text-xl font-poppins`}>Delete video</Text>
-                                    <TouchableOpacity onPress={() => setStateModalVisible(false)}>
-                                        <SvgXml xml={IconClose} />
-                                    </TouchableOpacity>
-                                </View>
-
-                                <ScrollView contentContainerStyle={tw`px-4`} showsVerticalScrollIndicator={false}>
-                                    <View style={tw`items-center pt-5`}>
-                                        <SvgXml xml={IconWornoingDelete} />
-                                        <Text style={tw`font-poppinsMedium text-lg text-secondary pt-5`}>Are you sure to delete this video?</Text>
-                                        <Text style={tw`font-poppinsMedium text-sm text-primaryGrayDeep pt-1 pb-7`}>Users can’t find your video anymore.</Text>
-                                    </View>
-                                    <View style={tw`flex-row justify-center gap-3`}>
-                                        <TouchableOpacity style={tw`w-2/6 py-5 border flex-row rounded-full justify-center border-primaryGray`}>
-                                            <Text style={tw`text-sm font-poppinsMedium`}>Cancel</Text>
-                                        </TouchableOpacity>
-                                        <TouchableOpacity style={tw`w-2/6 bg-secondary py-5 border flex-row rounded-full justify-center border-primaryGray`}>
-                                            <Text style={tw`text-sm text-primary font-poppinsMedium`}>Yes, Delete</Text>
-                                        </TouchableOpacity>
-                                    </View>
-                                </ScrollView>
-                            </View>
-                        </View>
-                    </Modal>
 
                     {/* State Modal */}
                     <Modal
@@ -440,7 +514,7 @@ const EditVideoDetails = () => {
                                             setSelectedState(state);
                                             setStateModalVisible(false);
                                         }}
-                                        style={tw` bg-black/50 justify-center `}
+                                        style={tw`justify-center`}
                                     >
                                         <View style={tw`bg-primary flex-col justify-center border border-dashed border-primaryGray py-4 items-center `}>
                                             <Text style={tw`font-poppins text-base`}>{state}</Text>
@@ -475,7 +549,7 @@ const EditVideoDetails = () => {
                                             setSelectedCity(city);
                                             setCityModalVisible(false);
                                         }}
-                                        style={tw` bg-black/50 justify-center `}
+                                        style={tw`justify-center`}
                                     >
                                         <View style={tw`bg-primary flex-col justify-center border border-dashed border-primaryGray py-4 items-center `}>
                                             <Text style={tw`font-poppins text-base`}>{city}</Text>
@@ -505,7 +579,7 @@ const EditVideoDetails = () => {
                                 </View>
                                 <FlatList
                                     data={categoryData}
-                                    keyExtractor={(item) => item.id}
+                                    keyExtractor={(item) => item.id.toString()}
                                     renderItem={({ item }) => (
                                         <TouchableOpacity
                                             onPress={() => {
@@ -526,7 +600,6 @@ const EditVideoDetails = () => {
                     </Modal>
 
                     {/* Visibility Modal */}
-
                     <Modal
                         visible={visibility}
                         transparent={true}
@@ -548,7 +621,7 @@ const EditVideoDetails = () => {
                                         setSelectedVisibility('Everyone');
                                         setVisibility(false);
                                     }}
-                                    style={tw` bg-black/50 justify-center `}
+                                    style={tw`justify-center`}
                                 >
                                     <View style={tw`bg-primary flex-col justify-center border border-dashed border-primaryGray py-4 items-center `}>
                                         <View style={tw`flex-row items-center justify-center gap-3`}>
@@ -562,7 +635,7 @@ const EditVideoDetails = () => {
                                         setSelectedVisibility('Only me');
                                         setVisibility(false);
                                     }}
-                                    style={tw` bg-black/50 justify-center `}
+                                    style={tw`justify-center`}
                                 >
                                     <View style={tw`bg-primary flex-col justify-center border border-dashed border-primaryGray py-4 items-center `}>
                                         <View style={tw`flex-row items-center justify-center gap-3`}>

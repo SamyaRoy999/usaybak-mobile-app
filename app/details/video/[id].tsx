@@ -54,8 +54,8 @@ const SingleVideo = () => {
   const [reply, setReply] = useState('');
   const [page, setPage] = useState(1);
   const [commentID, setCommentID] = useState()
-  const [isYoutubeVideo, setIsYoutubeVideo] = useState(false); // Added missing state
-  const [youtubeVideoId, setYoutubeVideoId] = useState(''); // Added missing state
+  const [isYoutubeVideo, setIsYoutubeVideo] = useState(false); 
+  const [youtubeVideoId, setYoutubeVideoId] = useState(''); 
   const playerRef = useRef<any>(null);
   const { data, isLoading, error } = useVideodetailQuery({ id });
 

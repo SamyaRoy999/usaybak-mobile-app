@@ -53,11 +53,20 @@ const signUp = () => {
               name: Yup.string().required("Name is required"),
               email: Yup.string().email().required("Email is required"),
               password: Yup.string()
-                // .min(6, "Password is too sort ")
                 .required("Password is required"),
+                // .min(8, "Password must be at least 8 characters long")
+                // .matches(/[a-z]/, "Password must contain at least one lowercase letter")
+                // .matches(/[A-Z]/, "Password must contain at least one uppercase letter")
+                // .matches(/[0-9]/, "Password must contain at least one number")
+                // .matches(/[!@#$%^&*(),.?":{}|<>]/, "Password must contain at least one special character"),
+
               c_password: Yup.string()
-                // .min(6, "Password is too sort ")
-                .required("Password is required"),
+                .required("Confirm Password is required"),
+                // .min(8, "Password must be at least 8 characters long")
+                // .matches(/[a-z]/, "Password must contain at least one lowercase letter")
+                // .matches(/[A-Z]/, "Password must contain at least one uppercase letter")
+                // .matches(/[0-9]/, "Password must contain at least one number")
+                // .matches(/[!@#$%^&*(),.?":{}|<>]/, "Password must contain at least one special character"),
             })}
             onSubmit={async (values) => {
               const data = {
@@ -78,8 +87,8 @@ const signUp = () => {
                     textBody: res?.message,
                     autoClose: 2000,
                   });
-                  (values.email ,"signUp page 82");
-                  
+                  (values.email, "signUp page 82");
+
                   router.push(`/auth/verify?email=${values?.email}`);
                 } else {
                   Toast.show({
@@ -133,7 +142,7 @@ const signUp = () => {
                         <TextInput
                           style={tw`border border-primaryGray rounded-full font-poppins text-base px-5 h-14`}
                           placeholder="Channel Name"
-                            placeholderTextColor="black"
+                          placeholderTextColor="black"
                           value={values.channel_name}
                           onChangeText={(txt) =>
                             setFieldValue("channel_name", txt)
@@ -150,7 +159,7 @@ const signUp = () => {
                         <TextInput
                           style={tw`border border-primaryGray rounded-full font-poppins text-base px-5 h-14`}
                           placeholder="name"
-                            placeholderTextColor="black"
+                          placeholderTextColor="black"
                           value={values.name}
                           onChangeText={(txt) => setFieldValue("name", txt)}
                         />
@@ -179,7 +188,7 @@ const signUp = () => {
                         <TextInput
                           style={tw`border border-primaryGray rounded-full font-poppins text-base px-5 h-14`}
                           placeholder="Password"
-                            placeholderTextColor="black"
+                          placeholderTextColor="black"
                           secureTextEntry={!showNewPassword}
                           value={values.password}
                           onChangeText={(txt) => setFieldValue("password", txt)}
@@ -202,7 +211,7 @@ const signUp = () => {
                         <TextInput
                           style={tw`border border-primaryGray rounded-full font-poppins text-base px-5 h-14`}
                           placeholder="Confirm password"
-                            placeholderTextColor="black"
+                          placeholderTextColor="black"
                           secureTextEntry={!showConfirmPassword}
                           value={values.c_password}
                           onChangeText={(txt) =>

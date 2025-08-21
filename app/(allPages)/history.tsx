@@ -11,7 +11,6 @@ import {
 import tw from '@/lib/tailwind';
 import { useAll_delete_watch_historyMutation, useHistoryVideoDeleteMutation, useLazyHistoryVideoQuery, usePause_play_watchMutation } from '@/redux/apiSlices/Account/accountSlice';
 import { _HIGHT, _Width } from '@/utils/utils';
-
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import React, { useCallback, useEffect, useState } from 'react';
@@ -30,7 +29,6 @@ import { ALERT_TYPE, Toast } from 'react-native-alert-notification';
 import { ScrollView } from 'react-native-gesture-handler';
 import { SvgXml } from 'react-native-svg';
 
-
 const HistoryScreen = () => {
     const [page, setPage] = useState(1);
     const [history, setHistory] = useState<any[]>([]);
@@ -38,43 +36,48 @@ const HistoryScreen = () => {
     const [refreshing, setRefreshing] = useState(false);
     const [settingsVisible, setSettingsVisible] = useState(false);
     const [playPause, setPlayPause] = useState(false);
+    const [search, setSearch] = useState('');
+    const [searchQuery, setSearchQuery] = useState('');
 
     const [fetchHistory, { isLoading, isFetching }] = useLazyHistoryVideoQuery();
     const [historyVideoDelete] = useHistoryVideoDeleteMutation();
     const [all_delete_watch_history] = useAll_delete_watch_historyMutation()
     const [pause_play_watch] = usePause_play_watchMutation()
 
-
-    const loadHistory = useCallback(async () => {
+    const loadHistory = useCallback(async (pageNum = page, searchText = searchQuery) => {
         if (loadingMore || isFetching) return;
         setLoadingMore(true);
         try {
-            const res = await fetchHistory({ page }).unwrap();
+            const params: any = { page: pageNum, per_page: 5 };
+            if (searchText) {
+                params.search = searchText;
+            }
+            
+            const res = await fetchHistory(params).unwrap();
             if (res?.status && res?.data?.data) {
-                setHistory(prev => {
-                    // Filter out duplicates
-                    const newItems = res.data.data.filter((newItem: any) =>
-                        !prev.some(item => item.id === newItem.id)
-                    );
-                    return [...prev, ...newItems];
-                });
-                setPage(prev => prev + 1);
+                if (pageNum === 1) {
+                    setHistory(res.data.data);
+                } else {
+                    setHistory(prev => {
+                        const newItems = res.data.data.filter((newItem: any) =>
+                            !prev.some(item => item.id === newItem.id)
+                        );
+                        return [...prev, ...newItems];
+                    });
+                }
+                setPage(pageNum + 1);
             }
         } catch (e) {
             console.error("History Load Error", e);
         } finally {
             setLoadingMore(false);
         }
-    }, [page, fetchHistory, isFetching]);
+    }, [page, searchQuery, fetchHistory, isFetching]);
 
     const onRefresh = async () => {
         setRefreshing(true);
         try {
-            const res = await fetchHistory({ page: 1 }).unwrap();
-            if (res?.status && res?.data?.data) {
-                setHistory(res.data.data);
-                setPage(2);
-            }
+            await loadHistory(1, searchQuery);
         } catch (err) {
             console.error("Refresh error", err);
         } finally {
@@ -83,11 +86,35 @@ const HistoryScreen = () => {
     };
 
     useEffect(() => {
-        // Only load from API if we don't have persisted data
         if (history.length === 0) {
-            loadHistory();
+            loadHistory(1, searchQuery);
         }
     }, []);
+
+    // Search with debounce
+    useEffect(() => {
+        const timeoutId = setTimeout(() => {
+            if (search !== searchQuery) {
+                setSearchQuery(search);
+                setPage(1);
+                setHistory([]);
+                loadHistory(1, search);
+            }
+        }, 500); // 500ms debounce
+
+        return () => clearTimeout(timeoutId);
+    }, [search]);
+
+    const handleSearchChange = (text: string) => {
+        setSearch(text);
+    };
+
+    const handleSearchSubmit = () => {
+        setSearchQuery(search);
+        setPage(1);
+        setHistory([]);
+        loadHistory(1, search);
+    };
 
     // Clear all history
     const handleClearAllHistory = async () => {
@@ -95,20 +122,14 @@ const HistoryScreen = () => {
             const res = await all_delete_watch_history({}).unwrap();
 
             if (res?.status) {
-                // Clear the local state immediately
                 setHistory([]);
-                // Reset pagination
                 setPage(1);
-
                 Toast.show({
                     type: ALERT_TYPE.SUCCESS,
                     title: "Success",
                     textBody: res.message || "All history cleared successfully",
                     autoClose: 2000,
                 });
-
-                // Optionally refetch to confirm with server
-
             } else {
                 Toast.show({
                     type: ALERT_TYPE.DANGER,
@@ -130,14 +151,11 @@ const HistoryScreen = () => {
 
     // Delete single video
     const handleDeleteVideo = async (id: any) => {
-
         try {
             const res = await historyVideoDelete(id).unwrap();
 
             if (res?.status) {
-                // Remove from local state
                 setHistory(prev => prev.filter(item => item.id !== id));
-
                 Toast.show({
                     type: ALERT_TYPE.SUCCESS,
                     title: "Success",
@@ -153,58 +171,60 @@ const HistoryScreen = () => {
                 });
             }
         } catch (err) {
+            console.error("Delete video error:", err);
         }
     };
 
-    //................... handle_pause_play_watch.................//
-
     const handle_pause_play_watch = async () => {
-        const res = await pause_play_watch({}).unwrap()
-        setPlayPause(res?.pause_watch_history)
-        if (res?.status) {
-            // Remove from local state
-            Toast.show({
-                type: ALERT_TYPE.SUCCESS,
-                title: "Success",
-                textBody: res.message,
-                autoClose: 2000,
-            });
-        } else {
-            Toast.show({
-                type: ALERT_TYPE.DANGER,
-                title: "Error",
-                textBody: res?.message || "Something went wrong!",
-                autoClose: 2000,
-            });
+        try {
+            const res = await pause_play_watch({}).unwrap();
+            setPlayPause(res?.pause_watch_history);
+            if (res?.status) {
+                Toast.show({
+                    type: ALERT_TYPE.SUCCESS,
+                    title: "Success",
+                    textBody: res.message,
+                    autoClose: 2000,
+                });
+            } else {
+                Toast.show({
+                    type: ALERT_TYPE.DANGER,
+                    title: "Error",
+                    textBody: res?.message || "Something went wrong!",
+                    autoClose: 2000,
+                });
+            }
+        } catch (err) {
+            console.error("Pause/play error:", err);
         }
-
-    }
+    };
 
     const renderItem = ({ item }: any) => {
         const video = item?.video;
-
         if (!video) return null;
 
         return (
-            <View style={[tw`flex-row gap-4 mb-6`, { width: '100%' }]}>
-                <Image
-                    style={[tw`rounded-xl`, { width: _Width * 0.35, height: _HIGHT * 0.1 }]}
-                    source={{ uri: video.thumbnail }}
-                />
-                <View style={tw`flex-1 justify-between`}>
-                    <Text style={tw`text-base font-poppinsMedium text-secondaryBlack`}>
-                        {video.title?.split(" ").slice(0, 5).join(" ")}...
-                    </Text>
-                    <View style={tw`flex-row justify-between items-center`}>
-                        <Text style={tw`text-sm font-poppins text-secondaryBlack`}>
-                            {video.views_count} views
+            <TouchableOpacity onPress={() => router.push(`/details/video/${video?.id}`)}>
+                <View style={[tw`flex-row gap-4 mb-6`, { width: '100%' }]}>
+                    <Image
+                        style={[tw`rounded-xl`, { width: _Width * 0.35, height: _HIGHT * 0.1 }]}
+                        source={{ uri: video.thumbnail }}
+                    />
+                    <View style={tw`flex-1 justify-between`}>
+                        <Text style={tw`text-base font-poppinsMedium text-secondaryBlack`}>
+                            {video.title?.split(" ").slice(0, 5).join(" ")}...
                         </Text>
-                        <TouchableOpacity onPress={() => handleDeleteVideo(item.id)}>
-                            <SvgXml xml={IconCansel} />
-                        </TouchableOpacity>
+                        <View style={tw`flex-row justify-between items-center`}>
+                            <Text style={tw`text-sm font-poppins text-secondaryBlack`}>
+                                {video.views_count} views
+                            </Text>
+                            <TouchableOpacity onPress={() => handleDeleteVideo(item.id)}>
+                                <SvgXml xml={IconCansel} />
+                            </TouchableOpacity>
+                        </View>
                     </View>
                 </View>
-            </View>
+            </TouchableOpacity>
         );
     };
 
@@ -239,29 +259,11 @@ const HistoryScreen = () => {
                             <SvgXml xml={IconDelete} />
                             <Text style={tw`font-poppinsMedium text-base`}>Clear all history</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={async () => {
-                            const res = await pause_play_watch({}).unwrap()
-                            
-                            if (res?.status) {
-                                // Remove from local state
-                                Toast.show({
-                                    type: ALERT_TYPE.SUCCESS,
-                                    title: "Success",
-                                    textBody: res.message,
-                                    autoClose: 2000,
-                                });
-                            } else {
-                                Toast.show({
-                                    type: ALERT_TYPE.DANGER,
-                                    title: "Error",
-                                    textBody: res?.message || "Something went wrong!",
-                                    autoClose: 2000,
-                                });
-                            }
-
-                        }} style={tw`flex-row items-start gap-3 pt-3`}>
+                        <TouchableOpacity onPress={handle_pause_play_watch} style={tw`flex-row items-start gap-3 pt-3`}>
                             <SvgXml xml={IconPouse} />
-                            <Text style={tw`font-poppinsMedium text-base`}>Pause watch history</Text>
+                            <Text style={tw`font-poppinsMedium text-base`}>
+                                {playPause ? 'Resume watch history' : 'Pause watch history'}
+                            </Text>
                         </TouchableOpacity>
                     </View>
                 )}
@@ -273,14 +275,22 @@ const HistoryScreen = () => {
                         <TextInput
                             style={tw`flex-1 font-poppins text-base px-4 h-14`}
                             placeholder="Search watch history"
+                            value={search}
+                            onChangeText={handleSearchChange}
+                            onSubmitEditing={handleSearchSubmit}
+                            returnKeyType="search"
                         />
                     </View>
                 </View>
 
                 {/* History List */}
-                {history.length === 0 ? (
+                {isLoading && page === 1 ? (
+                    <ActivityIndicator color="#ED6237" style={tw`my-4`} />
+                ) : history.length === 0 ? (
                     <View style={tw`flex-1 justify-center items-center mt-10`}>
-                        <Text style={tw`font-poppins text-lg`}>No watch history found</Text>
+                        <Text style={tw`font-poppins text-lg`}>
+                            {searchQuery ? 'No results found' : 'No watch history found'}
+                        </Text>
                     </View>
                 ) : (
                     <FlatList
@@ -296,7 +306,7 @@ const HistoryScreen = () => {
                             />
                         }
                         onEndReached={() => {
-                            if (history.length >= 10) {
+                            if (history.length >= 5 && !loadingMore) {
                                 loadHistory();
                             }
                         }}

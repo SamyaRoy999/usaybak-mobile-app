@@ -7,31 +7,47 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Checkbox from "expo-checkbox";
 import { router } from "expo-router";
 import { Formik } from "formik";
-import React from "react";
+import React, { useRef } from "react";
 import {
   Image,
+  Keyboard,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
   Text,
   TextInput,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   View
 } from "react-native";
 import { ALERT_TYPE, AlertNotificationRoot, Toast } from "react-native-alert-notification";
 import { SvgXml } from "react-native-svg";
 import * as Yup from "yup";
+
 const login = () => {
   const [showNewPassword, setShowNewPassword] = React.useState(false);
   const [isChecked, setChecked] = React.useState(false);
-  const [loginUser, loginResults] = useLoginUserMutation()
+  const [loginUser, loginResults] = useLoginUserMutation();
+  const scrollViewRef = useRef<ScrollView>(null);
+
+  const focusNextField = (nextField: any) => {
+    nextField?.current?.focus();
+  };
+
+  const emailRef = useRef<TextInput>(null);
+  const passwordRef = useRef<TextInput>(null);
+
+  const handleFieldFocus = (yPosition: number) => {
+    scrollViewRef.current?.scrollTo({ y: yPosition, animated: true });
+  };
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={tw`flex-1 bg-secondary`}
-    >
-      <ScrollView>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={tw`flex-1 bg-secondary`}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0}
+      >
         <AlertNotificationRoot>
           <Formik
             initialValues={{ email: "", password: "" }}
@@ -70,14 +86,21 @@ const login = () => {
             validationSchema={Yup.object({
               email: Yup.string().email().required("email is required"),
               password: Yup.string()
-                // .min(6, "Password is too sort ")
-                .required("email is required")
-                .uppercase("1 lowercase letter added"),
+                .required("Password is required"),
+                // .min(8, "Password must be at least 8 characters long")
+                // .matches(/[a-z]/, "Password must contain at least one lowercase letter")
+                // .matches(/[A-Z]/, "Password must contain at least one uppercase letter")
+                // .matches(/[0-9]/, "Password must contain at least one number")
+                // .matches(/[!@#$%^&*(),.?":{}|<>]/, "Password must contain at least one special character"),
             })}
           >
             {({ values, setFieldValue, handleSubmit, errors }) => {
               return (
-                <ScrollView showsVerticalScrollIndicator={false}>
+                <ScrollView
+                  ref={scrollViewRef}
+                  showsVerticalScrollIndicator={false}
+                  keyboardShouldPersistTaps="handled"
+                >
                   <SvgXml xml={IconLogin} />
                   <View
                     style={tw`flex-col justify-center w-full items-center my-11`}
@@ -89,7 +112,7 @@ const login = () => {
                       Use your credentials to login
                     </Text>
                   </View>
-                  <View style={tw`bg-primary w-full h-full rounded-t-[40px] `}>
+                  <View style={tw`bg-primary w-full min-h-full rounded-t-[40px] pb-10`}>
                     <View style={tw`flex-row justify-center `}>
                       <Image
                         source={ImgLogo}
@@ -100,11 +123,17 @@ const login = () => {
                     <View>
                       <View style={tw`py-3 px-6`}>
                         <TextInput
+                          ref={emailRef}
                           style={tw`border border-primaryGray rounded-full font-poppins text-base px-5 h-14`}
                           placeholder="Email"
                           placeholderTextColor="black"
                           value={values.email}
                           onChangeText={(txt) => setFieldValue("email", txt)}
+                          keyboardType="email-address"
+                          autoCapitalize="none"
+                          returnKeyType="next"
+                          onSubmitEditing={() => focusNextField(passwordRef)}
+                          onFocus={() => handleFieldFocus(100)}
                         />
                       </View>
                       {errors.email && (
@@ -114,12 +143,16 @@ const login = () => {
                       )}
                       <View style={tw`py-3 px-6 relative`}>
                         <TextInput
+                          ref={passwordRef}
                           style={tw`border border-primaryGray rounded-full font-poppins text-base px-5 h-14`}
                           placeholder="Password"
                           placeholderTextColor="black"
                           secureTextEntry={!showNewPassword}
                           value={values.password}
                           onChangeText={(txt) => setFieldValue("password", txt)}
+                          returnKeyType="done"
+                          onSubmitEditing={handleSubmit}
+                          onFocus={() => handleFieldFocus(150)}
                         />
                         <Entypo
                           name={showNewPassword ? "eye" : "eye-with-line"}
@@ -182,9 +215,9 @@ const login = () => {
                       </View>
                       <SvgXml xml={IconErow} />
                     </TouchableOpacity>
-                    <View style={tw`flex-row justify-center gap-3`}>
+                    <View style={tw`flex-row justify-center gap-3 pb-10`}>
                       <Text style={tw` text-base font-poppinsMedium`}>
-                        Don’t have an account ?
+                        Don't have an account ?
                       </Text>
                       <TouchableOpacity
                         onPress={() => router.push("/auth/signUp")}
@@ -198,12 +231,12 @@ const login = () => {
                     </View>
                   </View>
                 </ScrollView>
-              );
+              )
             }}
           </Formik>
         </AlertNotificationRoot>
-      </ScrollView>
-    </KeyboardAvoidingView >
+      </KeyboardAvoidingView>
+    </TouchableWithoutFeedback>
   );
 };
 

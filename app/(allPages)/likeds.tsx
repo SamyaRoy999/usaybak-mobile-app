@@ -114,25 +114,27 @@ const LikedVideosScreen = () => {
                     keyExtractor={(item, index) => `liked-video-${item.id}-${index}`}
                     scrollEnabled={false}
                     renderItem={({ item }) => (
-                        <View style={tw`flex-row gap-4 px-5 py-3 items-start border-b border-gray-200`}>
-                            <Image
-                                style={[tw`rounded-xl`, { width: _Width * 0.3, height: _HIGHT * 0.1 }]}
-                                source={{ uri: item?.video?.thumbnail }}
-                            />
-                            <View style={tw`flex-1`}>
-                                <Text style={tw`text-base font-poppinsMedium text-secondaryBlack`}>
-                                    {item?.video?.title?.split(' ').slice(0, 5).join(' ')}...
-                                </Text>
-                                <View style={tw`flex-row justify-between items-center mt-2`}>
-                                    <Text style={tw`text-sm text-secondaryBlack`}>
-                                        {item?.video?.views_count || 0} views
+                        <TouchableOpacity onPress={() => router.push(`/details/video/${item.video?.id}`)}>
+                            <View style={tw`flex-row gap-4 px-5 py-3 items-start border-b border-gray-200`}>
+                                <Image
+                                    style={[tw`rounded-xl`, { width: _Width * 0.3, height: _HIGHT * 0.1 }]}
+                                    source={{ uri: item?.video?.thumbnail }}
+                                />
+                                <View style={tw`flex-1`}>
+                                    <Text style={tw`text-base font-poppinsMedium text-secondaryBlack`}>
+                                        {item?.video?.title?.split(' ').slice(0, 5).join(' ')}...
                                     </Text>
-                                    <TouchableOpacity onPress={() => handleDelete(item.id)}>
-                                        <SvgXml xml={IconCansel} />
-                                    </TouchableOpacity>
+                                    <View style={tw`flex-row justify-between items-center mt-2`}>
+                                        <Text style={tw`text-sm text-secondaryBlack`}>
+                                            {item?.video?.views_count || 0} views
+                                        </Text>
+                                        <TouchableOpacity onPress={() => handleDelete(item.id)}>
+                                            <SvgXml xml={IconCansel} />
+                                        </TouchableOpacity>
+                                    </View>
                                 </View>
                             </View>
-                        </View>
+                        </TouchableOpacity>
                     )}
                     refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={['#ED6237']} />}
                     onEndReached={loadMore}

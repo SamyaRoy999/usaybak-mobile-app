@@ -3,7 +3,7 @@ import tw from '@/lib/tailwind'
 import { usePriceGetAllQuery } from '@/redux/apiSlices/Home/homeApiSlices'
 import { useMyProfileQuery } from '@/redux/apiSlices/MyVideo/myvideoSlice'
 import { usePaymentMutation, usePaymentSuccessMutation } from '@/redux/apiSlices/payment/paymentSlice'
-import { useCategoriesQuery, useUpload_videoMutation } from '@/redux/apiSlices/UploadVideo/uploadVideoSices'
+import { useCategoriesQuery, useCityGetQuery, useStateGetQuery, useUpload_videoMutation } from '@/redux/apiSlices/UploadVideo/uploadVideoSices'
 import { CardField, useStripe } from '@stripe/stripe-react-native'
 import * as ImagePicker from 'expo-image-picker'
 import { router } from 'expo-router'
@@ -33,6 +33,7 @@ const youTubeLink = () => {
     const [tags, setTags] = React.useState<string[]>([]);
     const [paymentIntentData, setPaymentIntentData] = React.useState<any>(null);
     const [isProcessing, setIsProcessing] = React.useState(false);
+    const [stateID, setStateID] = React.useState(false);
 
     // ............stripe ..............//
     const { initPaymentSheet, presentPaymentSheet } = useStripe();
@@ -60,6 +61,8 @@ const youTubeLink = () => {
     } = useMyProfileQuery({})
     const userId = userData?.data?.id
 
+    const { data: stateData, isLoading: isStateLoding, refetch: refetchState } = useStateGetQuery({})
+    const { data: cityData, isLoading: isCityLoding, refetch: refetchCity } = useCityGetQuery(stateID)
     // Function to refresh user data
     const refreshUserData = async () => {
         try {
@@ -167,7 +170,7 @@ const youTubeLink = () => {
 
 
     };
-    
+
     //............ Payment ...........//
 
     const handleSetupInitialPayment = async (item: any) => {
