@@ -24,7 +24,7 @@ const results = () => {
                         </View>
                     </TouchableOpacity>
                     <Text style={tw`font-poppinsMedium text-xl `}>
-                        {/* {categoryName} */}
+                        {resultData?.categories?.name}
                     </Text>
                     <View></View>
                 </View>

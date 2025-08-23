@@ -23,8 +23,8 @@ export const accountSlice = api.injectEndpoints({
         }),
         // .............. Like...........//
         likeVideos: builder.query<any, any>({
-            query: () => ({
-                url: `/like_videos?per_page=5`,
+            query: (page) => ({
+                url: `/like_videos?page=${page}`,
                 method: "GET",
             }),
             providesTags: ["account"],
@@ -192,6 +192,7 @@ export const {
     useLazyHistoryVideoQuery,
     useHistoryVideoQuery,
     useLikeVideosQuery,
+    useLazyLikeVideosQuery,
     useHistoryVideoDeleteMutation,
     useLikeVideosDeleteMutation,
     useReportVideoQuery,
