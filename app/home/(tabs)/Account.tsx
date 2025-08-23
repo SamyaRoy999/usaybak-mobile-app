@@ -10,8 +10,8 @@ import {
   IconFAQ,
   IconLike,
   IconLine,
+  IconLogout,
   IconMyvideos,
-  IconOnsite,
   IconProfileView,
   IconReports,
   IconSettings,
@@ -62,14 +62,6 @@ const Account = () => {
       </View>
     );
   }
-  // if (error) {
-  //   return (
-  //     <View style={tw`flex-1 justify-center items-center`}>
-  //       <Text>Error loading Account Data </Text>
-  //     </View>
-  //   );
-  // }
-  console.log("historyVideo", historyVideo.data.data.id, "historyVideo");
 
   // .............. DELETE ............ //
 
@@ -81,9 +73,7 @@ const Account = () => {
         refetch();
       } else if (type === "like") {
         res = await likeVideosDelete(id).unwrap();
-
       }
-
       if (res?.status) {
         Toast.show({
           type: ALERT_TYPE.SUCCESS,
@@ -417,13 +407,13 @@ const Account = () => {
             </TouchableOpacity>
             <TouchableOpacity
               style={tw`flex-row w-full justify-between items-center px-8 py-2 pb-9`}
-              onPress={() => router.push("/(allPages)/onsiteAccount")}
+              onPress={() => router.push("/auth/login")}
             >
               <View style={tw` flex-row gap-2 py-3 rounded-lg`}>
-                <SvgXml xml={IconOnsite} />
+                <SvgXml xml={IconLogout} />
 
                 <Text style={tw`font-poppinsMedium text-base text-secondaryBlack`}>
-                  Onsite account creation
+                  Logout
                 </Text>
               </View>
               <View style={tw``}>
@@ -460,7 +450,6 @@ const Account = () => {
               </Text>
             </TouchableOpacity>
           </View>
-
           <Text style={tw`text-center mb-4 text-base font-poppins`}>or</Text>
 
           <View style={tw`w-full mb-4`}>

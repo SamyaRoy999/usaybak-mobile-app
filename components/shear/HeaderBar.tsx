@@ -13,11 +13,11 @@ const HeaderBar = () => {
       <TouchableOpacity onPress={() => router.push("/home/(tabs)/landingPage")}>
         <Image source={ImgLogo} style={tw`w-28 h-9`} />
       </TouchableOpacity>
-      <View style={tw`bg-secondaryRed100 p-4 rounded-full`}>
-        <TouchableOpacity onPress={() => router.push("/(allPages)/search")}>
+      <TouchableOpacity onPress={() => router.push("/(allPages)/search")}>
+        <View style={tw`bg-secondaryRed100 p-4 rounded-full`}>
           <SvgXml xml={IconSearch} />
-        </TouchableOpacity>
-      </View>
+        </View>
+      </TouchableOpacity>
     </View>
   );
 };

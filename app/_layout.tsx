@@ -64,6 +64,7 @@ export default function RootLayout() {
                 <Stack.Screen name="details/editVideoDetails/[id]" />
                 <Stack.Screen name="details/videoAnalytics/[id]" />
                 <Stack.Screen name="details/channelProfile/[id]" />
+                <Stack.Screen name="details/search/[results]"/>
                 <Stack.Screen name="(allPages)" />
               </Stack>
             </ThemeProvider>

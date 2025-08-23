@@ -51,8 +51,6 @@ export const homeApiSlices = api.injectEndpoints({
             }),
             providesTags: ["uploadVideo"],
         }),
-
-
     }),
 
 });

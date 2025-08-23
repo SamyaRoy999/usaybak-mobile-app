@@ -593,42 +593,47 @@ const youTubeLink = () => {
                             </View>
                         </Modal>
 
-                        {/* State Modal */}
+
+                        {/* State Selection Modal */}
                         <Modal
                             visible={stateModalVisible}
                             transparent={true}
                             animationType="slide"
                             onRequestClose={() => setStateModalVisible(false)}
                         >
-                            <View style={tw`flex-1 justify-end bg-black/50`}>
-                                <View style={tw`bg-primary rounded-t-3xl w-full `}>
-                                    {/* Header */}
-                                    <View style={tw`bg-secondary w-full h-16 rounded-t-3xl flex-row items-center justify-between px-4`}>
-                                        <View></View>
-                                        <Text style={tw`text-primary text-xl font-poppins`}>Select State</Text>
-                                        <TouchableOpacity onPress={() => setStateModalVisible(false)}>
-                                            <SvgXml xml={IconClose} />
-                                        </TouchableOpacity>
+                            <ScrollView showsVerticalScrollIndicator={false}>
+
+                                <View style={tw`flex-1 justify-end bg-black/50`}>
+                                    <View style={tw`bg-primary rounded-t-3xl w-full`}>
+                                        <View style={tw`bg-secondary w-full h-16 rounded-t-3xl flex-row items-center justify-between px-4`}>
+                                            <View></View>
+                                            < Text style={tw`text-primary text-xl font-poppins`}> Select State </Text>
+                                            < TouchableOpacity onPress={() => setStateModalVisible(false)}>
+                                                <SvgXml xml={IconClose} />
+                                            </TouchableOpacity>
+                                        </View>
+
+                                        {
+                                            stateData?.data?.map((state: any) => (
+                                                <TouchableOpacity
+                                                    key={state.id}
+                                                    onPress={() => {
+                                                        setSelectedState(state.name);
+                                                        setStateModalVisible(false);
+                                                        setStateID(state.id);
+                                                    }}
+
+                                                    style={tw`py-4 border-b border-primaryGray`}
+                                                >
+                                                    <Text style={tw`text-center font-poppins text-base`}> {state.name} </Text>
+                                                </TouchableOpacity>
+                                            ))}
                                     </View>
-                                    {['State 1', 'State 2', 'State 3', 'State 4', 'State 5'].map((state, index) => (
-                                        <TouchableOpacity
-                                            key={index}
-                                            onPress={() => {
-                                                setSelectedState(state);
-                                                setStateModalVisible(false);
-                                            }}
-                                            style={tw` bg-black/50 justify-center `}
-                                        >
-                                            <View style={tw`bg-primary flex-col justify-center border border-dashed border-primaryGray py-4 items-center `}>
-                                                <Text style={tw`font-poppins text-base`}>{state}</Text>
-                                            </View>
-                                        </TouchableOpacity>
-                                    ))}
                                 </View>
-                            </View>
+                            </ScrollView>
                         </Modal>
 
-                        {/* City Modal */}
+                        {/* city Selection Modal */}
                         <Modal
                             visible={cityModalVisible}
                             transparent={true}
@@ -636,29 +641,44 @@ const youTubeLink = () => {
                             onRequestClose={() => setCityModalVisible(false)}
                         >
                             <View style={tw`flex-1 justify-end bg-black/50`}>
-                                <View style={tw`bg-primary rounded-t-3xl w-full `}>
-                                    {/* Header */}
+                                <View style={tw`bg-primary rounded-t-3xl w-full max-h-3/4`}>
+                                    {/* Header - Fixed at top */}
                                     <View style={tw`bg-secondary w-full h-16 rounded-t-3xl flex-row items-center justify-between px-4`}>
                                         <View></View>
-                                        <Text style={tw`text-primary text-xl font-poppins`}>Select city</Text>
+                                        <Text style={tw`text-primary text-xl font-poppins`}>Select City</Text>
                                         <TouchableOpacity onPress={() => setCityModalVisible(false)}>
                                             <SvgXml xml={IconClose} />
                                         </TouchableOpacity>
                                     </View>
-                                    {['City 1', 'City 2', 'City 3', 'City 4', 'City 5'].map((city, index) => (
-                                        <TouchableOpacity
-                                            key={index}
-                                            onPress={() => {
-                                                setSelectedCity(city);
-                                                setCityModalVisible(false);
-                                            }}
-                                            style={tw` bg-black/50 justify-center `}
+
+                                    {/* Scrollable Content - Dynamic height based on data */}
+                                    <View style={tw`max-h-64`}>
+                                        <ScrollView
+                                            showsVerticalScrollIndicator={true}
+                                            contentContainerStyle={tw`pb-4`}
                                         >
-                                            <View style={tw`bg-primary flex-col justify-center border border-dashed border-primaryGray py-4 items-center `}>
-                                                <Text style={tw`font-poppins text-base`}>{city}</Text>
-                                            </View>
-                                        </TouchableOpacity>
-                                    ))}
+                                            {cityData?.data.length === 0 ? (
+                                                <Text style={tw`text-center font-poppins text-gray-500 py-4`}>
+                                                    No cities available. Please select a state first.
+                                                </Text>
+                                            ) : (
+                                                cityData?.data.map((city: any) => (
+                                                    <TouchableOpacity
+                                                        key={city.id}
+                                                        onPress={() => {
+                                                            setSelectedCity(city.name);
+                                                            setCityModalVisible(false);
+                                                        }}
+                                                        style={tw`py-4 border-b border-primaryGray`}
+                                                    >
+                                                        <Text style={tw`text-center font-poppins text-base`}>
+                                                            {city.name}
+                                                        </Text>
+                                                    </TouchableOpacity>
+                                                ))
+                                            )}
+                                        </ScrollView>
+                                    </View>
                                 </View>
                             </View>
                         </Modal>
