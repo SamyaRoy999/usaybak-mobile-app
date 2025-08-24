@@ -24,7 +24,7 @@ export const accountSlice = api.injectEndpoints({
         // .............. Like...........//
         likeVideos: builder.query<any, any>({
             query: (page) => ({
-                url: `/like_videos?page=${page}`,
+                url: `/like_videos?per_page=5&page=${page}`,
                 method: "GET",
             }),
             providesTags: ["account"],
