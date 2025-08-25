@@ -48,17 +48,17 @@ const Promotions = () => {
         <Text style={tw`text-3xl font-bold text-center mb-4`}>Promotions</Text>
         {/* Beauty esthetics btn */}
         {promoted?.data.map((item: any) => {
-          if (!item.videos || item.videos.length === 0) {
+          if (!item?.videos || item?.videos?.length === 0) {
             return null;
           }
           return (
-            <View key={item.id}>
+            <View key={item?.id}>
               <View
                 style={tw`flex-row w-full justify-between items-center px-5 py-6`}
               >
                 <View style={tw`bg-secondaryRed100 py-3 px-4 rounded-lg`}>
                   <Text style={tw`font-poppinsMedium text-base text-secondaryBlack`}>
-                    {item.name}
+                    {item?.name}
                   </Text>
                 </View>
                 <View style={tw``}>

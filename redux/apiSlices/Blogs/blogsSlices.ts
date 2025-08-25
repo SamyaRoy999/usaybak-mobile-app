@@ -5,8 +5,8 @@ import { api } from "../../api/baseApi";
 export const blogsSlices = api.injectEndpoints({
     endpoints: (builder) => ({
         blogs: builder.query<any, { page?: number }>({
-            query: ({ page = 1 }) => ({
-                url: `/blogs?per_page=10&page=${page}`,
+            query: ({ page }) => ({
+                url: `/blogs?per_page=5&page=${page}`,
                 method: "GET",
             }),
             providesTags: ["blogs"],
@@ -22,4 +22,4 @@ export const blogsSlices = api.injectEndpoints({
 
 });
 
-export const { useBlogsQuery, useBlogsDetailQuery } = blogsSlices;
+export const { useBlogsQuery, useBlogsDetailQuery, useLazyBlogsQuery } = blogsSlices;

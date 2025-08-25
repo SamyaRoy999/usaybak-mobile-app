@@ -8,7 +8,7 @@ import { CardField, useStripe } from '@stripe/stripe-react-native'
 import * as ImagePicker from 'expo-image-picker'
 import { router } from 'expo-router'
 import React from 'react'
-import { ActivityIndicator, Button, FlatList, Image, KeyboardAvoidingView, Modal, ScrollView, Text, TextInput, TouchableOpacity, View, } from 'react-native'
+import { ActivityIndicator, FlatList, Image, KeyboardAvoidingView, Modal, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import { ALERT_TYPE, Toast } from "react-native-alert-notification"
 import { SvgXml } from 'react-native-svg'
 
@@ -34,6 +34,7 @@ const youTubeLink = () => {
     const [paymentIntentData, setPaymentIntentData] = React.useState<any>(null);
     const [isProcessing, setIsProcessing] = React.useState(false);
     const [stateID, setStateID] = React.useState(false);
+    const [pendingFormData, setPendingFormData] = React.useState<FormData | null>(null);
 
     // ............stripe ..............//
     const { initPaymentSheet, presentPaymentSheet } = useStripe();
@@ -63,6 +64,7 @@ const youTubeLink = () => {
 
     const { data: stateData, isLoading: isStateLoding, refetch: refetchState } = useStateGetQuery({})
     const { data: cityData, isLoading: isCityLoding, refetch: refetchCity } = useCityGetQuery(stateID)
+    
     // Function to refresh user data
     const refreshUserData = async () => {
         try {
@@ -99,7 +101,6 @@ const youTubeLink = () => {
     };
 
     const pickImage = async () => {
-
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ['images'],
             allowsEditing: true,
@@ -112,10 +113,10 @@ const youTubeLink = () => {
         }
     };
 
-    const handlePublish = async () => {
+    const buildFormData = () => {
         if (!youtubeLink || !videoTitle || !selectedCategory || !categoryID || !description || !selectedState || !selectedCity || !selectedVisibility) {
             alert("Please fill all required fields");
-            return;
+            return null;
         }
 
         let formData = new FormData();
@@ -137,12 +138,21 @@ const youTubeLink = () => {
                 type: image.mimeType,
             } as any);
         }
+        
+        return formData;
+    };
+
+    const handlePublish = async () => {
+        const form = buildFormData();
+        if (!form) return;
 
         if (promotedOn) {
-            handleSetupInitialPayment(formData);
+            // Store form data for after payment
+            setPendingFormData(form);
+            handleSetupInitialPayment();
         } else {
             try {
-                const res = await upload_video(formData).unwrap();
+                const res = await upload_video(form).unwrap();
 
                 if (res.status) {
                     Toast.show({
@@ -167,15 +177,11 @@ const youTubeLink = () => {
                 alert("Failed to upload video");
             }
         }
-
-
     };
 
     //............ Payment ...........//
-
-    const handleSetupInitialPayment = async (item: any) => {
+    const handleSetupInitialPayment = async () => {
         try {
-
             await refreshUserData()
             if (!userId) {
                 throw new Error("User data not available")
@@ -214,7 +220,7 @@ const youTubeLink = () => {
                     autoClose: 2000,
                 });
             } else {
-                checkout(item);
+                setPaymentVisible(true);
             }
         } catch (error) {
             Toast.show({
@@ -226,7 +232,7 @@ const youTubeLink = () => {
         }
     }
 
-    const checkout = async (item: any) => {
+    const handlePayment = async () => {
         setIsProcessing(true);
 
         try {
@@ -241,6 +247,7 @@ const youTubeLink = () => {
                 });
                 return;
             }
+            
             const data = {
                 user_id: userId,
                 payment_intent_id: paymentIntentData.id,
@@ -251,11 +258,16 @@ const youTubeLink = () => {
             const res = await paymentSuccess(data).unwrap();
 
             if (res?.status) {
-                // upload video
+                // upload video with the stored form data
                 try {
-                    const res = await upload_video(item).unwrap();
+                    if (!pendingFormData) {
+                        throw new Error("No form data available");
+                    }
+                    
+                    const res = await upload_video(pendingFormData).unwrap();
 
                     if (res.status) {
+                        setSucssMassage(true);
                         Toast.show({
                             type: ALERT_TYPE.SUCCESS,
                             title: 'Success',
@@ -263,6 +275,7 @@ const youTubeLink = () => {
                             autoClose: 2000,
                         });
                         setTimeout(() => {
+                            setPaymentVisible(false);
                             router?.push(`/home/(tabs)/landingPage`);
                         }, 1000);
                     } else {
@@ -480,10 +493,12 @@ const youTubeLink = () => {
                                     <TouchableOpacity style={tw`border flex-row items-center border-primaryGray rounded-md`}>
                                         <Text style={tw`text-2xl font-poppinsMedium py-2 px-7`}>{priceYoutubLink?.data?.uploading_youTube_link}</Text>
                                     </TouchableOpacity>
-                                    <Button
+                                    <TouchableOpacity
                                         onPress={handlePublish}
-                                        title="Checkout"
-                                    />
+                                        style={tw`bg-[#EF4444] py-2 px-6 rounded-md justify-center items-center`}
+                                    >
+                                        <Text style={tw`text-white font-poppinsMedium`}>Checkout</Text>
+                                    </TouchableOpacity>
                                 </View>
                                 <View style={tw`flex-row gap-2 py-7`}>
                                     <SvgXml xml={IconWorningGary} />
@@ -545,7 +560,6 @@ const youTubeLink = () => {
 
                                             }}
                                         />
-                                        {/* <Button onPress={openPaymentSheet} title="Pay" disabled={loading} /> */}
 
                                         {/* Buttons */}
                                         <View style={tw`flex-row justify-between`}>
@@ -557,15 +571,12 @@ const youTubeLink = () => {
                                             </TouchableOpacity>
 
                                             <TouchableOpacity
-                                                style={tw`bg-[#FF5A5F] rounded-full py-3 px-6 w-[48%]`}
-                                                onPress={() => {
-                                                    setPaymentVisible(false)
-                                                    setSucssMassage(true)
-                                                    handlePublish(); // Also log data when payment is successful
-                                                }}
+                                                style={tw`bg-[#FF5A5F] rounded-full py-3 px-6 w-[48%] ${isProcessing ? 'opacity-50' : ''}`}
+                                                onPress={handlePayment}
+                                                disabled={isProcessing}
                                             >
                                                 <Text style={tw`text-center font-poppinsBold text-base text-white`}>
-                                                    Pay now
+                                                    {isProcessing ? 'Processing...' : 'Pay now'}
                                                 </Text>
                                             </TouchableOpacity>
                                         </View>

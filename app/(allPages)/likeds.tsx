@@ -24,21 +24,18 @@ const LikedVideosScreen = () => {
     const [loadingMore, setLoadingMore] = useState(false);
     const [posts, setPosts] = useState<any[]>([]);
     const [hasMore, setHasMore] = useState<boolean>(true);
+    
     const [fetchPosts, { isLoading, isFetching }] = useLazyLikeVideosQuery();
     const [likeVideosDelete] = useLikeVideosDeleteMutation();
 
     const loadPosts = async (pageNum = 1, isRefresh = false) => {
         try {
-            // Prevent multiple simultaneous requests
+            // Prevent multiple simultaneous request
             if ((isLoading || isFetching || loadingMore) && !isRefresh) return;
 
             setLoadingMore(true);
             const res = await fetchPosts(pageNum).unwrap();
-
             console.log("API Response:", res);
-
-            // Based on your API structure, adjust these lines
-            // Most likely your data is in res.data or directly in res
             const responseData = res.data || res;
             const newPosts = responseData?.data || responseData || [];
 
@@ -47,9 +44,6 @@ const LikedVideosScreen = () => {
             } else {
                 setPosts(prev => [...prev, ...newPosts]);
             }
-
-            // Check if we have more pages
-            // Most APIs include pagination metadata like current_page, last_page, etc.
             const currentPage = responseData.current_page || pageNum;
             const lastPage = responseData.last_page || 1;
             const total = responseData.total || 0;
@@ -113,7 +107,8 @@ const LikedVideosScreen = () => {
                     />
                 }
                 onEndReached={handleLoadMore}
-                onEndReachedThreshold={0.2}
+                onEndReachedThreshold={0.5}
+                showsVerticalScrollIndicator={false}
                 ListHeaderComponent={
                     <View>
                         <HeaderBar />

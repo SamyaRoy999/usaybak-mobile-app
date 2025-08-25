@@ -14,7 +14,7 @@ import {
 
 const landingPage = () => {
   // ................promoted video api.................// 
-  const { data: promoted } = usePromotedVideoHomeQuery({});
+  const { data: promoted, isLoading: lodingPromoted } = usePromotedVideoHomeQuery({});
   const promotedVideo = promoted?.data?.data;
   // .............caragoryVideo................//
   const {
@@ -27,7 +27,7 @@ const landingPage = () => {
     },
   });
 
-  if (isLoading) {
+  if (isLoading && lodingPromoted) {
     return (
       <View style={tw`flex-1 justify-center items-center`}>
         <Text>Loading...</Text>
@@ -35,13 +35,11 @@ const landingPage = () => {
     );
   }
 
-
   return (
     <View>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={tw`pb-6`}>
         <HeaderBar />
         <SliderLanding />
-        {/* <CarouselCard promotedVideo={promotedVideo} /> */}
         <FlatList
           data={caragoryVideos?.data?.data}
           keyExtractor={(item) => item.id.toString()}

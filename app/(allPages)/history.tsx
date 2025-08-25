@@ -302,7 +302,7 @@ const HistoryScreen = () => {
                             <RefreshControl
                                 refreshing={refreshing}
                                 onRefresh={onRefresh}
-                                colors={["#ED6237"]}
+                                colors={["#0000ff"]}
                             />
                         }
                         onEndReached={() => {
@@ -312,7 +312,7 @@ const HistoryScreen = () => {
                         }}
                         onEndReachedThreshold={0.5}
                         ListFooterComponent={
-                            loadingMore ? <ActivityIndicator color="#ED6237" style={tw`my-4`} /> : null
+                            loadingMore ? <ActivityIndicator color="#0000ff" style={tw`my-4`} /> : null
                         }
                         contentContainerStyle={tw`px-6 pb-6`}
                         showsVerticalScrollIndicator={false}

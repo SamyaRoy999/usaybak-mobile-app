@@ -15,6 +15,7 @@ import {
   IconShare
 } from "@/icons/Icon";
 import tw from "@/lib/tailwind";
+import { useProfileQuery } from "@/redux/apiSlices/Account/accountSlice";
 import { useCatagoryDetailsQuery } from "@/redux/apiSlices/catagoryDataSlices/catagoryDataSlices";
 import { useComment_reactionMutation, useCommentsPostMutation, useCommentsQuery, useLikeVideoMutation, useReplies_reactionMutation, useRepliesPostMutation, useRepliesQuery, useReportPostMutation, useVideodetailQuery, useWatchVideoMutation } from "@/redux/apiSlices/videoDetails/videoDetailsSlice";
 import { _Width } from "@/utils/utils";
@@ -54,11 +55,12 @@ const SingleVideo = () => {
   const [reply, setReply] = useState('');
   const [page, setPage] = useState(1);
   const [commentID, setCommentID] = useState()
-  const [isYoutubeVideo, setIsYoutubeVideo] = useState(false); 
-  const [youtubeVideoId, setYoutubeVideoId] = useState(''); 
+  const [isYoutubeVideo, setIsYoutubeVideo] = useState(false);
+  const [youtubeVideoId, setYoutubeVideoId] = useState('');
   const playerRef = useRef<any>(null);
   const { data, isLoading, error } = useVideodetailQuery({ id });
 
+  const { data: userInfo, isLoading: userLoading } = useProfileQuery({})
   const {
     data: commentsData,
     isLoading: isLoadingComment
@@ -72,6 +74,9 @@ const SingleVideo = () => {
   } = useRepliesQuery({
     comment_id: commentID,
   });
+
+
+
 
   const [watchedVidew] = useWatchVideoMutation()
   const [likeVideo] = useLikeVideoMutation();
@@ -257,11 +262,15 @@ const SingleVideo = () => {
   };
 
   const copyToClipboard = async (link: any) => {
-    await Clipboard.setStringAsync(link);
+    if (!link) {
+      await Clipboard.setStringAsync(`http://10.10.10.72:3000/video/${id}`);
+    } else {
+      await Clipboard.setStringAsync(link);
+    }
     Toast.show({
       type: ALERT_TYPE.SUCCESS,
       title: 'Success',
-      textBody: "Copy the Link",
+      textBody: "Link copied to clipboard",
       autoClose: 2000,
     });
   };
@@ -298,6 +307,13 @@ const SingleVideo = () => {
         autoClose: 2000,
       });
     }
+  }
+  if (isLoading) {
+    return (
+      <View style={tw`flex-1 justify-center items-center`}>
+        <Text>Loading...</Text>
+      </View>
+    );
   }
 
   return (
@@ -395,7 +411,6 @@ const SingleVideo = () => {
                 </TouchableOpacity>
               </ScrollView>
             </View>
-
             {/* Comments Preview */}
             <TouchableOpacity onPress={() => setIsVisible(true)}>
               <View style={tw`px-5 border border-primaryGray bg-primaryText mx-5 mb-6 py-3 rounded-lg`}>
@@ -411,7 +426,7 @@ const SingleVideo = () => {
                     style={tw`w-7 h-7 rounded-full`}
                   />
                   <Text style={tw`px-2 font-poppins text-sm`} numberOfLines={2}>
-                    {videoDetails?.description || "No comments yet"}
+                    See all Comment
                   </Text>
                 </View>
               </View>
@@ -433,6 +448,7 @@ const SingleVideo = () => {
           </View>
 
           {/* Share Modal */}
+
           <Modal
             visible={shareVisible}
             transparent={true}
@@ -456,7 +472,7 @@ const SingleVideo = () => {
                     </Text>
                   </View>
                   <View style={tw`bg-primaryText py-4 px-7 rounded-full mx-5`}>
-                    <Text numberOfLines={1}>{videoDetails?.link || "https://example.com/video"}</Text>
+                    <Text numberOfLines={1}>{videoDetails?.link == null || undefined ? `http://10.10.10.72:3000/video/${id}` : videoDetails?.link}</Text>
                   </View>
                   <TouchableOpacity
                     style={tw`flex-row items-center bg-primaryText justify-center my-3 mx-auto gap-4 py-4 px-9 border border-primaryGray rounded-full w-40`}
@@ -562,7 +578,7 @@ const SingleVideo = () => {
                 {/* Comment Input */}
                 <View style={tw`absolute bottom-0 w-full bg-primary py-3 px-5 flex-row items-center`}>
                   <Image
-                    source={{ uri: videoDetails?.user?.avatar }}
+                    source={{ uri: userInfo?.data?.avatar }}
                     style={tw`w-10 h-10 rounded-full`}
                   />
                   <View style={tw`flex-row items-center justify-center gap-3 flex-1`}>
@@ -581,7 +597,6 @@ const SingleVideo = () => {
               </View>
             </View>
           </Modal>
-
 
           {/* Report Modal */}
           <Modal

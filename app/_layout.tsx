@@ -5,13 +5,12 @@ import "react-native-reanimated";
 
 import tw from "@/lib/tailwind";
 import store from "@/redux/store";
+import { StripeProvider } from '@stripe/stripe-react-native';
+import { AlertNotificationRoot } from "react-native-alert-notification";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Provider } from "react-redux";
 import { useDeviceContext } from "twrnc";
 import ThemeProvider from "../context/ThemeProvider";
-// import ThemeProvider from "./context/ThemeProvider";
-import { StripeProvider } from '@stripe/stripe-react-native';
-import { AlertNotificationRoot } from "react-native-alert-notification";
 
 export default function RootLayout() {
   const [loaded] = useFonts({
@@ -38,8 +37,6 @@ export default function RootLayout() {
   if (!loaded) {
     return null;
   }
-
-
 
   return (
     <StripeProvider

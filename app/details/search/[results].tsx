@@ -8,8 +8,6 @@ import { FlatList, ScrollView, Text, TouchableOpacity, View } from 'react-native
 import { SvgXml } from 'react-native-svg';
 const results = () => {
     const { results: searchResult } = useLocalSearchParams();
-
-    // Parse the JSON string if it's passed as a string
     const resultData = typeof searchResult === 'string' ? JSON.parse(searchResult) : searchResult;
     return (
         <View style={tw`flex-1`}>

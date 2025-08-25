@@ -22,6 +22,7 @@ import tw from "@/lib/tailwind";
 import { useHistoryVideoDeleteMutation, useHistoryVideoQuery, useLikeVideosDeleteMutation, useLikeVideosQuery } from "@/redux/apiSlices/Account/accountSlice";
 import { useMyProfileQuery } from "@/redux/apiSlices/MyVideo/myvideoSlice";
 import { _HIGHT, _Width } from "@/utils/utils";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Image } from "expo-image";
 import { router, useFocusEffect } from "expo-router";
 import React, { useCallback } from "react";
@@ -407,7 +408,10 @@ const Account = () => {
             </TouchableOpacity>
             <TouchableOpacity
               style={tw`flex-row w-full justify-between items-center px-8 py-2 pb-9`}
-              onPress={() => router.push("/auth/login")}
+              onPress={async () => {
+                await AsyncStorage.removeItem("token");
+                router.push("/auth/login");
+              }}
             >
               <View style={tw` flex-row gap-2 py-3 rounded-lg`}>
                 <SvgXml xml={IconLogout} />

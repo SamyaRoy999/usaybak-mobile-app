@@ -20,7 +20,7 @@ export const uploadVideoSices = api.injectEndpoints({
 
         categories: builder.query<any, any>({
             query: () => ({
-                url: "/categories",
+                url: "/categories?per_page=11",
                 method: "GET",
             }),
             providesTags: ["uploadVideo"],
