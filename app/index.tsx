@@ -5,6 +5,7 @@ import React, { useEffect } from "react";
 import { ActivityIndicator, View } from "react-native";
 
 const index = () => {
+  
   useEffect(() => {
     setTimeout(() => {
       // router.replace("/(allPages)/my_videos");

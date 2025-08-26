@@ -3,8 +3,10 @@ import CatagoryCard from "@/components/landing_page/CatagoryCard";
 import SliderLanding from "@/components/landing_page/SliderLanding";
 import HeaderBar from "@/components/shear/HeaderBar";
 import tw from "@/lib/tailwind";
+import { useProfileQuery } from "@/redux/apiSlices/Account/accountSlice";
 import { useCaragoryVideosQuery, usePromotedVideoHomeQuery } from "@/redux/apiSlices/Home/homeApiSlices";
-import React from "react";
+import { router } from "expo-router";
+import React, { useEffect } from "react";
 import {
   FlatList,
   ScrollView,
@@ -13,7 +15,20 @@ import {
 } from "react-native";
 
 const landingPage = () => {
+  const { data: defouldData, isLoading: userLoading, refetch: userRef } = useProfileQuery({})
+
+  useEffect(() => {
+    userRef()
+    if (defouldData?.data?.registration_type === "on_site") {
+      if (defouldData?.data?.is_pay === 0) {
+        router.push("/(allPages)/paymentOnside")
+      }
+    }
+  }, [])
   // ................promoted video api.................// 
+
+
+
   const { data: promoted, isLoading: lodingPromoted } = usePromotedVideoHomeQuery({});
   const promotedVideo = promoted?.data?.data;
   // .............caragoryVideo................//
@@ -27,14 +42,16 @@ const landingPage = () => {
     },
   });
 
-  if (isLoading && lodingPromoted) {
+
+  console.log("user", defouldData);
+
+  if (isLoading && lodingPromoted && userLoading) {
     return (
       <View style={tw`flex-1 justify-center items-center`}>
         <Text>Loading...</Text>
       </View>
     );
   }
-
   return (
     <View>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={tw`pb-6`}>

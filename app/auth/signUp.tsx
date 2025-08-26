@@ -87,8 +87,6 @@ const signUp = () => {
                     textBody: res?.message,
                     autoClose: 2000,
                   });
-                  (values.email, "signUp page 82");
-
                   router.push(`/auth/verify?email=${values?.email}`);
                 } else {
                   Toast.show({

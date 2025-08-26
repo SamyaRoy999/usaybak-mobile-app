@@ -49,7 +49,6 @@ const Account = () => {
     refetch: refetchUser
   } = useMyProfileQuery({})
   const isAuthenticated = token && userData?.data?.email;
-  console.log(isAuthenticated);
 
   useFocusEffect(
     useCallback(() => {

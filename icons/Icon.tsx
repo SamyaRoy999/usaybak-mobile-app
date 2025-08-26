@@ -788,6 +788,13 @@ export const IconOurStory = `<svg width="58" height="60" viewBox="0 0 58 60" fil
 <path d="M38.2685 36.1501L40.7208 38.6362L30.4526 49.0462L28.0003 46.5601L38.2685 36.1501Z" fill="#CCE4ED"/>
 </svg>
 `;
+export const IconPayment = `<svg width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M2 8.50488H22" stroke="#EF4444" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M6 16.5049H8" stroke="#EF4444" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M10.5 16.5049H14.5" stroke="#EF4444" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M6.44 3.50488H17.55C21.11 3.50488 22 4.38488 22 7.89488V16.1049C22 19.6149 21.11 20.4949 17.56 20.4949H6.44C2.89 20.5049 2 19.6249 2 16.1149V7.89488C2 4.38488 2.89 3.50488 6.44 3.50488Z" stroke="#EF4444" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>`
+
 export const IconWhychoose = `<svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M48.5508 0.991408C36.2189 -0.330469 23.7811 -0.330469 11.4492 0.991408C6.41016 1.57735 1.57617 6.40899 0.991408 11.4492C-0.330469 23.7811 -0.330469 36.2189 0.991408 48.5508C1.57735 53.5898 6.40899 58.4238 11.4492 59.0086C23.7811 60.3305 36.2189 60.3305 48.5508 59.0086C53.5898 58.4227 58.4238 53.591 59.0086 48.5508C60.3305 36.2189 60.3305 23.7811 59.0086 11.4492C58.4238 6.40899 53.591 1.57617 48.5508 0.991408Z" fill="#F9973E"/>
 <path d="M14.1281 46.9711C32.1316 46.9711 46.7262 32.3766 46.7262 14.3742C46.7319 9.59138 45.6811 4.86632 43.6488 0.536722C32.9246 -0.307353 22.1453 -0.155141 11.4492 0.991408C6.41016 1.57735 1.57617 6.40899 0.991408 11.4492C-0.16867 22.2714 -0.310703 33.1786 0.567184 44.0273C4.82246 45.9746 9.44846 46.9788 14.1281 46.9711Z" fill="#FCA84C"/>

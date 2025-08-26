@@ -13,22 +13,6 @@ import { SvgXml } from 'react-native-svg'
 
 
 const dashboard = () => {
-    // const barData = [
-    //     { value: 2720, label: '01' },
-    //     { value: 2528, label: '02' },
-    //     { value: 1041, label: '03' },
-    //     { value: 6400, label: '04' },
-    //     { value: 1371, label: '05' },
-    //     { value: 1201, label: '06' },
-    //     { value: 1727, label: '07' },
-    //     { value: 6230, label: '08' },
-    //     { value: 4604, label: '09' },
-    //     { value: 2040, label: '10' },
-    //     { value: 6797, label: '11' },
-    //     { value: 0, label: '12' }
-    // ];
-
-    // ........... dashboard api ..........//
 
     const { data: dashboardData, isLoading, error } = useDashboardQuery({})
     if (isLoading) {
@@ -58,6 +42,7 @@ const dashboard = () => {
         label: item.day.toString().padStart(2, '0'),
         value: item.total_watch,
     }));
+    
 
     return (
         <View>
@@ -103,7 +88,7 @@ const dashboard = () => {
                             <View style={tw`flex-row gap-3 p-1 items-center`}>
                                 <SvgXml xml={IconLoction} />
                                 <Text style={tw`text-base font-poppins`}>
-                                    {locations.find((loc: any) => loc.type === 'head-office')?.location} (Head Office)
+                                    {locations?.find((loc: any) => loc.type === 'head-office')?.location} (Head Office)
                                 </Text>
                             </View>
                         )}
@@ -150,7 +135,7 @@ const dashboard = () => {
                 {/* Services */}
                 <View style={tw`mt-10 mx-5 p-5 flex-col justify-start  border border-primaryGray rounded-xl`}>
                     <Text style={tw`font-poppinsMedium text-xl pb-3`}>Services</Text>
-                    {services.map((item: any, index: any) => (
+                    {services?.map((item: any, index: any) => (
                         <Text key={index} style={tw`font-poppins text-base pb-2 `}> {item}</Text>
                     ))}
                 </View>
@@ -197,7 +182,7 @@ const dashboard = () => {
                         }}
                         renderTooltip={(item: { value: number }) => (
                             <View style={tw`bg-gray-800 px-2 py-1 rounded`}>
-                                <Text style={tw`text-white text-xs`}>{item.value.toString()}</Text>
+                                <Text style={tw`text-white text-xs`}>{item?.value?.toString()}</Text>
                             </View>
                         )}
                     />
