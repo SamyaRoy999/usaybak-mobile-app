@@ -14,6 +14,7 @@ import {
   IconYoutub,
 } from "@/icons/Icon";
 import tw from "@/lib/tailwind";
+import { usePriceGetAllQuery } from "@/redux/apiSlices/Home/homeApiSlices";
 import { _Width } from "@/utils/utils";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import { useLinkBuilder } from "@react-navigation/native";
@@ -54,6 +55,10 @@ function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
 
   const translateX = useRef(new Animated.Value(0)).current;
   const [uploadModalVisible, setUploadModalVisible] = useState(false); // Fixed state initialization
+
+   const {
+          data: price,
+      } = usePriceGetAllQuery({});
 
   useEffect(() => {
     Animated.spring(translateX, {
@@ -178,7 +183,7 @@ function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
                     <View style={tw`flex-row items-center gap-3`}>
                       <SvgXml xml={IconUpload} />
                       <Text style={tw`text-lg font-poppins`}>
-                        Upload video <Text style={tw`text-sm`}>($9.99 / month)</Text>
+                        Upload video <Text style={tw`text-sm`}>({price?.data?.uploading_video})</Text>
                       </Text>
                     </View>
                     <SvgXml xml={IconErowBack} />
@@ -193,7 +198,7 @@ function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
                     <View style={tw`flex-row items-center gap-3`}>
                       <SvgXml xml={IconYoutub} />
                       <Text style={tw`text-lg font-poppins`}>
-                        YouTube Link <Text style={tw`text-sm`}>(Free)</Text>
+                        YouTube Link <Text style={tw`text-sm`}>({price?.data?.uploading_youTube_link})</Text>
                       </Text>
                     </View>
                     <SvgXml xml={IconErowBack} />

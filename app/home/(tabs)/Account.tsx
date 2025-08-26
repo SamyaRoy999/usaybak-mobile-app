@@ -37,7 +37,8 @@ import { ALERT_TYPE, AlertNotificationRoot, Toast } from 'react-native-alert-not
 import { SvgXml } from "react-native-svg";
 
 const Account = () => {
-  // ................... History ........................//
+  const [token, setToken] = React.useState<string | null>(null);
+
   const { data: historyVideo, isLoading, error, refetch } = useHistoryVideoQuery({})
   const { data: likeVideo, isLoading: islikeVideoLoading, refetch: islikeVideoRef } = useLikeVideosQuery({})
   const [deleteHistoryVideo] = useHistoryVideoDeleteMutation();
@@ -47,15 +48,21 @@ const Account = () => {
     isLoading: isUserLoading,
     refetch: refetchUser
   } = useMyProfileQuery({})
-  const isAuthenticated = userData?.data?.email;
+  const isAuthenticated = token && userData?.data?.email;
+  console.log(isAuthenticated);
+
   useFocusEffect(
     useCallback(() => {
-      refetch()
-      islikeVideoRef()
-      refetchUser()
+      const checkToken = async () => {
+        const userToken = await AsyncStorage.getItem("token");
+        setToken(userToken);
+        refetch();
+        islikeVideoRef();
+        refetchUser();
+      };
+      checkToken();
     }, [])
-  )
-
+  );
   if (isLoading || islikeVideoLoading || isUserLoading) {
     return (
       <View style={tw`flex-1 justify-center items-center`}>
@@ -410,6 +417,7 @@ const Account = () => {
               style={tw`flex-row w-full justify-between items-center px-8 py-2 pb-9`}
               onPress={async () => {
                 await AsyncStorage.removeItem("token");
+                setToken(null);
                 router.push("/auth/login");
               }}
             >

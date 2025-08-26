@@ -4,7 +4,7 @@ import { usePriceGetAllQuery } from '@/redux/apiSlices/Home/homeApiSlices'
 import { useMyProfileQuery } from '@/redux/apiSlices/MyVideo/myvideoSlice'
 import { usePaymentMutation, usePaymentSuccessMutation } from '@/redux/apiSlices/payment/paymentSlice'
 import { useCategoriesQuery, useCityGetQuery, useStateGetQuery, useUpload_videoMutation } from '@/redux/apiSlices/UploadVideo/uploadVideoSices'
-import { CardField, useStripe } from '@stripe/stripe-react-native'
+import { useStripe } from '@stripe/stripe-react-native'
 import * as ImagePicker from 'expo-image-picker'
 import { router } from 'expo-router'
 import React from 'react'
@@ -48,7 +48,6 @@ const youTubeLink = () => {
         refetch
     } = useCategoriesQuery({});
     const categoryData = categories?.data?.data
-
     const {
         data: priceYoutubLink,
     } = usePriceGetAllQuery({});
@@ -539,28 +538,6 @@ const youTubeLink = () => {
                                             <Text style={tw`text-gray-500 font-poppins`}>Required amount</Text>
                                             <Text style={tw`text-3xl font-poppinsBold text-black`}>${priceYoutubLink?.data?.uploading_youTube_link}</Text>
                                         </View>
-                                        <CardField
-                                            postalCodeEnabled={true}
-                                            placeholders={{
-                                                number: '4242 4242 4242 4242',
-                                            }}
-                                            cardStyle={{
-                                                backgroundColor: '#FFFFFF',
-                                                textColor: '#000000',
-                                            }}
-                                            style={{
-                                                width: '100%',
-                                                height: 50,
-                                                marginVertical: 30,
-                                            }}
-                                            onCardChange={cardDetails => {
-
-                                            }}
-                                            onFocus={focusedField => {
-
-                                            }}
-                                        />
-
                                         {/* Buttons */}
                                         <View style={tw`flex-row justify-between`}>
                                             <TouchableOpacity
