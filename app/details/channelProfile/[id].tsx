@@ -92,7 +92,7 @@ const channelProfile = () => {
                         <View style={tw`flex-row gap-3 p-1`}>
                             <SvgXml xml={IconLoction} />
                             <Text style={tw`text-base font-poppins`}>
-                                {headOffice.location}
+                                {headOffice?.location}
                             </Text>
                         </View>
 
