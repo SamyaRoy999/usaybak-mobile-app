@@ -445,7 +445,6 @@ const Account = () => {
           </View>
           <Text style={tw`font-poppinsSemiBold text-xl pb-2`}>You don't have any account yet</Text>
           <Text style={tw`text-center text-base font-poppins mb-8`}>
-
             Please create an account to see full analytics and explore more features
           </Text>
 

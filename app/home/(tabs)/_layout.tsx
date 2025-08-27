@@ -15,12 +15,14 @@ import {
 } from "@/icons/Icon";
 import tw from "@/lib/tailwind";
 import { usePriceGetAllQuery } from "@/redux/apiSlices/Home/homeApiSlices";
+import { useMyProfileQuery } from "@/redux/apiSlices/MyVideo/myvideoSlice";
 import { _Width } from "@/utils/utils";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import { useLinkBuilder } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
-import { router, Tabs } from "expo-router";
-import React, { useEffect, useRef, useState } from "react";
+import { router, Tabs, useFocusEffect } from "expo-router";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Animated, Dimensions, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SvgXml } from "react-native-svg";
 
@@ -48,6 +50,14 @@ const icons = {
 };
 
 function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
+  const [token, setToken] = React.useState<string | null>(null);
+  const {
+    data: userData,
+    isLoading: isUserLoading,
+    refetch: refetchUser
+  } = useMyProfileQuery({})
+  const isAuthenticated = token && userData?.data?.email;
+
   const { buildHref } = useLinkBuilder();
   const { width } = Dimensions.get("window");
   const tabCount = state.routes.length;
@@ -56,9 +66,20 @@ function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
   const translateX = useRef(new Animated.Value(0)).current;
   const [uploadModalVisible, setUploadModalVisible] = useState(false); // Fixed state initialization
 
-   const {
-          data: price,
-      } = usePriceGetAllQuery({});
+  const {
+    data: price,
+  } = usePriceGetAllQuery({});
+
+   useFocusEffect(
+    useCallback(() => {
+      const checkToken = async () => {
+        const userToken = await AsyncStorage.getItem("token");
+        setToken(userToken);
+        refetchUser();
+      };
+      checkToken();
+    }, [])
+  );
 
   useEffect(() => {
     Animated.spring(translateX, {
@@ -66,6 +87,13 @@ function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
       useNativeDriver: true,
     }).start();
   }, [state.index]);
+  if (isUserLoading) {
+    return (
+      <View style={tw`flex-1 justify-center items-center`}>
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
 
   return (
     <View
@@ -132,19 +160,24 @@ function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
           </TouchableOpacity>
         );
       })}
+      
 
-      {/* Add Button - Centered */}
-      <TouchableOpacity
-        onPress={() => setUploadModalVisible(true)} 
-        style={tw`absolute -top-10 `}
-      >
-        <LinearGradient
-          colors={["#EF4444", "#FF6868"]}
-          style={tw`w-16 h-16 rounded-full justify-center items-center shadow-lg`}
-        >
-          <SvgXml xml={IconAdd} />
-        </LinearGradient>
-      </TouchableOpacity>
+      {
+        isAuthenticated ?
+          // Add Button - Centered 
+          <TouchableOpacity
+            onPress={() => setUploadModalVisible(true)}
+            style={tw`absolute -top-10 `}
+          >
+            <LinearGradient
+              colors={["#EF4444", "#FF6868"]}
+              style={tw`w-16 h-16 rounded-full justify-center items-center shadow-lg`}
+            >
+              <SvgXml xml={IconAdd} />
+            </LinearGradient>
+          </TouchableOpacity>
+          : <View></View>
+      }
 
       {/* Upload Modal */}
       <Modal
