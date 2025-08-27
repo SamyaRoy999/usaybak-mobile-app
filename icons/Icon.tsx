@@ -794,6 +794,11 @@ export const IconPayment = `<svg width="80" height="80" viewBox="0 0 24 24" fill
 <path d="M10.5 16.5049H14.5" stroke="#EF4444" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M6.44 3.50488H17.55C21.11 3.50488 22 4.38488 22 7.89488V16.1049C22 19.6149 21.11 20.4949 17.56 20.4949H6.44C2.89 20.5049 2 19.6249 2 16.1149V7.89488C2 4.38488 2.89 3.50488 6.44 3.50488Z" stroke="#EF4444" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>`
+export const IconBackAuth = `<svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="50" height="50" rx="25" fill="#FE6A6A"/>
+<path d="M33 26.0124H20.9735L25.6446 30.5684L24.1769 32L17 25L24.1769 18L25.6446 19.4316L20.9735 23.9876H33V26.0124Z" fill="white"/>
+</svg>
+`
 
 export const IconWhychoose = `<svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M48.5508 0.991408C36.2189 -0.330469 23.7811 -0.330469 11.4492 0.991408C6.41016 1.57735 1.57617 6.40899 0.991408 11.4492C-0.330469 23.7811 -0.330469 36.2189 0.991408 48.5508C1.57735 53.5898 6.40899 58.4238 11.4492 59.0086C23.7811 60.3305 36.2189 60.3305 48.5508 59.0086C53.5898 58.4227 58.4238 53.591 59.0086 48.5508C60.3305 36.2189 60.3305 23.7811 59.0086 11.4492C58.4238 6.40899 53.591 1.57617 48.5508 0.991408Z" fill="#F9973E"/>

@@ -14,7 +14,6 @@ import React from "react";
 import {
   Image,
   KeyboardAvoidingView,
-  Platform,
   ScrollView,
   Text,
   TextInput,
@@ -34,248 +33,253 @@ const signUp = () => {
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : undefined}
-      style={tw`flex-1 bg-secondary`}
-    // keyboardVerticalOffset={false}
+      style={tw`flex-1 `}
+      enabled={true}
+      behavior={"padding"}
     >
-      <AlertNotificationRoot>
-        <ScrollView showsVerticalScrollIndicator={false}>
-          <Formik
-            initialValues={{
-              channel_name: "",
-              name: "",
-              email: "",
-              password: "",
-              c_password: "",
-            }}
-            validationSchema={Yup.object({
-              channel_name: Yup.string().required("channel_name is required"),
-              name: Yup.string().required("Name is required"),
-              email: Yup.string().email().required("Email is required"),
-              password: Yup.string()
-                .required("Password is required"),
+      <ScrollView
+        contentContainerStyle={tw`flex-grow justify-center dark:bg-base-dark  bg-base-light `}
+        showsVerticalScrollIndicator={false}
+      >
+        <AlertNotificationRoot>
+          <View style={tw` bg-secondary`}>
+            <Formik
+              initialValues={{
+                channel_name: "",
+                name: "",
+                email: "",
+                password: "",
+                c_password: "",
+              }}
+              validationSchema={Yup.object({
+                channel_name: Yup.string().required("channel_name is required"),
+                name: Yup.string().required("Name is required"),
+                email: Yup.string().email().required("Email is required"),
+                password: Yup.string()
+                  .required("Password is required"),
                 // .min(8, "Password must be at least 8 characters long")
                 // .matches(/[a-z]/, "Password must contain at least one lowercase letter")
                 // .matches(/[A-Z]/, "Password must contain at least one uppercase letter")
                 // .matches(/[0-9]/, "Password must contain at least one number")
                 // .matches(/[!@#$%^&*(),.?":{}|<>]/, "Password must contain at least one special character"),
 
-              c_password: Yup.string()
-                .required("Confirm Password is required"),
+                c_password: Yup.string()
+                  .required("Confirm Password is required"),
                 // .min(8, "Password must be at least 8 characters long")
                 // .matches(/[a-z]/, "Password must contain at least one lowercase letter")
                 // .matches(/[A-Z]/, "Password must contain at least one uppercase letter")
                 // .matches(/[0-9]/, "Password must contain at least one number")
                 // .matches(/[!@#$%^&*(),.?":{}|<>]/, "Password must contain at least one special character"),
-            })}
-            onSubmit={async (values) => {
-              const data = {
-                channel_name: values.channel_name,
-                name: values.name,
-                email: values.email,
-                password: values.password,
-                c_password: values.c_password,
-              }
-              try {
-
-                const res = await registerUser(data).unwrap();
-
-                if (res.status) {
-                  Toast.show({
-                    type: ALERT_TYPE.SUCCESS,
-                    title: 'Success',
-                    textBody: res?.message,
-                    autoClose: 2000,
-                  });
-                  router.push(`/auth/verify?email=${values?.email}`);
-                } else {
-                  Toast.show({
-                    type: ALERT_TYPE.DANGER,
-                    title: 'Error',
-                    textBody: res?.message?.email?.[0] || "Something went wrong!",
-                    autoClose: 2000,
-                  });
+              })}
+              onSubmit={async (values) => {
+                const data = {
+                  channel_name: values.channel_name,
+                  name: values.name,
+                  email: values.email,
+                  password: values.password,
+                  c_password: values.c_password,
                 }
+                try {
 
-              } catch (error: any) {
+                  const res = await registerUser(data).unwrap();
 
-                Toast.show({
-                  type: ALERT_TYPE.WARNING,
-                  title: 'Error',
-                  textBody: error?.message,
-                });
+                  if (res.status) {
+                    Toast.show({
+                      type: ALERT_TYPE.SUCCESS,
+                      title: 'Success',
+                      textBody: res?.message,
+                      autoClose: 2000,
+                    });
+                    router.push(`/auth/verify?email=${values?.email}&flow=register`);
+                  } else {
+                    Toast.show({
+                      type: ALERT_TYPE.DANGER,
+                      title: 'Error',
+                      textBody: res?.message?.email?.[0] || "Something went wrong!",
+                      autoClose: 2000,
+                    });
+                  }
 
-                (error);
-              }
-            }}
-          >
-            {({ values, setFieldValue, handleSubmit, errors }) => {
+                } catch (error: any) {
 
-              return (
-                <View>
-                  <View style={tw`flex-row justify-end`}>
-                    <SvgXml xml={IconSignUpNest} />
-                  </View>
-                  <View
-                    style={tw`flex-col justify-center w-full items-center mb-4`}
-                  >
-                    <Text style={tw`font-poppinsBold text-3xl  text-primaryText`}>
-                      Welcome back
-                    </Text>
-                    <Text style={tw`text-primaryText font-poppins text-sm py-1`}>
-                      Use your credentials to login
-                    </Text>
-                  </View>
-                  <View style={tw`bg-primary w-full h-full rounded-t-[40px] `}>
-                    <View style={tw`flex-row justify-center `}>
-                      <Image
-                        source={ImgLogo}
-                        style={{ height: 100, width: 162, objectFit: "contain" }}
-                      />
+                  Toast.show({
+                    type: ALERT_TYPE.WARNING,
+                    title: 'Error',
+                    textBody: error?.message,
+                  });
+
+                  (error);
+                }
+              }}
+            >
+              {({ values, setFieldValue, handleSubmit, errors }) => {
+
+                return (
+                  <View>
+                    <View style={tw`flex-row justify-end`}>
+                      <SvgXml xml={IconSignUpNest} />
                     </View>
-                    {/* login from */}
-                    <View>
-                      {/* channel_name */}
-                      <View style={tw`py-3 px-6`}>
-                        <TextInput
-                          style={tw`border border-primaryGray rounded-full font-poppins text-base px-5 h-14`}
-                          placeholder="Channel Name"
-                          placeholderTextColor="black"
-                          value={values.channel_name}
-                          onChangeText={(txt) =>
-                            setFieldValue("channel_name", txt)
-                          }
-                        />
-                      </View>
-                      {errors.channel_name && (
-                        <Text style={tw`text-center text-red-700 font-poppins`}>
-                          {errors.channel_name}
-                        </Text>
-                      )}
-                      {/* name */}
-                      <View style={tw`py-3 px-6`}>
-                        <TextInput
-                          style={tw`border border-primaryGray rounded-full font-poppins text-base px-5 h-14`}
-                          placeholder="name"
-                          placeholderTextColor="black"
-                          value={values.name}
-                          onChangeText={(txt) => setFieldValue("name", txt)}
-                        />
-                      </View>
-                      {errors.name && (
-                        <Text style={tw`text-center text-red-700 font-poppins`}>
-                          {errors.name}
-                        </Text>
-                      )}
-                      {/* email */}
-                      <View style={tw`py-3 px-6`}>
-                        <TextInput
-                          style={tw`border border-primaryGray rounded-full font-poppins text-base px-5 h-14`}
-                          placeholder="Email"
-                          value={values.email}
-                          onChangeText={(txt) => setFieldValue("email", txt)}
-                        />
-                      </View>
-                      {errors.email && (
-                        <Text style={tw`text-center text-red-700 font-poppins`}>
-                          {errors.email}
-                        </Text>
-                      )}
-                      {/* password */}
-                      <View style={tw`py-3 px-6 relative`}>
-                        <TextInput
-                          style={tw`border border-primaryGray rounded-full font-poppins text-base px-5 h-14`}
-                          placeholder="Password"
-                          placeholderTextColor="black"
-                          secureTextEntry={!showNewPassword}
-                          value={values.password}
-                          onChangeText={(txt) => setFieldValue("password", txt)}
-                        />
-                        <Entypo
-                          name={showNewPassword ? "eye" : "eye-with-line"}
-                          style={tw`absolute right-12 top-7 `}
-                          size={20}
-                          color="#777"
-                          onPress={() => setShowNewPassword(!showNewPassword)}
-                        />
-                      </View>
-                      {errors.password && (
-                        <Text style={tw`text-center text-red-700 font-poppins`}>
-                          {errors.password}
-                        </Text>
-                      )}
-                      {/* c_password */}
-                      <View style={tw`py-3 px-6 relative`}>
-                        <TextInput
-                          style={tw`border border-primaryGray rounded-full font-poppins text-base px-5 h-14`}
-                          placeholder="Confirm password"
-                          placeholderTextColor="black"
-                          secureTextEntry={!showConfirmPassword}
-                          value={values.c_password}
-                          onChangeText={(txt) =>
-                            setFieldValue("c_password", txt)
-                          }
-                        />
-                        <Entypo
-                          name={showConfirmPassword ? "eye" : "eye-with-line"}
-                          style={tw`absolute right-12 top-7 `}
-                          size={20}
-                          color="#777"
-                          onPress={() => setShowConfirmPassword(!showConfirmPassword)}
-                        />
-                      </View>
+                    <View
+                      style={tw`flex-col justify-center w-full items-center mb-4`}
+                    >
+                      <Text style={tw`font-poppinsBold text-3xl  text-primaryText`}>
+                        Welcome back
+                      </Text>
+                      <Text style={tw`text-primaryText font-poppins text-sm py-1`}>
+                        Use your credentials to login
+                      </Text>
                     </View>
-                    {errors.c_password && (
-                      <Text style={tw`text-center text-red-700 font-poppins`}>
-                        {errors.c_password}
-                      </Text>
-                    )}
-                    <TouchableOpacity
-                      style={tw`bg-secondary rounded-full mx-6`}
-                      onPress={() => {
-                        handleSubmit();
-                        // router.replace("/home/(tabs)/landingPage");
-                      }}
-                    >
-                      <Text
-                        style={tw`text-primary  text-center  text-lg py-[14px] font-poppinsBold`}
-                      >
-                        Sign up
-                      </Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity
-                      style={tw` rounded-full mx-6 my-5 flex-row justify-between items-center border border-primaryGray px-7`}
-                    >
-                      <View style={tw`flex-row items-center gap-3`}>
-                        <SvgXml xml={IconGoogle} />
-                        <Text style={tw`text-base py-[14px] font-poppins`}>
-                          Continue with Google
-                        </Text>
+                    <View style={tw`bg-primary w-full h-full rounded-t-[40px] `}>
+                      <View style={tw`flex-row justify-center `}>
+                        <Image
+                          source={ImgLogo}
+                          style={{ height: 100, width: 162, objectFit: "contain" }}
+                        />
                       </View>
-                      <SvgXml xml={IconErow} />
-                    </TouchableOpacity>
-                    <View style={tw`flex-row justify-center gap-3`}>
-                      <Text style={tw` text-base font-poppinsMedium`}>
-                        Don’t have an account ?
-                      </Text>
+                      {/* login from */}
+                      <View>
+                        {/* channel_name */}
+                        <View style={tw`py-3 px-6`}>
+                          <TextInput
+                            style={tw`border border-primaryGray rounded-full font-poppins text-base px-5 h-14`}
+                            placeholder="Channel Name"
+                            placeholderTextColor="black"
+                            value={values.channel_name}
+                            onChangeText={(txt) =>
+                              setFieldValue("channel_name", txt)
+                            }
+                          />
+                        </View>
+                        {errors.channel_name && (
+                          <Text style={tw`text-center text-red-700 font-poppins`}>
+                            {errors.channel_name}
+                          </Text>
+                        )}
+                        {/* name */}
+                        <View style={tw`py-3 px-6`}>
+                          <TextInput
+                            style={tw`border border-primaryGray rounded-full font-poppins text-base px-5 h-14`}
+                            placeholder="name"
+                            placeholderTextColor="black"
+                            value={values.name}
+                            onChangeText={(txt) => setFieldValue("name", txt)}
+                          />
+                        </View>
+                        {errors.name && (
+                          <Text style={tw`text-center text-red-700 font-poppins`}>
+                            {errors.name}
+                          </Text>
+                        )}
+                        {/* email */}
+                        <View style={tw`py-3 px-6`}>
+                          <TextInput
+                            style={tw`border border-primaryGray rounded-full font-poppins text-base px-5 h-14`}
+                            placeholder="Email"
+                            value={values.email}
+                            onChangeText={(txt) => setFieldValue("email", txt)}
+                          />
+                        </View>
+                        {errors.email && (
+                          <Text style={tw`text-center text-red-700 font-poppins`}>
+                            {errors.email}
+                          </Text>
+                        )}
+                        {/* password */}
+                        <View style={tw`py-3 px-6 relative`}>
+                          <TextInput
+                            style={tw`border border-primaryGray rounded-full font-poppins text-base px-5 h-14`}
+                            placeholder="Password"
+                            placeholderTextColor="black"
+                            secureTextEntry={!showNewPassword}
+                            value={values.password}
+                            onChangeText={(txt) => setFieldValue("password", txt)}
+                          />
+                          <Entypo
+                            name={showNewPassword ? "eye" : "eye-with-line"}
+                            style={tw`absolute right-12 top-7 `}
+                            size={20}
+                            color="#777"
+                            onPress={() => setShowNewPassword(!showNewPassword)}
+                          />
+                        </View>
+                        {errors.password && (
+                          <Text style={tw`text-center text-red-700 font-poppins`}>
+                            {errors.password}
+                          </Text>
+                        )}
+                        {/* c_password */}
+                        <View style={tw`py-3 px-6 relative`}>
+                          <TextInput
+                            style={tw`border border-primaryGray rounded-full font-poppins text-base px-5 h-14`}
+                            placeholder="Confirm password"
+                            placeholderTextColor="black"
+                            secureTextEntry={!showConfirmPassword}
+                            value={values.c_password}
+                            onChangeText={(txt) =>
+                              setFieldValue("c_password", txt)
+                            }
+                          />
+                          <Entypo
+                            name={showConfirmPassword ? "eye" : "eye-with-line"}
+                            style={tw`absolute right-12 top-7 `}
+                            size={20}
+                            color="#777"
+                            onPress={() => setShowConfirmPassword(!showConfirmPassword)}
+                          />
+                        </View>
+                      </View>
+                      {errors.c_password && (
+                        <Text style={tw`text-center text-red-700 font-poppins`}>
+                          {errors.c_password}
+                        </Text>
+                      )}
                       <TouchableOpacity
-                        onPress={() => router.push("/auth/login")}
-                        style={tw`flex-row items-center gap-1`}
+                        style={tw`bg-secondary rounded-full mx-6`}
+                        onPress={() => {
+                          handleSubmit();
+                          // router.replace("/home/(tabs)/landingPage");
+                        }}
                       >
-                        <Text style={tw` text-base font-poppinsMedium`}>
-                          Sign In
+                        <Text
+                          style={tw`text-primary  text-center  text-lg py-[14px] font-poppinsBold`}
+                        >
+                          Sign up
                         </Text>
-                        <SvgXml xml={IconErow2} />
                       </TouchableOpacity>
+
+                      <TouchableOpacity
+                        style={tw` rounded-full mx-6 my-5 flex-row justify-between items-center border border-primaryGray px-7`}
+                      >
+                        <View style={tw`flex-row items-center gap-3`}>
+                          <SvgXml xml={IconGoogle} />
+                          <Text style={tw`text-base py-[14px] font-poppins`}>
+                            Continue with Google
+                          </Text>
+                        </View>
+                        <SvgXml xml={IconErow} />
+                      </TouchableOpacity>
+                      <View style={tw`flex-row justify-center gap-3`}>
+                        <Text style={tw` text-base font-poppinsMedium`}>
+                          Don’t have an account ?
+                        </Text>
+                        <TouchableOpacity
+                          onPress={() => router.push("/auth/login")}
+                          style={tw`flex-row items-center gap-1`}
+                        >
+                          <Text style={tw` text-base font-poppinsMedium`}>
+                            Sign In
+                          </Text>
+                          <SvgXml xml={IconErow2} />
+                        </TouchableOpacity>
+                      </View>
                     </View>
                   </View>
-                </View>
-              );
-            }}
-          </Formik>
-        </ScrollView>
-      </AlertNotificationRoot>
+                );
+              }}
+            </Formik>
+          </View>
+        </AlertNotificationRoot>
+      </ScrollView>
     </KeyboardAvoidingView>
   );
 };

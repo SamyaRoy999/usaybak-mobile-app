@@ -1,5 +1,5 @@
 import { ImgLogo } from "@/assets/images/images";
-import { IconForgetNest } from "@/icons/Icon";
+import { IconBackAuth, IconForgetNest } from "@/icons/Icon";
 import tw from "@/lib/tailwind";
 import { usePriceGetAllQuery } from '@/redux/apiSlices/Home/homeApiSlices';
 import { useVerifyOtpMutation } from "@/redux/apiSlices/authApiSlices";
@@ -164,6 +164,9 @@ const onSiteOtp = () => {
             <ScrollView showsVerticalScrollIndicator={false} style={tw``}>
                 <AlertNotificationRoot>
                     <View style={tw`flex-row justify-end`}>
+                        <TouchableOpacity onPress={() => router.back()}>
+                            <SvgXml xml={IconBackAuth} />
+                        </TouchableOpacity>
                         <SvgXml xml={IconForgetNest} />
                     </View>
                     <View

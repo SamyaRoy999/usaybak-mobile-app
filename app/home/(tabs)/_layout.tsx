@@ -254,7 +254,6 @@ const TabLayout = () => {
     >
       <Tabs.Screen name="landingPage" options={{ title: "Home" }} />
       <Tabs.Screen name="Blogs" options={{ title: "Blogs" }} />
-      <Tabs.Screen name="add" options={{ href: null }} />
       <Tabs.Screen name="Promotions" options={{ title: "Promotions" }} />
       <Tabs.Screen name="Account" options={{ title: "Account" }} />
     </Tabs>

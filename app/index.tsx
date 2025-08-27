@@ -10,7 +10,7 @@ const index = () => {
     setTimeout(() => {
       // router.replace("/(allPages)/my_videos");
       router.replace("/home/(tabs)/landingPage");
-      // router.replace("/auth/login");
+      // router.replace("/auth/newPass");
     }, 1000);
   }, []);
 

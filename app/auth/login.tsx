@@ -1,5 +1,5 @@
 import { ImgLogo } from "@/assets/images/images";
-import { IconErow, IconErow2, IconGoogle, IconLogin } from "@/icons/Icon";
+import { IconErow2, IconLogin } from "@/icons/Icon";
 import tw from "@/lib/tailwind";
 import { useLoginUserMutation } from "@/redux/apiSlices/authApiSlices";
 import Entypo from "@expo/vector-icons/Entypo";
@@ -10,14 +10,11 @@ import { Formik } from "formik";
 import React, { useRef } from "react";
 import {
   Image,
-  Keyboard,
   KeyboardAvoidingView,
-  Platform,
   ScrollView,
   Text,
   TextInput,
   TouchableOpacity,
-  TouchableWithoutFeedback,
   View
 } from "react-native";
 import { ALERT_TYPE, AlertNotificationRoot, Toast } from "react-native-alert-notification";
@@ -28,7 +25,7 @@ const login = () => {
   const [showNewPassword, setShowNewPassword] = React.useState(false);
   const [isChecked, setChecked] = React.useState(false);
   const [loginUser, loginResults] = useLoginUserMutation();
-  const scrollViewRef = useRef<ScrollView>(null);
+
 
   const focusNextField = (nextField: any) => {
     nextField?.current?.focus();
@@ -37,206 +34,192 @@ const login = () => {
   const emailRef = useRef<TextInput>(null);
   const passwordRef = useRef<TextInput>(null);
 
-  const handleFieldFocus = (yPosition: number) => {
-    scrollViewRef.current?.scrollTo({ y: yPosition, animated: true });
-  };
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={tw`flex-1 bg-secondary`}
-        keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0}
+    <KeyboardAvoidingView
+      style={tw`flex-1 `}
+      enabled={true}
+      behavior={"padding"}
+    >
+      <ScrollView
+        contentContainerStyle={tw`flex-grow justify-center dark:bg-base-dark  bg-base-light `}
+        showsVerticalScrollIndicator={false}
       >
-        <AlertNotificationRoot>
-          <Formik
-            initialValues={{ email: "", password: "" }}
-            onSubmit={async (values) => {
-              try {
-                const res = await loginUser(values).unwrap();
-                if (res.status) {
-                  AsyncStorage.setItem("token", res?.data?.access_token);
+        <View style={tw` bg-secondary`}>
+          <AlertNotificationRoot>
+            <Formik
+              initialValues={{ email: "", password: "" }}
+              onSubmit={async (values) => {
+                try {
+                  const res = await loginUser(values).unwrap();
+                  if (res.status) {
+                    AsyncStorage.setItem("token", res?.data?.access_token);
+                    Toast.show({
+                      type: ALERT_TYPE.SUCCESS,
+                      title: 'Success',
+                      textBody: res?.message,
+                      autoClose: 2000,
+                    });
+                    setTimeout(() => {
+                      router?.push(`/home/(tabs)/landingPage`);
+                    }, 1000);
+                  } else {
+                    Toast.show({
+                      type: ALERT_TYPE.DANGER,
+                      title: 'Waring',
+                      textBody: res?.message?.email?.[0] || "Something went wrong!",
+                      autoClose: 2000,
+                    });
+                  }
+
+                } catch (error: any) {
                   Toast.show({
-                    type: ALERT_TYPE.SUCCESS,
-                    title: 'Success',
-                    textBody: res?.message,
-                    autoClose: 2000,
-                  });
-                  setTimeout(() => {
-                    router?.push(`/home/(tabs)/landingPage`);
-                  }, 1000);
-                } else {
-                  Toast.show({
-                    type: ALERT_TYPE.DANGER,
+                    type: ALERT_TYPE.WARNING,
                     title: 'Waring',
-                    textBody: res?.message?.email?.[0] || "Something went wrong!",
-                    autoClose: 2000,
+                    textBody: error?.message,
                   });
                 }
+              }}
 
-              } catch (error: any) {
-                Toast.show({
-                  type: ALERT_TYPE.WARNING,
-                  title: 'Waring',
-                  textBody: error?.message,
-                });
-              }
-            }}
-
-            validationSchema={Yup.object({
-              email: Yup.string().email().required("email is required"),
-              password: Yup.string()
-                .required("Password is required"),
+              validationSchema={Yup.object({
+                email: Yup.string().email().required("email is required"),
+                password: Yup.string()
+                  .required("Password is required"),
                 // .min(8, "Password must be at least 8 characters long")
                 // .matches(/[a-z]/, "Password must contain at least one lowercase letter")
                 // .matches(/[A-Z]/, "Password must contain at least one uppercase letter")
                 // .matches(/[0-9]/, "Password must contain at least one number")
                 // .matches(/[!@#$%^&*(),.?":{}|<>]/, "Password must contain at least one special character"),
-            })}
-          >
-            {({ values, setFieldValue, handleSubmit, errors }) => {
-              return (
-                <ScrollView
-                  ref={scrollViewRef}
-                  showsVerticalScrollIndicator={false}
-                  keyboardShouldPersistTaps="handled"
-                >
-                  <SvgXml xml={IconLogin} />
-                  <View
-                    style={tw`flex-col justify-center w-full items-center my-11`}
-                  >
-                    <Text style={tw`font-poppinsBold text-3xl  text-primaryText`}>
-                      Welcome back
-                    </Text>
-                    <Text style={tw`text-primaryText font-poppins text-sm py-1`}>
-                      Use your credentials to login
-                    </Text>
-                  </View>
-                  <View style={tw`bg-primary w-full min-h-full rounded-t-[40px] pb-10`}>
-                    <View style={tw`flex-row justify-center `}>
-                      <Image
-                        source={ImgLogo}
-                        style={{ height: 100, width: 162, objectFit: "contain" }}
-                      />
+              })}
+            >
+              {({ values, setFieldValue, handleSubmit, errors }) => {
+                return (
+
+                  <View>
+                    <SvgXml xml={IconLogin} />
+                    <View
+                      style={tw`flex-col justify-center w-full items-center my-11`}
+                    >
+                      <Text style={tw`font-poppinsBold text-3xl  text-primaryText`}>
+                        Welcome back
+                      </Text>
+                      <Text style={tw`text-primaryText font-poppins text-sm py-1`}>
+                        Use your credentials to login
+                      </Text>
                     </View>
-                    {/* login from */}
-                    <View>
-                      <View style={tw`py-3 px-6`}>
-                        <TextInput
-                          ref={emailRef}
-                          style={tw`border border-primaryGray rounded-full font-poppins text-base px-5 h-14`}
-                          placeholder="Email"
-                          placeholderTextColor="black"
-                          value={values.email}
-                          onChangeText={(txt) => setFieldValue("email", txt)}
-                          keyboardType="email-address"
-                          autoCapitalize="none"
-                          returnKeyType="next"
-                          onSubmitEditing={() => focusNextField(passwordRef)}
-                          onFocus={() => handleFieldFocus(100)}
+                    <View style={tw`bg-primary w-full min-h-full rounded-t-[40px] pb-10`}>
+                      <View style={tw`flex-row justify-center `}>
+                        <Image
+                          source={ImgLogo}
+                          style={{ height: 100, width: 162, objectFit: "contain" }}
                         />
                       </View>
-                      {errors.email && (
+                      {/* login from */}
+                      <View>
+                        <View style={tw`py-3 px-6`}>
+                          <TextInput
+                            ref={emailRef}
+                            style={tw`border border-primaryGray rounded-full font-poppins text-base px-5 h-14`}
+                            placeholder="Email"
+                            placeholderTextColor="black"
+                            value={values.email}
+                            onChangeText={(txt) => setFieldValue("email", txt)}
+                            keyboardType="email-address"
+                            autoCapitalize="none"
+                            returnKeyType="next"
+                            onSubmitEditing={() => focusNextField(passwordRef)}
+
+                          />
+                        </View>
+                        {errors.email && (
+                          <Text style={tw`text-center text-red-700 font-poppins`}>
+                            {errors.email}
+                          </Text>
+                        )}
+                        <View style={tw`py-3 px-6 relative`}>
+                          <TextInput
+                            ref={passwordRef}
+                            style={tw`border border-primaryGray rounded-full font-poppins text-base px-5 h-14`}
+                            placeholder="Password"
+                            placeholderTextColor="black"
+                            secureTextEntry={!showNewPassword}
+                            value={values.password}
+                            onChangeText={(txt) => setFieldValue("password", txt)}
+                            returnKeyType="done"
+                            onSubmitEditing={handleSubmit}
+                          />
+                          <Entypo
+                            name={showNewPassword ? "eye" : "eye-with-line"}
+                            style={tw`absolute right-12 top-7 `}
+                            size={20}
+                            color="#777"
+                            onPress={() => setShowNewPassword(!showNewPassword)}
+                          />
+                        </View>
+                      </View>
+                      {errors.password && (
                         <Text style={tw`text-center text-red-700 font-poppins`}>
-                          {errors.email}
+                          {errors.password}
                         </Text>
                       )}
-                      <View style={tw`py-3 px-6 relative`}>
-                        <TextInput
-                          ref={passwordRef}
-                          style={tw`border border-primaryGray rounded-full font-poppins text-base px-5 h-14`}
-                          placeholder="Password"
-                          placeholderTextColor="black"
-                          secureTextEntry={!showNewPassword}
-                          value={values.password}
-                          onChangeText={(txt) => setFieldValue("password", txt)}
-                          returnKeyType="done"
-                          onSubmitEditing={handleSubmit}
-                          onFocus={() => handleFieldFocus(150)}
-                        />
-                        <Entypo
-                          name={showNewPassword ? "eye" : "eye-with-line"}
-                          style={tw`absolute right-12 top-7 `}
-                          size={20}
-                          color="#777"
-                          onPress={() => setShowNewPassword(!showNewPassword)}
-                        />
-                      </View>
-                    </View>
-                    {errors.password && (
-                      <Text style={tw`text-center text-red-700 font-poppins`}>
-                        {errors.password}
-                      </Text>
-                    )}
-                    <View
-                      style={tw`py-7  px-7 flex-row justify-between items-center`}
-                    >
-                      <View style={tw`flex-row items-center gap-2`}>
-                        <Checkbox
-                          value={isChecked}
-                          onValueChange={setChecked}
-                          color={isChecked ? "#EF4444" : undefined}
-                        />
-                        <Text style={tw`text-base font-poppins font-normal `}>
-                          Remember me
-                        </Text>
+                      <View
+                        style={tw`py-7  px-7 flex-row justify-between items-center`}
+                      >
+                        <View style={tw`flex-row items-center gap-2`}>
+                          <Checkbox
+                            value={isChecked}
+                            onValueChange={setChecked}
+                            color={isChecked ? "#EF4444" : undefined}
+                          />
+                          <Text style={tw`text-base font-poppins font-normal `}>
+                            Remember me
+                          </Text>
+                        </View>
+                        <TouchableOpacity
+                          onPress={() => router.push("/auth/forgotPass")}
+                        >
+                          <Text
+                            style={tw`text-base font-poppins font-normal text-secondary`}
+                          >
+                            Forgot password
+                          </Text>
+                        </TouchableOpacity>
                       </View>
                       <TouchableOpacity
-                        onPress={() => router.push("/auth/forgotPass")}
+                        style={tw`bg-secondary rounded-full mx-6`}
+                        onPress={() => {
+                          handleSubmit();
+                        }}
                       >
                         <Text
-                          style={tw`text-base font-poppins font-normal text-secondary`}
+                          style={tw`text-primary  text-center  text-lg py-[14px] font-poppinsBold`}
                         >
-                          Forgot password
+                          Login
                         </Text>
                       </TouchableOpacity>
-                    </View>
-                    <TouchableOpacity
-                      style={tw`bg-secondary rounded-full mx-6`}
-                      onPress={() => {
-                        handleSubmit();
-                      }}
-                    >
-                      <Text
-                        style={tw`text-primary  text-center  text-lg py-[14px] font-poppinsBold`}
-                      >
-                        Login
-                      </Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity
-                      style={tw` rounded-full mx-6 my-5 flex-row justify-between items-center border border-primaryGray px-7`}
-                    >
-                      <View style={tw`flex-row items-center gap-3`}>
-                        <SvgXml xml={IconGoogle} />
-                        <Text style={tw`text-base py-[14px] font-poppins`}>
-                          Continue with Google
-                        </Text>
-                      </View>
-                      <SvgXml xml={IconErow} />
-                    </TouchableOpacity>
-                    <View style={tw`flex-row justify-center gap-3 pb-10`}>
-                      <Text style={tw` text-base font-poppinsMedium`}>
-                        Don't have an account ?
-                      </Text>
-                      <TouchableOpacity
-                        onPress={() => router.push("/auth/signUp")}
-                        style={tw`flex-row items-center gap-1`}
-                      >
+                      <View style={tw`flex-row justify-center gap-3 pb-10`}>
                         <Text style={tw` text-base font-poppinsMedium`}>
-                          Sign Up
+                          Don't have an account ?
                         </Text>
-                        <SvgXml xml={IconErow2} />
-                      </TouchableOpacity>
+                        <TouchableOpacity
+                          onPress={() => router.push("/auth/signUp")}
+                          style={tw`flex-row items-center gap-1`}
+                        >
+                          <Text style={tw` text-base font-poppinsMedium`}>
+                            Sign Up
+                          </Text>
+                          <SvgXml xml={IconErow2} />
+                        </TouchableOpacity>
+                      </View>
                     </View>
                   </View>
-                </ScrollView>
-              )
-            }}
-          </Formik>
-        </AlertNotificationRoot>
-      </KeyboardAvoidingView>
-    </TouchableWithoutFeedback>
+                )
+              }}
+            </Formik>
+          </AlertNotificationRoot>
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 
