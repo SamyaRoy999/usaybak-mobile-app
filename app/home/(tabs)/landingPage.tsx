@@ -1,4 +1,3 @@
-// import CarouselCard from "@/components/landing_page/CarouselCard";
 import CatagoryCard from "@/components/landing_page/CatagoryCard";
 import SliderLanding from "@/components/landing_page/SliderLanding";
 import HeaderBar from "@/components/shear/HeaderBar";
@@ -14,44 +13,43 @@ import {
   View
 } from "react-native";
 
-const landingPage = () => {
-  const { data: defouldData, isLoading: userLoading, refetch: userRef } = useProfileQuery({})
+const LandingPage = () => {
+  const { data: defouldData, isLoading: userLoading, refetch: userRef } = useProfileQuery({});
 
-  useEffect(() => {
-    userRef()
-    if (defouldData?.data?.registration_type === "on_site") {
-      if (defouldData?.data?.is_pay === 0) {
-        router.push("/(allPages)/paymentOnside")
-      }
-    }
-  }, [])
   // ................promoted video api.................// 
-
-
-
   const { data: promoted, isLoading: lodingPromoted } = usePromotedVideoHomeQuery({});
   const promotedVideo = promoted?.data?.data;
+
   // .............caragoryVideo................//
   const {
     data: caragoryVideos,
-    isLoading,
-    refetch
+    isLoading: categoryLoading,
+    refetch: categoryRefetch
   } = useCaragoryVideosQuery({
     params: {
       per_page: 500,
     },
   });
 
+  useEffect(() => {
+    userRef();
+    // This effect will run when defouldData changes
+    if (defouldData?.data?.registration_type === "on_site" && defouldData?.data?.is_pay === 0) {
+      router.push("/(allPages)/paymentOnside");
+    }
+  }, [defouldData]);
 
   console.log("user", defouldData);
 
-  if (isLoading && lodingPromoted && userLoading) {
+  // Show loading if any of the queries are loading
+  if (userLoading || lodingPromoted || categoryLoading) {
     return (
       <View style={tw`flex-1 justify-center items-center`}>
         <Text>Loading...</Text>
       </View>
     );
   }
+
   return (
     <View>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={tw`pb-6`}>
@@ -60,7 +58,7 @@ const landingPage = () => {
         <FlatList
           data={caragoryVideos?.data?.data}
           keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item }) => <CatagoryCard data={item} isLoading={isLoading} />}
+          renderItem={({ item }) => <CatagoryCard data={item} isLoading={categoryLoading} />}
           showsVerticalScrollIndicator={false}
           scrollEnabled={false}
         />
@@ -69,4 +67,4 @@ const landingPage = () => {
   );
 };
 
-export default landingPage;
+export default LandingPage;

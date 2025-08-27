@@ -99,7 +99,6 @@ const SingleVideo = () => {
       if (playerRef.current) {
         playerRef.current.play();
       }
-
       return () => {
         if (playerRef.current) {
           playerRef.current.pause();

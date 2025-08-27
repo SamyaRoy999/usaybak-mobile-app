@@ -272,13 +272,13 @@ const videodetails = () => {
                                 style={tw`w-full h-48 rounded-lg`}
 
                             />
-                            <Text style={tw`font-poppinsMedium text-xl py-3`}>{singleVideo?.data?.visibility}</Text>
+                            <Text style={tw`font-poppinsMedium text-xl py-3`}>Visibility</Text>
                             <TouchableOpacity
                                 style={tw`py-3 flex-row gap-4 w-3/6 items-center border border-primaryGray  px-6 rounded-full  bg-primary`}
                             >
                                 <SvgXml xml={IconWorld} />
                                 <Text style={tw`font-poppins  text-base text-secondaryBlack`}>
-                                    Everyone
+                                    {singleVideo?.data?.visibility}
                                 </Text>
                             </TouchableOpacity>
                             <Text style={tw`font-poppinsMedium text-xl py-3`}>Publish time</Text>
