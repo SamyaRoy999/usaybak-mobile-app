@@ -32,7 +32,6 @@ const videodetails = () => {
     const { data: singleVideo, isLoading, refetch:singleVideoRefetch } = useMy_videos_detailsQuery({ id });
     // const { type } = singleVideo?.data
 
-    console.log(singleVideo);
 
     const {
         data: commentsData,
@@ -102,7 +101,7 @@ const videodetails = () => {
                 try {
                     playerRef.current.play();
                 } catch (error) {
-                    console.log("Player already released");
+
                 }
             }
 
@@ -111,7 +110,7 @@ const videodetails = () => {
                     try {
                         playerRef.current.pause();
                     } catch (error) {
-                        console.log("Player already released during cleanup");
+
                     }
                 }
             };

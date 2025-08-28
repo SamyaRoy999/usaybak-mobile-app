@@ -39,7 +39,6 @@ const baseQueryWithRath: BaseQueryFn<BaseQueryArgs, unknown, unknown> = async (
       AsyncStorage.removeItem("token");
       AsyncStorage.removeItem("user");
     }
-    console.log(token);
 
     if (result?.status === 401) {
       AsyncStorage.removeItem("token");

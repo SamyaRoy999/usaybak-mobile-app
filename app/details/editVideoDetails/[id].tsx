@@ -150,7 +150,6 @@ const EditVideoDetails = () => {
                 try {
                     playerRef.current.play();
                 } catch (error) {
-                    console.log("Player already released");
                 }
             }
 
@@ -159,7 +158,7 @@ const EditVideoDetails = () => {
                     try {
                         playerRef.current.pause();
                     } catch (error) {
-                        console.log("Player already released during cleanup");
+                    
                     }
                 }
             };
@@ -175,7 +174,6 @@ const EditVideoDetails = () => {
                     playerRef.current.seekTo(0);
                     isPlayerInitialized.current = false;
                 } catch (error) {
-                    console.log("Player already released during unmount");
                 }
             }
         };

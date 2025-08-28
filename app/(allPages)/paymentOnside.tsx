@@ -34,14 +34,12 @@ const paymentOnside = () => {
             }
 
             const res = await payment(paymentData).unwrap();
-            console.log("Payment intent response:", res);
 
             const successData = {
                 id: res?.data?.id,
                 amount: res?.data?.amount,
                 reason: "Onsite account creation"
             };
-            console.log(successData, "sucssMassage");
 
             const client_secret = res?.data?.client_secret;
             if (!client_secret) throw new Error("Client secret not found in response");
@@ -95,7 +93,6 @@ const paymentOnside = () => {
             }
 
             const res = await paymentSuccess(data).unwrap();
-            console.log(res);
 
             if (res?.status) {
                 Toast.show({

@@ -134,7 +134,6 @@ const Search = () => {
             });
 
             //...... Navigate to search results with the data .......//
-            console.log(result);
 
             router.push({
                 pathname: '../details/search/[results]',

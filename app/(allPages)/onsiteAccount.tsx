@@ -51,8 +51,6 @@ const OnsiteAccountScreen = () => {
 
         try {
             const res = await onsiteAccountReg(data).unwrap();
-            console.log("Register response:", res);
-
             if (res.status) {
                 Toast.show({
                     type: ALERT_TYPE.SUCCESS,

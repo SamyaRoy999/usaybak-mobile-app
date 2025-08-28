@@ -411,7 +411,7 @@ const UploadVideo = () => {
             {isProcessing && (
                 <View style={tw`absolute inset-0 bg-black/50 justify-center items-center z-10`}>
                     <ActivityIndicator size="large" />
-                    <Text style={tw`text-white mt-4`}>Processing payment...</Text>
+                    <Text style={tw`text-white mt-4`}>Processing ...</Text>
                 </View>
             )}
 

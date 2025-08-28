@@ -35,7 +35,6 @@ const LikedVideosScreen = () => {
 
             setLoadingMore(true);
             const res = await fetchPosts(pageNum).unwrap();
-            console.log("API Response:", res);
             const responseData = res.data || res;
             const newPosts = responseData?.data || responseData || [];
 
@@ -52,7 +51,6 @@ const LikedVideosScreen = () => {
             setPage(currentPage + 1);
 
         } catch (err) {
-            console.log("Fetch Error:", err);
         } finally {
             setRefreshing(false);
             setLoadingMore(false);

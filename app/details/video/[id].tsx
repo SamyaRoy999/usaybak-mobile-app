@@ -20,7 +20,7 @@ import { useCatagoryDetailsQuery } from "@/redux/apiSlices/catagoryDataSlices/ca
 import { useComment_reactionMutation, useCommentsPostMutation, useCommentsQuery, useLikeVideoMutation, useReplies_reactionMutation, useRepliesPostMutation, useRepliesQuery, useReportPostMutation, useVideodetailQuery, useWatchVideoMutation } from "@/redux/apiSlices/videoDetails/videoDetailsSlice";
 import { _Width } from "@/utils/utils";
 import * as Clipboard from 'expo-clipboard';
-import { useFocusEffect, useLocalSearchParams } from "expo-router";
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { useVideoPlayer, VideoView } from "expo-video";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
@@ -75,9 +75,6 @@ const SingleVideo = () => {
     comment_id: commentID,
   });
 
-
-
-
   const [watchedVidew] = useWatchVideoMutation()
   const [likeVideo] = useLikeVideoMutation();
   const [comment_reaction] = useComment_reactionMutation();
@@ -94,28 +91,37 @@ const SingleVideo = () => {
     playerRef.current = player;
   });
 
-  useFocusEffect(
-    useCallback(() => {
-      if (playerRef.current) {
-        playerRef.current.play();
-      }
-      return () => {
-        if (playerRef.current) {
-          playerRef.current.pause();
-        }
-      };
-    }, [])
-  );
-
-  useEffect(() => {
+useFocusEffect(
+  useCallback(() => {
+    if (playerRef.current) {
+      playerRef.current.play();
+    }
     return () => {
-      if (playerRef.current) {
-        playerRef.current.pause();
-        playerRef.current.seekTo(0);
-        playerRef.current = null;
+      // Don't try to pause if player is already released
+      if (playerRef.current && typeof playerRef.current.pause === 'function') {
+        try {
+          playerRef.current.pause();
+        } catch (e) {
+        }
       }
     };
-  }, []);
+  }, [])
+);
+
+useEffect(() => {
+  return () => {
+    // Cleanup on component unmount
+    if (playerRef.current && typeof playerRef.current.pause === 'function') {
+      try {
+        playerRef.current.pause();
+        playerRef.current.seekTo(0);
+      } catch (e) {
+
+      }
+    }
+    playerRef.current = null;
+  };
+}, []);
 
   const handlePress = async (action: "like" | "dislike") => {
     setLikeDislike(action);
@@ -362,14 +368,20 @@ const SingleVideo = () => {
               </View>
 
               {/* Channel Info */}
-              <View style={tw`flex-row items-center gap-3`}>
-                <Image
-                  source={{ uri: videoDetails?.user.avatar }}
-                  style={tw`w-10 h-10 rounded-full`}
-                />
-                <Text style={tw`font-poppinsMedium text-base text-secondaryBlack`}>
-                  {videoDetails?.user.channel_name}
-                </Text>
+              <View >
+                <TouchableOpacity style={tw`flex-row items-center gap-3`} onPress={() => router.push({
+                  pathname: "/details/channelProfile/[id]",
+                  params: { id: videoDetails?.user?.id }
+                })}>
+
+                  <Image
+                    source={{ uri: videoDetails?.user.avatar }}
+                    style={tw`w-10 h-10 rounded-full`}
+                  />
+                  <Text style={tw`font-poppinsMedium text-base text-secondaryBlack`}>
+                    {videoDetails?.user.channel_name}
+                  </Text>
+                </TouchableOpacity>
               </View>
 
               <ScrollView

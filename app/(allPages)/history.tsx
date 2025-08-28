@@ -9,7 +9,7 @@ import {
     IconSettingDot
 } from '@/icons/Icon';
 import tw from '@/lib/tailwind';
-import { useAll_delete_watch_historyMutation, useHistoryVideoDeleteMutation, useLazyHistoryVideoQuery, usePause_play_watchMutation } from '@/redux/apiSlices/Account/accountSlice';
+import { useAll_delete_watch_historyMutation, useHistoryVideoDeleteMutation, useLazyHistoryVideoQuery, usePause_play_watchMutation, useProfileQuery } from '@/redux/apiSlices/Account/accountSlice';
 import { _HIGHT, _Width } from '@/utils/utils';
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
@@ -43,6 +43,10 @@ const HistoryScreen = () => {
     const [historyVideoDelete] = useHistoryVideoDeleteMutation();
     const [all_delete_watch_history] = useAll_delete_watch_historyMutation()
     const [pause_play_watch] = usePause_play_watchMutation()
+    const { data: userInfo, isLoading: userLoading } = useProfileQuery({})
+
+    // console.log(userInfo?.data?.pause_watch_history);
+    
 
     const loadHistory = useCallback(async (pageNum = page, searchText = searchQuery) => {
         if (loadingMore || isFetching) return;
@@ -262,7 +266,7 @@ const HistoryScreen = () => {
                         <TouchableOpacity onPress={handle_pause_play_watch} style={tw`flex-row items-start gap-3 pt-3`}>
                             <SvgXml xml={IconPouse} />
                             <Text style={tw`font-poppinsMedium text-base`}>
-                                {playPause ? 'Resume watch history' : 'Pause watch history'}
+                                {userInfo?.data?.pause_watch_history ? 'Resume watch history' : 'Pause watch history'}
                             </Text>
                         </TouchableOpacity>
                     </View>

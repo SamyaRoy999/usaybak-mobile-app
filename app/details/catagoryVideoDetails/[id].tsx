@@ -37,9 +37,6 @@ const CatagoryVideoDetails = () => {
                 id: id as string,
                 page: pageNum
             }).unwrap();
-
-            console.log("API Response:", res);
-
             const responseData = res.data;
             const newPosts = responseData?.data || [];
 
@@ -57,7 +54,6 @@ const CatagoryVideoDetails = () => {
             setPage(responseData.current_page + 1);
 
         } catch (err) {
-            console.log("Fetch Error:", err);
         } finally {
             setRefreshing(false);
         }

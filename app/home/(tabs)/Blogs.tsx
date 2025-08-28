@@ -30,7 +30,6 @@ const Blogs = () => {
       if ((isLoading || isFetching || loadingMore) && !isRefresh) return;
       setLoadingMore(true);
       const res = await fetchBlogs({ page: pageNum }).unwrap();
-      console.log("API Response:", res);
       
       const responseData = res.data || res;
       const newPosts = responseData?.data || responseData || [];
@@ -51,7 +50,7 @@ const Blogs = () => {
       setPage(currentPage + 1);
 
     } catch (err) {
-      console.log("Fetch Error:", err);
+
     } finally {
       setRefreshing(false);
       setLoadingMore(false);

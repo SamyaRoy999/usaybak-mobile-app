@@ -39,7 +39,7 @@ const LandingPage = () => {
     }
   }, [defouldData]);
 
-  console.log("user", defouldData);
+
 
   // Show loading if any of the queries are loading
   if (userLoading || lodingPromoted || categoryLoading) {

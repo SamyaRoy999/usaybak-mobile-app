@@ -43,7 +43,7 @@ const Verify = () => {
           // Determine where to navigate based on the flow type
           if (flow === 'register') {
             // Navigate to login page after successful registration
-            router.replace('/auth/login');
+            router.replace('/home/(tabs)/landingPage');
           } else if (flow === 'forgot') {
             // Navigate to new password page for forgot password flow
             router.push(`/auth/newPass?email=${email}`);
