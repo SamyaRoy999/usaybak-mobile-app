@@ -1,5 +1,5 @@
 import HeaderBar from '@/components/shear/HeaderBar'
-import { IconAnalytics, IconBackLeft, IconClose, IconComment, IconDate, IconDelete, IconDeleteComment, IconDislike, IconEays, IconEdit, IconErow, Iconfevarite, IconfevariteActive, IconLike, IconMessage, IconSettingDot, IconTime, IconWorld, IconWornoingDelete } from '@/icons/Icon'
+import { IconAnalytics, IconBackLeft, IconCanselModal, IconClose, IconComment, IconDate, IconDelete, IconDeleteComment, IconDislike, IconEays, IconEdit, IconErow, Iconfevarite, IconfevariteActive, IconLike, IconMessage, IconSettingDot, IconTime, IconWorld, IconWornoingDelete } from '@/icons/Icon'
 import tw from '@/lib/tailwind'
 import { useDeleteVideoMutation } from '@/redux/apiSlices/Account/accountSlice'
 import { useMy_videos_detailsQuery } from '@/redux/apiSlices/MyVideo/myvideoSlice'
@@ -189,9 +189,10 @@ const videodetails = () => {
                             <View
                                 style={tw`bg-primaryText w-13 h-13 p-4 rounded-full flex-row items-center justify-center border border-primaryGray`}
                             >
-                                <SvgXml xml={IconSettingDot} />
+                                <SvgXml xml={ history ? IconCanselModal : IconSettingDot} />
                             </View>
                         </TouchableOpacity>
+
                     </View>
                     {history && (
                         <View style={tw`absolute bg-primaryText right-5 w-56 top-14 z-20  shadow-lg rounded-lg`}>

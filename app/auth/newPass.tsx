@@ -40,7 +40,7 @@ const newPass = () => {
       behavior={"padding"}
     >
       <ScrollView
-        contentContainerStyle={tw`flex-grow justify-center dark:bg-base-dark  bg-base-light `}
+        contentContainerStyle={tw`flex-grow justify-center dark:bg-base-dark  `}
         showsVerticalScrollIndicator={false}
       >
         <View style={tw` bg-secondary`}>

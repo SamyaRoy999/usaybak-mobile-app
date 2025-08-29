@@ -11,6 +11,7 @@ import {
 import tw from '@/lib/tailwind';
 import { useAll_delete_watch_historyMutation, useHistoryVideoDeleteMutation, useLazyHistoryVideoQuery, usePause_play_watchMutation, useProfileQuery } from '@/redux/apiSlices/Account/accountSlice';
 import { _HIGHT, _Width } from '@/utils/utils';
+import { AntDesign } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import React, { useCallback, useEffect, useState } from 'react';
@@ -264,7 +265,9 @@ const HistoryScreen = () => {
                             <Text style={tw`font-poppinsMedium text-base`}>Clear all history</Text>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={handle_pause_play_watch} style={tw`flex-row items-start gap-3 pt-3`}>
-                            <SvgXml xml={IconPouse} />
+                            {
+                                userInfo?.data?.pause_watch_history ?  <SvgXml xml={ IconPouse} /> : <AntDesign name="caretright" size={24} color="black" />
+                            }
                             <Text style={tw`font-poppinsMedium text-base`}>
                                 {userInfo?.data?.pause_watch_history ? 'Resume watch history' : 'Pause watch history'}
                             </Text>

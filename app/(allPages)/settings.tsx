@@ -287,27 +287,21 @@ const Settings = () => {
                                         <TouchableOpacity onPress={pickCoverImage} style={tw`absolute z-20 top-3 right-3`}>
                                             <SvgXml xml={IconUploadCover} />
                                         </TouchableOpacity>
-                                        {coverImage || cover_image ? (
-                                            <Image
-                                                source={{ uri: coverImage?.uri || cover_image }}
-                                                style={[tw`w-full rounded-2xl`, { height: _HIGHT * 0.19 }]}
-                                                contentFit="cover"
-                                            />
-                                        ) : (
-                                            <View style={[tw`w-full rounded-2xl bg-gray-200`, { height: _HIGHT * 0.19 }]} />
-                                        )}
+                                        <Image
+                                            source={{ uri: coverImage?.uri || cover_image }}
+                                            style={[tw`w-full rounded-2xl`, { height: _HIGHT * 0.19 }]}
+                                            contentFit="cover"
+                                        />
                                     </View>
                                     {/* Profile Image Section */}
                                     <View style={tw`bg-primary rounded-full h-28 w-28 flex-row items-center justify-center right-[45%] -bottom-10 absolute`}>
-                                        {profileImage || avatar ? (
-                                            <Image
-                                                source={{ uri: profileImage?.uri || avatar }}
-                                                style={tw`rounded-full h-24 w-24`}
-                                                contentFit="cover"
-                                            />
-                                        ) : (
-                                            <View style={tw`rounded-full h-24 w-24 bg-gray-300`} />
-                                        )}
+
+                                        <Image
+                                            source={{ uri: profileImage?.uri || avatar }}
+                                            style={tw`rounded-full h-24 w-24`}
+                                            contentFit="cover"
+                                        />
+
                                     </View>
                                     <TouchableOpacity onPress={() => setProfilePicure(true)} style={tw`absolute -bottom-10 left-[55%]`}>
                                         <SvgXml xml={profileChang} />
@@ -319,7 +313,7 @@ const Settings = () => {
                                     {/* Channel Name */}
                                     <View style={tw`py-3 px-6`}>
                                         <View style={tw`border border-primaryGray flex-col justify-center pl-7 relative rounded-full h-14`}>
-                                            <Text style={tw`bg-primary w-28 absolute -top-2 left-7`}>Channel name</Text>
+                                            <Text style={tw`bg-primary w-28 absolute -top-2 text-center left-7`}>Channel name</Text>
                                             <TextInput
                                                 value={values.channel_name}
                                                 onChangeText={(txt) => setFieldValue("channel_name", txt)}
@@ -334,7 +328,7 @@ const Settings = () => {
                                     {/* Full Name */}
                                     <View style={tw`py-3 px-6`}>
                                         <View style={tw`border border-primaryGray flex-col justify-center pl-7 relative rounded-full h-14`}>
-                                            <Text style={tw`bg-primary w-28 absolute -top-2 left-7`}>Your full name</Text>
+                                            <Text style={tw`bg-primary w-28 absolute -top-2 text-center left-7`}>Your full name</Text>
                                             <TextInput
                                                 value={values.name}
                                                 onChangeText={(txt) => setFieldValue("name", txt)}
@@ -351,7 +345,7 @@ const Settings = () => {
                                     {/* Contact */}
                                     <View style={tw`py-3 px-6`}>
                                         <View style={tw`border border-primaryGray flex-col justify-center pl-7 relative rounded-full h-14`}>
-                                            <Text style={tw`bg-primary w-28 absolute -top-2 left-7`}>Contact</Text>
+                                            <Text style={tw`bg-primary w-28 absolute -top-2 text-center left-7`}>Contact</Text>
                                             <TextInput
                                                 value={values.contact}
                                                 onChangeText={(txt) => setFieldValue("contact", txt)}
@@ -365,7 +359,7 @@ const Settings = () => {
                                     {/* Bio */}
                                     <View style={tw`py-3 px-6`}>
                                         <View style={tw`border border-primaryGray flex-col justify-center pl-7 relative rounded-2xl p-4`}>
-                                            <Text style={tw`bg-primary w-12 absolute -top-2 left-7`}>Bio</Text>
+                                            <Text style={tw`bg-primary w-12 absolute -top-2 text-center left-7`}>Bio</Text>
                                             <TextInput
                                                 placeholder='Description'
                                                 placeholderTextColor="black"
@@ -415,7 +409,7 @@ const Settings = () => {
                                     {/* Business locations with suggestions */}
                                     <View style={tw`py-3 px-6`}>
                                         <View style={tw`border border-primaryGray flex-col justify-center pl-7 relative rounded-2xl p-4`}>
-                                            <Text style={tw`bg-primary w-40 absolute -top-2 left-7`}>Business locations</Text>
+                                            <Text style={tw`bg-primary w-40 absolute -top-2 text-center left-7`}>Business locations</Text>
                                             {values.locations.map((location, index) => (
                                                 <View key={index} style={tw`py-4 relative `}>
                                                     <View style={tw` border border-primaryGray rounded-full`}>
@@ -468,7 +462,7 @@ const Settings = () => {
                                                             }}
                                                             style={tw`absolute -top-12 right-2 border border-primaryGray w-2/5 rounded-full p-2 px-3 flex-row items-center gap-3`}
                                                         >
-                                                            <Text style={tw`text-base`}>
+                                                            <Text style={tw`text-base mx-auto`}>
                                                                 {location.officeType || "Office type"}
                                                             </Text>
                                                             <SvgXml xml={IconButtonBack} />
